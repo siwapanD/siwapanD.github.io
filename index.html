@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Siwapan Boonthong</title>
+  <meta name="description" content="โปรไฟล์นักพัฒนา Full-stack, DevOps และ Infrastructure: ความเชี่ยวชาญ โปรเจกต์ และ contributions บน GitHub">
+  <meta property="og:title" content="Siwapan Boonthong">
+  <meta property="og:description" content="Full-stack, DevOps และ Infrastructure: ความเชี่ยวชาญ โปรเจกต์ และ contributions บน GitHub">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://siwapand.github.io/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <svg class="contours" id="contours" aria-hidden="true"></svg>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">@siwapanD</p>
+      <h1>Siwapan Boonthong</h1>
+      <p class="role">Full-Stack Developer · DevOps &amp; Infrastructure · Cloud-Native Systems</p>
+      <p class="lede">สร้างซอฟต์แวร์ตั้งแต่สถาปัตยกรรมแอป API และฐานข้อมูล ไปจนถึงการ deploy และโครงสร้างพื้นฐาน งานช่วงหลังเน้นระบบข้อมูลภูมิสารสนเทศและการนำ AI มาใช้ในงานวิศวกรรมจริง</p>
+      <nav class="links" aria-label="ช่องทางติดต่อ">
+        <a href="https://github.com/siwapanD">GitHub</a>
+        <a href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295">LinkedIn</a>
+        <a href="mailto:siwapan6395@gmail.com">siwapan6395@gmail.com</a>
+      </nav>
+      <dl class="stats" id="stats"></dl>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap" id="expertise" aria-labelledby="h-expertise">
+      <h2 id="h-expertise">ความเชี่ยวชาญ</h2>
+      <p class="section-note">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเอง ไม่นับ fork</p>
+      <div class="skills">
+        <article>
+          <h3>Full-stack web</h3>
+          <p>เว็บแอปและ API ที่มีระบบสิทธิ์และ workflow หลายขั้นตอน</p>
+          <p class="tags">TypeScript · Next.js · React · NestJS · Fastify · Express</p>
+        </article>
+        <article>
+          <h3>ฐานข้อมูลและข้อมูลเชิงธุรกิจ</h3>
+          <p>ออกแบบฐานข้อมูลกลาง แยก role ตามงาน และเขียน SQL สำหรับรายงานบน production</p>
+          <p class="tags">PostgreSQL · PL/pgSQL · pgvector · Oracle · Redis · Supabase</p>
+        </article>
+        <article>
+          <h3>ภูมิสารสนเทศและข้อมูลน้ำ</h3>
+          <p>รวมข้อมูลดิน น้ำ อากาศ และเผยแพร่เป็น API หรือ layer แผนที่ให้ระบบอื่นใช้ต่อ</p>
+          <p class="tags">PostGIS · GeoServer · GeoJSON · FastAPI · Python</p>
+        </article>
+        <article>
+          <h3>AI engineering</h3>
+          <p>AI gateway, NL-to-SQL ที่คุมสิทธิ์ และแม่แบบให้ coding agent ทำงานต่อได้อย่างมีมาตรฐาน</p>
+          <p class="tags">LLM integration · Claude Code · Codex · Agent skills · Hooks</p>
+        </article>
+        <article>
+          <h3>DevOps และโครงสร้างพื้นฐาน</h3>
+          <p>ติดตั้งเซิร์ฟเวอร์ จัดการ container ระบบสำรองข้อมูล และการเก็บ credential พร้อม audit log</p>
+          <p class="tags">Docker · Compose · Ubuntu · Nginx · Shell · PowerShell</p>
+        </article>
+        <article>
+          <h3>Native และ mobile</h3>
+          <p>แอป macOS และ iOS รวมถึงงาน capture และ encode หน้าจอด้วยฮาร์ดแวร์</p>
+          <p class="tags">Swift · ScreenCaptureKit · VideoToolbox · C++ · Flutter · Expo</p>
+        </article>
+      </div>
+      <p class="also"><strong>ทักษะอื่นที่ระบุในโปรไฟล์ GitHub:</strong> C#, .NET, Angular, MySQL, MongoDB, Firebase, Kubernetes, AWS, Cloudflare, CI/CD, GitOps</p>
+
+      <div class="langs">
+        <h3>ภาษาหลักของ repo ที่เป็นงานตัวเอง</h3>
+        <p class="section-note">นับจำนวน repo ตามภาษาหลักที่ GitHub ตรวจพบ ทั้ง public และ private</p>
+        <div id="languages"></div>
+      </div>
+    </section>
+
+    <section class="wrap" id="activity" aria-labelledby="h-activity">
+      <h2 id="h-activity">Contributions</h2>
+      <p class="section-note" id="activity-note"></p>
+      <div class="segments" id="ranges" role="group" aria-label="เลือกช่วงเวลา"></div>
+      <div class="heat-scroll" id="heat-scroll" tabindex="0" aria-label="แผนภาพ contributions เลื่อนซ้ายขวาได้">
+        <div class="heat" id="heat" role="img"></div>
+      </div>
+      <div class="heat-foot">
+        <span id="heat-total"></span>
+        <span class="legend" aria-label="สีเข้มหมายถึงมี contributions มากกว่า">น้อย
+          <i data-l="NONE"></i><i data-l="FIRST_QUARTILE"></i><i data-l="SECOND_QUARTILE"></i><i data-l="THIRD_QUARTILE"></i><i data-l="FOURTH_QUARTILE"></i>
+          มาก</span>
+      </div>
+      <details class="table-view">
+        <summary>ดูเป็นตารางรายเดือน</summary>
+        <table>
+          <thead><tr><th scope="col">เดือน</th><th scope="col">Contributions</th></tr></thead>
+          <tbody id="heat-table"></tbody>
+        </table>
+      </details>
+    </section>
+
+    <section class="wrap" id="private" aria-labelledby="h-private">
+      <h2 id="h-private">Private projects</h2>
+      <p class="section-note" id="private-note"></p>
+      <div id="private-list" class="private-list"></div>
+    </section>
+
+    <section class="wrap" id="public" aria-labelledby="h-public">
+      <h2 id="h-public">Public projects</h2>
+      <p class="section-note">โปรเจกต์ที่เขียนเอง เปิดดูโค้ดได้ทั้งหมด</p>
+      <div class="cards" id="public-cards"></div>
+      <h3 class="sub">ตัวอย่างและงานฝึก</h3>
+      <ul class="rows" id="public-learning"></ul>
+      <details class="forks">
+        <summary id="forks-summary"></summary>
+        <p class="section-note">เก็บไว้ศึกษาหรือใช้ต่อ เป็นผลงานของเจ้าของต้นทาง</p>
+        <ul class="rows" id="fork-list"></ul>
+      </details>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p id="updated"></p>
+    <p>Build thoughtfully. Automate responsibly. Keep learning.</p>
+  </footer>
+
+  <div class="tip" id="tip" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

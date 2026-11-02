@@ -1,0 +1,15 @@
+{
+  "hidden": ["siwapanD", "siwapanD.github.io", "htmlTimeline"],
+  "projects": {
+    "Daily-AI": {"group": "featured", "note": "ระบบ R&D ส่วนตัวสำหรับติดตามเรื่อง AI ให้คะแนนความสำคัญต่องาน software engineering ทดลอง แล้วบันทึกผลลง AI Engineering Playbook"},
+    "win-mac": {"group": "featured", "note": "Remote desktop ประสิทธิภาพสูงจาก Windows ไป macOS ใช้ ScreenCaptureKit, VideoToolbox และ protocol latency ต่ำที่เขียนเอง"},
+    "skill": {"group": "featured", "note": "แม่แบบ Claude Code สำหรับโปรเจกต์ Next.js full-stack มีกฎโปรเจกต์ hooks และ sanity check ก่อนเริ่ม dev server"},
+    "flutter_getx_forme_firebase_rbac_template": {"group": "featured", "note": "แม่แบบแอป Flutter ระดับองค์กร ใช้ GetX, Forme และ Firebase พร้อมระบบสิทธิ์ RBAC และชุดทดสอบ"},
+    "ubuntu-setup": {"group": "featured", "note": "สคริปต์ตั้งค่า Ubuntu 24.04 เครื่องใหม่ในคำสั่งเดียว ติดตั้ง SSH, UFW, Docker และเครื่องมือพัฒนา"},
+    "arccue-web": {"group": "featured", "note": "เว็บไซต์ผลิตภัณฑ์ของ ArcCue แอปที่เปลี่ยน iPhone เป็น trackpad และ air pointer สำหรับ Mac"},
+    "playwright-and-ai": {"group": "learning", "note": "ทดลองใช้ Playwright ร่วมกับ AI สำหรับการทดสอบแบบ end-to-end"},
+    "playwright-demo": {"group": "learning", "note": "ตัวอย่างการทดสอบด้วย Playwright"},
+    "my-playwright-project": {"group": "learning", "note": "โปรเจกต์ฝึกเขียนการทดสอบด้วย Playwright"},
+    "react-demo": {"group": "learning", "note": "ตัวอย่างโปรเจกต์ React + Vite"}
+  }
+}
