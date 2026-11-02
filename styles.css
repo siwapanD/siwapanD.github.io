@@ -205,7 +205,8 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 .theme-toggle:hover { background: var(--glow); }
 .theme-toggle svg { width: 20px; height: 20px; }
 .eyebrow { font: 500 0.875rem var(--mono); color: var(--ink-2); margin: 0 0 12px; }
-.role { font-size: 1.15rem; font-weight: 500; margin: 8px 0 16px; }
+.position { margin: 10px 0 0; color: var(--ink); font-size: 1.05rem; font-weight: 500; line-height: 1.55; }
+.role { color: var(--ink-2); font-size: 1rem; font-weight: 500; margin: 8px 0 16px; }
 .focus { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
 .focus li { padding: 3px 12px; color: var(--accent); background: var(--panel); border: 1px solid var(--accent); border-radius: 999px; font: 500 0.875rem/1.5 var(--mono); }
 .lede { max-width: 58ch; color: var(--ink-2); margin: 0 0 20px; }
