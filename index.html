@@ -18,12 +18,13 @@
   <header class="hero">
     <svg class="contours" id="contours" aria-hidden="true"></svg>
     <div class="wrap hero-inner">
-      <p class="eyebrow">@siwapanD</p>
+      <p class="eyebrow">@siwapanD · @KhunchayNe</p>
       <h1>Siwapan Boonthong</h1>
-      <p class="role">Full-Stack Developer · DevOps &amp; Infrastructure · Cloud-Native Systems</p>
-      <p class="lede">สร้างซอฟต์แวร์ตั้งแต่สถาปัตยกรรมแอป API และฐานข้อมูล ไปจนถึงการ deploy และโครงสร้างพื้นฐาน งานช่วงหลังเน้นระบบข้อมูลภูมิสารสนเทศและการนำ AI มาใช้ในงานวิศวกรรมจริง</p>
+      <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure</p>
+      <p class="lede">สร้างซอฟต์แวร์ตั้งแต่สถาปัตยกรรมแอป API และฐานข้อมูล ไปจนถึงการ deploy และโครงสร้างพื้นฐาน งานช่วงหลังเน้นระบบข้อมูลภูมิสารสนเทศและการนำ AI มาใช้ในงานวิศวกรรมจริง เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
       <nav class="links" aria-label="ช่องทางติดต่อ">
-        <a href="https://github.com/siwapanD">GitHub</a>
+        <a href="https://github.com/siwapanD">GitHub @siwapanD</a>
+        <a href="https://github.com/KhunchayNe">GitHub @KhunchayNe</a>
         <a href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295">LinkedIn</a>
         <a href="mailto:siwapan6395@gmail.com">siwapan6395@gmail.com</a>
       </nav>
@@ -34,17 +35,17 @@
   <main>
     <section class="wrap" id="expertise" aria-labelledby="h-expertise">
       <h2 id="h-expertise">ความเชี่ยวชาญ</h2>
-      <p class="section-note">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเอง ไม่นับ fork</p>
+      <p class="section-note">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเองจากทั้ง 2 บัญชี ไม่นับ fork</p>
       <div class="skills">
         <article>
-          <h3>Full-stack web</h3>
+          <h3>Backend และ Full-stack</h3>
           <p>เว็บแอปและ API ที่มีระบบสิทธิ์และ workflow หลายขั้นตอน</p>
-          <p class="tags">TypeScript · Next.js · React · NestJS · Fastify · Express</p>
+          <p class="tags">TypeScript · NestJS · C# / .NET · Go · Next.js · React · Angular</p>
         </article>
         <article>
           <h3>ฐานข้อมูลและข้อมูลเชิงธุรกิจ</h3>
           <p>ออกแบบฐานข้อมูลกลาง แยก role ตามงาน และเขียน SQL สำหรับรายงานบน production</p>
-          <p class="tags">PostgreSQL · PL/pgSQL · pgvector · Oracle · Redis · Supabase</p>
+          <p class="tags">PostgreSQL · PL/pgSQL · pgvector · Oracle · MongoDB · Redis · Supabase</p>
         </article>
         <article>
           <h3>ภูมิสารสนเทศและข้อมูลน้ำ</h3>
@@ -64,10 +65,11 @@
         <article>
           <h3>Native และ mobile</h3>
           <p>แอป macOS และ iOS รวมถึงงาน capture และ encode หน้าจอด้วยฮาร์ดแวร์</p>
-          <p class="tags">Swift · ScreenCaptureKit · VideoToolbox · C++ · Flutter · Expo</p>
+          <p class="tags">Swift · ScreenCaptureKit · VideoToolbox · C++ · Flutter · Firebase · Expo</p>
         </article>
       </div>
-      <p class="also"><strong>ทักษะอื่นที่ระบุในโปรไฟล์ GitHub:</strong> C#, .NET, Angular, MySQL, MongoDB, Firebase, Kubernetes, AWS, Cloudflare, CI/CD, GitOps</p>
+      <p class="also"><strong>ทักษะอื่นที่ระบุในโปรไฟล์ GitHub:</strong> Kubernetes, AWS, RabbitMQ, Windows Server (IIS), Cloudflare, MySQL, JWT, Penetration Testing, Vulnerability Assessment, CI/CD, GitOps</p>
+      <p class="also"><strong>ประสบการณ์ที่ระบุในโปรไฟล์ GitHub:</strong> ระบบ FinTech และการเชื่อม API, Library Automation, Smart Kiosk, Acquisition Module, การ sync ข้อมูลจากฐานข้อมูล Oracle, การ deploy บน Ubuntu และ IIS, การให้คำปรึกษาด้านเทคนิค</p>
 
       <div class="langs">
         <h3>ภาษาหลักของ repo ที่เป็นงานตัวเอง</h3>
@@ -106,13 +108,15 @@
 
     <section class="wrap" id="public" aria-labelledby="h-public">
       <h2 id="h-public">Public projects</h2>
-      <p class="section-note">โปรเจกต์ที่เขียนเอง เปิดดูโค้ดได้ทั้งหมด</p>
+      <p class="section-note" id="public-note"></p>
       <div class="cards" id="public-cards"></div>
-      <h3 class="sub">ตัวอย่างและงานฝึก</h3>
-      <ul class="rows" id="public-learning"></ul>
+      <details class="forks">
+        <summary id="learning-summary"></summary>
+        <ul class="rows" id="public-learning"></ul>
+      </details>
       <details class="forks">
         <summary id="forks-summary"></summary>
-        <p class="section-note">เก็บไว้ศึกษาหรือใช้ต่อ เป็นผลงานของเจ้าของต้นทาง</p>
+        <p class="section-note" id="forks-note"></p>
         <ul class="rows" id="fork-list"></ul>
       </details>
     </section>

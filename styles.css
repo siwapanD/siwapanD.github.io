@@ -251,3 +251,6 @@ footer p { margin: 0; }
   mask-image: linear-gradient(to right, transparent 35%, #000 80%);
 }
 @media (max-width: 600px) { .contours { opacity: 0.45; } }
+
+.rows .own { font-weight: 600; color: var(--ink); }
+.forks summary + ul { margin-top: 8px; }

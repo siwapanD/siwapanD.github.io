@@ -44,7 +44,7 @@ function renderStats(data) {
   const c = data.contributions.latest;
   const items = [
     ["Private projects", data.counts.private, `อัปเดตใน 90 วันล่าสุด ${data.counts.privateActive90d} โปรเจกต์`],
-    ["Public projects", data.counts.publicShown, "งานที่เขียนเอง ไม่นับ fork"],
+    ["Public projects", data.counts.publicShown, "repo ของตัวเอง ไม่นับ fork"],
     ["Contributions 12 เดือน", fmt(c.total), `อยู่ใน private repo ${fmt(c.private)} ครั้ง`],
     ["วันที่มี contributions", fmt(data.contributions.activeDays), `ติดต่อกันนานสุด ${data.contributions.longestStreak} วัน`],
   ];
@@ -144,8 +144,8 @@ function wireHeatTooltip() {
 
 function renderActivity(data) {
   const { latest, years, allTime } = data.contributions;
-  $("activity-note").textContent = `รวมทั้งหมด ${fmt(allTime)} ครั้ง นับแบบเดียวกับ GitHub รวมกิจกรรมใน private repo โดยแสดงเฉพาะจำนวนต่อวัน`;
-  const ranges = [["12 เดือนล่าสุด", latest], ...Object.keys(years).sort().reverse().map((y) => [y, years[y]])];
+  $("activity-note").textContent = `รวม ${fmt(allTime)} ครั้งจาก 2 บัญชี ระดับสีคำนวณใหม่จากยอดรวมต่อวัน นับรวมกิจกรรมใน private repo โดยแสดงเฉพาะจำนวน`;
+  const ranges = [["12 เดือนล่าสุด", latest], ...Object.keys(years).filter((y) => years[y].total).sort().reverse().map((y) => [y, years[y]])];
   const buttons = ranges.map(([label, range], i) => {
     const button = el("button", { type: "button", textContent: label });
     button.setAttribute("aria-pressed", String(i === 0));
@@ -161,8 +161,8 @@ function renderActivity(data) {
 }
 
 function renderPrivate(data) {
-  const { private: total, privateActive90d } = data.counts;
-  $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน`;
+  const { private: total, privateActive90d, privateByAccount } = data.counts;
+  $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน ตัวเลขนับจาก @siwapanD ${privateByAccount.siwapanD} และ @KhunchayNe ${privateByAccount.KhunchayNe} เฉพาะ repo ที่บัญชีหลักเข้าถึงได้`;
   $("private-list").append(
     ...data.private.categories.map((cat) =>
       el("div", { className: `p-row${cat.stack.length ? "" : " muted"}` },
@@ -187,9 +187,11 @@ function renderPublic(data) {
       el("article", { className: "card" },
         el("h3", {}, el("a", { href: p.url, textContent: p.name })),
         el("p", { textContent: p.note }),
-        el("div", { className: "meta", textContent: [p.language, pushedLabel(p.pushedAt)].filter(Boolean).join(" · ") }))
+        el("div", { className: "meta", textContent: [`@${p.owner}`, p.language, pushedLabel(p.pushedAt)].filter(Boolean).join(" · ") }))
     )
   );
+  $("public-note").textContent = `${data.counts.publicShown} repo จาก 2 บัญชี แสดงโปรเจกต์เด่น ${featured.length} รายการ ไม่นับ repo ว่างและ repo ตั้งค่าโปรไฟล์`;
+  $("learning-summary").textContent = `ตัวอย่างและงานฝึก ${learning.length} รายการ`;
   $("public-learning").append(
     ...learning.map((p) =>
       el("li", {},
@@ -198,12 +200,13 @@ function renderPublic(data) {
         el("span", { className: "lang", textContent: p.language || "" }))
     )
   );
-  $("forks-summary").textContent = `Repo ที่ fork มา ${data.counts.forks} รายการ`;
+  $("forks-summary").textContent = `Repo ที่ fork มา ${data.counts.forksShown} รายการ`;
+  $("forks-note").textContent = `เก็บไว้ศึกษาหรือใช้ต่อ เป็นผลงานของเจ้าของต้นทาง ยกเว้นรายการที่ระบุว่ามี commit ของตัวเอง ${data.counts.forksWithOwnCommits} รายการ`;
   $("fork-list").append(
     ...data.forks.map((f) =>
       el("li", {},
         el("a", { href: f.url, textContent: f.name }),
-        el("span", { className: "desc", textContent: f.description }),
+        el("span", { className: "desc" }, f.ownCommits ? el("strong", { className: "own", textContent: "มี commit ของตัวเอง " }) : null, f.description),
         el("span", { className: "lang", textContent: f.language || "" }))
     )
   );
