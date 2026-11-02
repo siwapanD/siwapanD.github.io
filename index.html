@@ -12,6 +12,7 @@
   <script>
     // Runs before first paint so a saved theme never flashes the other one.
     try {
+      if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) document.documentElement.classList.add("motion");
       const saved = localStorage.getItem("theme");
       if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
     } catch {}
@@ -19,13 +20,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <header class="hero">
     <svg class="contours" id="contours" aria-hidden="true"></svg>
     <div class="wrap hero-inner">
       <button class="theme-toggle" id="theme-toggle" type="button"></button>
+      <div class="hero-grid">
+      <div class="hero-copy">
       <p class="eyebrow">@siwapanD · @KhunchayNe</p>
       <h1>Siwapan Boonthong</h1>
       <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure</p>
@@ -36,6 +39,65 @@
         <a href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295">LinkedIn</a>
         <a href="mailto:siwapan6395@gmail.com">siwapan6395@gmail.com</a>
       </nav>
+      </div>
+      <button class="mascot" id="mascot" type="button" data-state="idle" aria-label="มาสคอตหยดน้ำ กดเพื่อทักทาย">
+        <span class="mascot-bubble" id="mascot-bubble" role="status"></span>
+        <svg viewBox="0 0 200 225" aria-hidden="true">
+          <defs>
+            <linearGradient id="m-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#9ec5f4"/>
+              <stop offset="1" stop-color="#2a78d6"/>
+            </linearGradient>
+          </defs>
+          <ellipse class="m-shadow" cx="100" cy="216" rx="52" ry="6"/>
+          <g class="m-bob">
+            <g class="m-squish" id="m-squish">
+              <g id="m-tilt">
+                <path fill="url(#m-fill)" d="M100 12C100 12 32 90 32 142a68 68 0 0 0 136 0C168 90 100 12 100 12Z"/>
+                <path class="m-gloss" d="M66 92C56 106 50 120 49 134"/>
+                <g id="m-face">
+                  <ellipse class="m-cheek" cx="52" cy="160" rx="11" ry="7"/>
+                  <ellipse class="m-cheek" cx="148" cy="160" rx="11" ry="7"/>
+                  <g class="m-open">
+                    <circle class="m-white" cx="74" cy="138" r="18"/>
+                    <circle class="m-white" cx="126" cy="138" r="18"/>
+                    <g id="m-pupils">
+                      <circle class="m-pupil" cx="74" cy="138" r="10"/>
+                      <circle class="m-pupil" cx="126" cy="138" r="10"/>
+                      <circle class="m-shine" cx="78" cy="134" r="3.2"/>
+                      <circle class="m-shine" cx="130" cy="134" r="3.2"/>
+                    </g>
+                  </g>
+                  <g class="m-only m-happy">
+                    <path class="m-line" d="M58 142Q74 122 90 142"/>
+                    <path class="m-line" d="M110 142Q126 122 142 142"/>
+                  </g>
+                  <g class="m-only m-sleep">
+                    <path class="m-line" d="M58 138Q74 150 90 138"/>
+                    <path class="m-line" d="M110 138Q126 150 142 138"/>
+                  </g>
+                  <path class="m-line m-mouth-idle" d="M90 166Q100 176 110 166"/>
+                  <path class="m-only m-happy m-mouth" d="M84 162Q100 190 116 162Z"/>
+                  <ellipse class="m-only m-surprised m-mouth" cx="100" cy="172" rx="9" ry="11"/>
+                  <ellipse class="m-only m-sleep m-mouth" cx="100" cy="170" rx="4" ry="3"/>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g class="m-only m-happy">
+            <path class="m-heart" d="M28 62c-5-8-17-3-13 6 2 5 8 9 13 13 5-4 11-8 13-13 4-9-8-14-13-6Z"/>
+            <path class="m-heart m-heart-2" d="M172 44c-4-6-13-2-10 5 2 4 6 7 10 10 4-3 8-6 10-10 3-7-6-11-10-5Z"/>
+            <path class="m-heart m-heart-3" d="M160 92c-3-5-10-2-8 4 1 3 5 5 8 8 3-3 7-5 8-8 2-6-5-9-8-4Z"/>
+          </g>
+          <g class="m-only m-sleep">
+            <text class="m-z" x="158" y="78">z</text>
+            <text class="m-z m-z-2" x="172" y="60">z</text>
+            <text class="m-z m-z-3" x="186" y="42">z</text>
+          </g>
+          <text class="m-only m-surprised m-bang" x="164" y="56">!</text>
+        </svg>
+      </button>
+      </div>
       <dl class="stats" id="stats"></dl>
     </div>
   </header>
@@ -136,6 +198,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

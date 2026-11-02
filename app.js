@@ -19,25 +19,215 @@ function el(tag, props = {}, ...children) {
 }
 const $ = (id) => document.getElementById(id);
 
+const MOTION = document.documentElement.classList.contains("motion");
+
+function ringPath(cx, cy, radius, ring) {
+  let d = "";
+  for (let step = 0; step <= 120; step++) {
+    const t = (step / 120) * Math.PI * 2;
+    const wobble =
+      1 + 0.13 * Math.sin(3 * t + 0.6 + ring * 0.05) + 0.07 * Math.sin(5 * t + ring * 0.21) + 0.03 * Math.sin(9 * t - ring * 0.3);
+    d += `${step ? "L" : "M"}${(cx + radius * wobble * 1.25 * Math.cos(t)).toFixed(1)} ${(cy + radius * wobble * Math.sin(t)).toFixed(1)}`;
+  }
+  return `${d}Z`;
+}
+
+// The contour rings radiate from the mascot, as if it were standing in water.
+const contourCenter = { x: 0, y: 0, base: 0 };
+
 function drawContours() {
   const svg = $("contours");
-  const { width, height } = svg.getBoundingClientRect();
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  const cx = width * 0.82;
-  const cy = height * 0.22;
+  const box = svg.getBoundingClientRect();
+  const mascot = $("mascot").getBoundingClientRect();
+  const { x: cx, y: cy, base } = Object.assign(contourCenter, {
+    x: mascot.left + mascot.width / 2 - box.left,
+    y: mascot.top + mascot.height * 0.62 - box.top,
+    base: mascot.width * 0.5,
+  });
+  svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
   const paths = [];
   for (let ring = 1; ring <= 16; ring++) {
-    const radius = ring * 44;
-    let d = "";
-    for (let step = 0; step <= 120; step++) {
-      const t = (step / 120) * Math.PI * 2;
-      const wobble =
-        1 + 0.13 * Math.sin(3 * t + 0.6 + ring * 0.05) + 0.07 * Math.sin(5 * t + ring * 0.21) + 0.03 * Math.sin(9 * t - ring * 0.3);
-      d += `${step ? "L" : "M"}${(cx + radius * wobble * 1.25 * Math.cos(t)).toFixed(1)} ${(cy + radius * wobble * Math.sin(t)).toFixed(1)}`;
-    }
-    paths.push(`<path d="${d}Z" fill="none" stroke="currentColor" stroke-width="1"/>`);
+    paths.push(`<path d="${ringPath(cx, cy, base + ring * 40, ring)}" fill="none" stroke="currentColor" stroke-width="1"/>`);
   }
-  svg.innerHTML = paths.join("");
+  svg.innerHTML = `<g id="rings-move"><g id="rings" style="transform-origin:${cx}px ${cy}px">${paths.join("")}</g></g>`;
+}
+
+function ripple() {
+  if (!MOTION) return;
+  const { x, y, base } = contourCenter;
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("class", "ripple");
+  path.setAttribute("d", ringPath(x, y, base, 3));
+  path.style.transformOrigin = `${x}px ${y}px`;
+  path.addEventListener("animationend", () => path.remove());
+  $("contours").append(path);
+}
+
+function wireMascot(data) {
+  const SLEEP_AFTER = 20000;
+  const mascot = $("mascot");
+  const bubble = $("mascot-bubble");
+  const squish = $("m-squish");
+  const parts = { tilt: $("m-tilt"), face: $("m-face"), pupils: $("m-pupils") };
+  const target = { x: 0, y: 0 };
+  const look = { x: 0, y: 0 };
+  let running = false;
+  let sleepTimer;
+  let stateTimer;
+  let bubbleTimer;
+  let clicks = 0;
+
+  const apply = () => {
+    parts.tilt.setAttribute("transform", `rotate(${(look.x * 5).toFixed(2)} 100 208)`);
+    parts.face.setAttribute("transform", `translate(${(look.x * 13).toFixed(2)} ${(look.y * 9).toFixed(2)})`);
+    parts.pupils.setAttribute("transform", `translate(${(look.x * 7).toFixed(2)} ${(look.y * 6).toFixed(2)})`);
+    if (MOTION) $("rings-move")?.setAttribute("transform", `translate(${(look.x * -10).toFixed(2)} ${(look.y * -6).toFixed(2)})`);
+  };
+  const frame = () => {
+    const ease = MOTION ? 0.13 : 1;
+    look.x += (target.x - look.x) * ease;
+    look.y += (target.y - look.y) * ease;
+    apply();
+    if (Math.abs(target.x - look.x) + Math.abs(target.y - look.y) > 0.002) requestAnimationFrame(frame);
+    else running = false;
+  };
+  const lookAt = (clientX, clientY) => {
+    const box = mascot.getBoundingClientRect();
+    const dx = clientX - (box.left + box.width / 2);
+    const dy = clientY - (box.top + box.height * 0.6);
+    const distance = Math.hypot(dx, dy);
+    const strength = distance < 24 ? 0 : Math.min(1, distance / 280);
+    target.x = distance ? (dx / distance) * strength : 0;
+    target.y = distance ? (dy / distance) * strength : 0;
+    if (!running) {
+      running = true;
+      requestAnimationFrame(frame);
+    }
+  };
+
+  const setState = (state, duration) => {
+    clearTimeout(stateTimer);
+    // Re-entering a state restarts its one-shot animations.
+    mascot.dataset.state = "idle";
+    void mascot.getBoundingClientRect();
+    mascot.dataset.state = state;
+    if (duration) stateTimer = setTimeout(() => (mascot.dataset.state = "idle"), duration);
+  };
+  const say = (text, duration = 2600) => {
+    clearTimeout(bubbleTimer);
+    bubble.textContent = text;
+    bubble.classList.add("show");
+    bubbleTimer = setTimeout(() => bubble.classList.remove("show"), duration);
+  };
+  const wake = () => {
+    clearTimeout(sleepTimer);
+    if (mascot.dataset.state === "sleep") setState("surprised", 700);
+    sleepTimer = setTimeout(() => {
+      target.x = 0;
+      target.y = 0.25;
+      if (!running) {
+        running = true;
+        requestAnimationFrame(frame);
+      }
+      setState("sleep");
+    }, SLEEP_AFTER);
+  };
+  const blink = () => {
+    setTimeout(() => {
+      if (mascot.dataset.state === "idle") {
+        mascot.classList.add("blink");
+        setTimeout(() => mascot.classList.remove("blink"), 130);
+      }
+      blink();
+    }, 2400 + Math.random() * 3600);
+  };
+
+  const lines = [
+    `มี ${fmt(data.counts.private)} โปรเจกต์ private นะ`,
+    `12 เดือนนี้ ${fmt(data.contributions.latest.total)} contributions`,
+    `ภาษาที่ใช้มากสุดคือ ${data.languages[0][0]}`,
+    "ลองกดสลับธีมดูสิ",
+  ];
+  mascot.addEventListener("click", () => {
+    wake();
+    setState(clicks % 3 === 2 ? "surprised" : "happy", 1500);
+    say(lines[clicks % lines.length]);
+    clicks++;
+    squish.classList.remove("go");
+    void squish.getBoundingClientRect();
+    squish.classList.add("go");
+    ripple();
+  });
+  squish.addEventListener("animationend", () => squish.classList.remove("go"));
+  addEventListener("pointermove", (e) => {
+    wake();
+    lookAt(e.clientX, e.clientY);
+  }, { passive: true });
+  addEventListener("pointerdown", (e) => {
+    wake();
+    lookAt(e.clientX, e.clientY);
+  }, { passive: true });
+  addEventListener("scroll", wake, { passive: true });
+  addEventListener("keydown", wake);
+
+  wake();
+  if (MOTION) blink();
+  setTimeout(() => {
+    if (!clicks) say("สวัสดี! กดฉันดูสิ");
+  }, 900);
+}
+
+function wireHeroPause() {
+  if (!MOTION) return;
+  new IntersectionObserver(([entry]) => {
+    document.querySelector(".hero").classList.toggle("off", !entry.isIntersecting);
+  }).observe(document.querySelector(".hero"));
+}
+
+function countUp() {
+  if (!MOTION) return;
+  document.querySelectorAll("#stats dd").forEach((dd) => {
+    const node = dd.firstChild;
+    const final = node.textContent;
+    const end = Number(final.replaceAll(",", ""));
+    const started = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - started) / 1100);
+      node.textContent = t < 1 ? fmt(Math.round(end * (1 - (1 - t) ** 3))) : final;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+function reveal() {
+  if (!MOTION) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -6% 0px" });
+  const groups = [
+    ".hero-copy > *", ".stats", "main h2", "main .section-note", ".skills article", ".also", ".langs h3",
+    ".bar-row", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
+  ];
+  groups.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((node, index) => {
+      node.classList.add("reveal");
+      node.style.setProperty("--i", Math.min(index % 6, 5));
+      observer.observe(node);
+    });
+  });
+  const heat = $("heat");
+  heat.classList.add("wait");
+  const heatObserver = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    heat.classList.replace("wait", "play");
+    heatObserver.disconnect();
+  }, { threshold: 0.2 });
+  heatObserver.observe(heat);
 }
 
 function renderStats(data) {
@@ -85,7 +275,7 @@ function renderHeat(range, today) {
     if (i && weekday === 0) week++;
     heat.append(el("div", {
       className: "cell",
-      style: `grid-column:${week};grid-row:${weekday + 2}`,
+      style: `grid-column:${week};grid-row:${weekday + 2};--w:${week}`,
       dataset: { l: day.l, d: day.d, n: day.n },
     }));
     const key = monthLong(date);
@@ -253,6 +443,15 @@ async function main() {
   renderPublic(data);
   $("updated").textContent = `ข้อมูลจาก GitHub ณ ${dayLabel(data.generatedAt)}`;
   drawContours();
+  wireMascot(data);
+  wireHeroPause();
+  countUp();
+  reveal();
+  let resizeTimer;
+  addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawContours, 150);
+  });
 }
 
 main().catch((error) => {

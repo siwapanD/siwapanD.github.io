@@ -293,3 +293,126 @@ footer p { margin: 0; }
 
 .rows .own { font-weight: 600; color: var(--ink); }
 .forks summary + ul { margin-top: 8px; }
+
+/* Mascot */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 32px; align-items: center; }
+.mascot {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.mascot svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mascot-bubble {
+  position: absolute;
+  z-index: 1;
+  bottom: 96%;
+  left: 50%;
+  width: max-content;
+  max-width: 220px;
+  padding: 6px 12px;
+  color: var(--bg);
+  background: var(--ink);
+  border-radius: 10px;
+  font: 500 0.875rem/1.45 var(--sans);
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+.mascot-bubble.show { opacity: 1; transform: translate(-50%, 0); }
+
+.m-shadow { fill: var(--ink); opacity: 0.12; }
+.m-gloss { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; opacity: 0.55; }
+.m-cheek { fill: #f28b9b; opacity: 0.55; }
+.m-white { fill: #fff; }
+.m-pupil { fill: #12263f; }
+.m-shine { fill: #fff; }
+.m-line { fill: none; stroke: #12263f; stroke-width: 5; stroke-linecap: round; }
+.m-mouth { fill: #12263f; }
+.m-heart { fill: #e4577a; }
+.m-z, .m-bang { fill: var(--ink-2); font: 700 22px var(--mono); }
+.m-bang { font-size: 44px; fill: #e4577a; }
+
+.m-only { display: none; }
+.mascot[data-state="happy"] .m-happy,
+.mascot[data-state="surprised"] .m-surprised,
+.mascot[data-state="sleep"] .m-sleep { display: inline; }
+.mascot[data-state="happy"] .m-open,
+.mascot[data-state="sleep"] .m-open,
+.mascot:not([data-state="idle"]) .m-mouth-idle { display: none; }
+.mascot[data-state="surprised"] .m-pupil { r: 7px; }
+
+/* Motion: everything below is added only without a reduced-motion preference. */
+.motion .m-bob { animation: bob 3.2s ease-in-out infinite; }
+.motion .m-shadow { transform-box: fill-box; transform-origin: center; animation: shadow 3.2s ease-in-out infinite; }
+.motion .mascot[data-state="sleep"] .m-bob,
+.motion .mascot[data-state="sleep"] .m-shadow { animation-duration: 6s; }
+.motion .m-open { transform-box: fill-box; transform-origin: center; transition: transform 0.07s linear; }
+.motion .mascot.blink .m-open { transform: scaleY(0.08); }
+.motion .m-squish { transform-box: fill-box; transform-origin: 50% 100%; }
+.motion .m-squish.go { animation: squish 0.55s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.motion .mascot:hover .m-squish:not(.go) { transform: scale(1.03, 0.98); transition: transform 0.2s ease; }
+.motion .m-heart { transform-box: fill-box; transform-origin: center; animation: float-up 1.5s ease-out both; }
+.motion .m-heart-2 { animation-delay: 0.14s; }
+.motion .m-heart-3 { animation-delay: 0.28s; }
+.motion .m-z { transform-box: fill-box; transform-origin: center; animation: float-up 3s ease-in-out infinite; }
+.motion .m-z-2 { animation-delay: 1s; }
+.motion .m-z-3 { animation-delay: 2s; }
+.motion .m-bang { transform-box: fill-box; transform-origin: 50% 100%; animation: pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+
+.motion #rings { animation: rings-sway 40s ease-in-out infinite alternate; }
+.motion .hero.off #rings { animation-play-state: paused; }
+.ripple { fill: none; stroke: var(--bar); stroke-width: 2; animation: ripple 1.3s ease-out forwards; }
+
+.motion .reveal { opacity: 0; transform: translateY(18px); }
+.motion .reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+.motion .bar-row .fill { transform: scaleX(0); transform-origin: left; }
+.motion .bar-row.in .fill {
+  transform: none;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 70ms + 0.15s);
+}
+.motion .heat.wait .cell { opacity: 0; }
+.motion .heat.play .cell { animation: cell-in 0.45s ease-out both; animation-delay: calc(var(--w) * 13ms); }
+.motion .card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.motion .card.in:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgb(0 0 0 / 0.12); transition-delay: 0s; }
+
+@keyframes bob { 50% { transform: translateY(-7px); } }
+@keyframes shadow { 50% { transform: scale(0.88); opacity: 0.08; } }
+@keyframes squish {
+  0% { transform: none; }
+  30% { transform: scale(1.14, 0.84); }
+  60% { transform: scale(0.93, 1.09); }
+  100% { transform: none; }
+}
+@keyframes float-up {
+  0% { opacity: 0; transform: translateY(14px) scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-34px) scale(1.05); }
+}
+@keyframes pop { from { opacity: 0; transform: scale(0.3); } }
+@keyframes rings-sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes ripple { from { opacity: 0.8; transform: scale(0.5); } to { opacity: 0; transform: scale(2.1); } }
+@keyframes cell-in { from { opacity: 0; transform: scale(0.3); } }
+
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) 170px; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .mascot { grid-row: 1; width: 124px; }
+  .mascot-bubble { bottom: auto; top: 22%; left: 100%; max-width: 170px; transform: translate(4px, 6px); }
+  .mascot-bubble.show { transform: translate(4px, 0); }
+}
