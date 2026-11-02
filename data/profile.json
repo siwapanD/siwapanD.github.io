@@ -20258,6 +20258,17 @@
  "private": {
   "categories": [
    {
+    "title": "โครงสร้างพื้นฐานและข้อมูล",
+    "count": 7,
+    "summary": "ฐานข้อมูลกลางที่ใช้ร่วมกันหลายโปรเจกต์ แพลตฟอร์มจัดการเซิร์ฟเวอร์ โดเมน และ credential ระบบสำรองและกู้คืนข้อมูล แล็บ caching และเครื่องมือดูแลเครื่องในองค์กร",
+    "stack": [
+     "PostgreSQL",
+     "Redis",
+     "Docker",
+     "PowerShell"
+    ]
+   },
+   {
     "title": "ระบบงานธุรกิจและองค์กร",
     "count": 9,
     "summary": "ระบบบริหารงานและ workflow หลายขั้นตอน รายงานยอดขาย ค่าคอมมิชชัน และ incentive รวมถึงเว็บแอปสำหรับงานขององค์กรชุมชน",
@@ -20266,17 +20277,6 @@
      "Oracle",
      "PL/pgSQL",
      "Supabase"
-    ]
-   },
-   {
-    "title": "โครงสร้างพื้นฐานและข้อมูล",
-    "count": 7,
-    "summary": "ฐานข้อมูลกลางหลายโปรเจกต์ แพลตฟอร์มจัดการเซิร์ฟเวอร์และโดเมน ระบบสำรองและกู้คืนข้อมูล แล็บ caching และเครื่องมือดูแลเครื่องในองค์กร",
-    "stack": [
-     "PostgreSQL",
-     "Redis",
-     "Docker",
-     "PowerShell"
     ]
    },
    {
@@ -20337,6 +20337,28 @@
  },
  "public": [
   {
+   "name": "ubuntu-setup",
+   "owner": "siwapanD",
+   "url": "https://github.com/siwapanD/ubuntu-setup",
+   "homepage": null,
+   "language": "Shell",
+   "stars": 0,
+   "pushedAt": "2026-10-26",
+   "note": "สคริปต์ตั้งค่า Ubuntu 24.04 เครื่องใหม่ในคำสั่งเดียว ติดตั้ง SSH, UFW, Docker และเครื่องมือพัฒนา",
+   "group": "featured"
+  },
+  {
+   "name": "2026-Docker-RealWorld-AI-Application",
+   "owner": "KhunchayNe",
+   "url": "https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application",
+   "homepage": null,
+   "language": "Python",
+   "stars": 0,
+   "pushedAt": "2026-02-19",
+   "note": "เอกสารและตัวอย่างการ deploy แอป AI ด้วย Docker",
+   "group": "featured"
+  },
+  {
    "name": "skill",
    "owner": "siwapanD",
    "url": "https://github.com/siwapanD/skill",
@@ -20357,17 +20379,6 @@
    "pushedAt": "2026-10-27",
    "note": "โปรแกรมบันทึกรายจ่ายขนาดเล็ก ใช้ทดลอง mod ของ Claude CLI",
    "group": "learning"
-  },
-  {
-   "name": "ubuntu-setup",
-   "owner": "siwapanD",
-   "url": "https://github.com/siwapanD/ubuntu-setup",
-   "homepage": null,
-   "language": "Shell",
-   "stars": 0,
-   "pushedAt": "2026-10-26",
-   "note": "สคริปต์ตั้งค่า Ubuntu 24.04 เครื่องใหม่ในคำสั่งเดียว ติดตั้ง SSH, UFW, Docker และเครื่องมือพัฒนา",
-   "group": "featured"
   },
   {
    "name": "arccue-web",
@@ -20400,17 +20411,6 @@
    "stars": 0,
    "pushedAt": "2026-10-01",
    "note": "Remote desktop ประสิทธิภาพสูงจาก Windows ไป macOS ใช้ ScreenCaptureKit, VideoToolbox และ protocol latency ต่ำที่เขียนเอง",
-   "group": "featured"
-  },
-  {
-   "name": "2026-Docker-RealWorld-AI-Application",
-   "owner": "KhunchayNe",
-   "url": "https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application",
-   "homepage": null,
-   "language": "Python",
-   "stars": 0,
-   "pushedAt": "2026-02-19",
-   "note": "เอกสารและตัวอย่างการ deploy แอป AI ด้วย Docker",
    "group": "featured"
   },
   {
