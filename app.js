@@ -212,7 +212,7 @@ function reveal() {
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
     ".hero-copy > *", ".stats", "main h2", ".contact p", ".contact .links", "main .section-note", ".skills article", ".also", ".stack h3",
-    ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
+    ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".impact-item", ".service-item", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
   ];
   groups.forEach((selector) => {
     document.querySelectorAll(selector).forEach((node, index) => {

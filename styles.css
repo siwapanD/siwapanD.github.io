@@ -252,6 +252,16 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 .infra-item { padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--bar); border-radius: 12px; box-shadow: var(--shadow); }
 .infra-item p { margin: 6px 0 0; color: var(--ink-2); font-size: 0.95rem; }
 .infra-item .tags { margin-top: 10px; font: 400 0.8125rem/1.6 var(--mono); color: var(--ink-3); }
+.impact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.impact-item { display: flex; flex-direction: column; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.impact-item p { margin: 8px 0 0; color: var(--ink-2); font-size: 0.95rem; }
+.impact-item strong { display: block; color: var(--ink-3); font: 500 0.75rem/1.6 var(--mono); }
+.impact-item .benefit { color: var(--ink); font-weight: 500; }
+.impact-item .benefit strong { color: var(--accent); }
+.impact-item .tags { margin-top: auto; padding-top: 12px; color: var(--ink-3); font: 400 0.8125rem/1.6 var(--mono); }
+.services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
+.service-item { padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+.contact .service-item p { margin: 6px 0 0; font-size: 0.9rem; }
 .infra-links { margin: 18px 0 0; color: var(--ink-2); font-size: 0.95rem; }
 
 /* Heatmap */
@@ -375,6 +385,7 @@ footer p { margin: 0; }
   .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .infra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .impact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
@@ -386,7 +397,7 @@ footer p { margin: 0; }
   .segments button { min-height: 44px; }
   section.wrap { padding-block: 40px; }
   .hero-inner { padding-block: 28px 32px; }
-  .skills, .cards, .infra-grid, .stack-grid { grid-template-columns: minmax(0, 1fr); }
+  .skills, .cards, .infra-grid, .stack-grid, .impact-grid, .services { grid-template-columns: minmax(0, 1fr); }
   .stats > div { padding: 12px 14px; }
   .stats dd { font-size: 1.6rem; }
   .rows li { grid-template-columns: minmax(0, 1fr) auto; }

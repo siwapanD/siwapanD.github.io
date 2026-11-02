@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
   <a class="skip" href="#infra">ข้ามไปยังเนื้อหา</a>
@@ -28,6 +28,7 @@
     <a class="brand" href="#top">siwapan</a>
     <div class="topnav-links" id="topnav-links">
       <a href="#infra">Infrastructure</a>
+      <a href="#work">ผลงาน</a>
       <a href="#expertise">ความเชี่ยวชาญ</a>
       <a href="#activity">Contributions</a>
       <a href="#private">Private</a>
@@ -48,7 +49,7 @@
       <ul class="focus" aria-label="งานที่เน้น">
         <li>Linux</li><li>Docker</li><li>Cloudflare</li><li>DNS</li><li>GIS</li>
       </ul>
-      <p class="lede">ดูแลโครงสร้างพื้นฐานบน Linux และ Docker เปิดบริการผ่าน Cloudflare จัดการ DNS และวางระบบ GIS พร้อมพัฒนาแอป API และฐานข้อมูลที่รันอยู่บนระบบเหล่านั้น เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
+      <p class="lede">ช่วยเปลี่ยนงานที่ทำมือหรือกระจัดกระจาย ให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้งบน Linux, Docker และ Cloudflare เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
       <nav class="links" aria-label="ช่องทางติดต่อ">
         <a class="btn btn-primary" href="mailto:siwapan6395@gmail.com">ติดต่องาน</a>
         <a class="btn" href="https://github.com/siwapanD">GitHub @siwapanD</a>
@@ -155,6 +156,49 @@
         </article>
       </div>
       <p class="infra-links">ดูตัวอย่างโค้ดได้ที่ <a href="https://github.com/siwapanD/ubuntu-setup">ubuntu-setup</a> และ <a href="https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application">2026-Docker-RealWorld-AI-Application</a></p>
+    </section>
+
+    <section class="wrap" id="work" aria-labelledby="h-work">
+      <h2 id="h-work">ผลงานและประโยชน์ที่ได้</h2>
+      <p class="section-note">ตัวอย่างงานที่ช่วยลดงานมือและทำให้ระบบดูแลต่อได้ง่ายขึ้น</p>
+      <div class="impact-grid">
+        <article class="impact-item">
+          <h3>ระบบจองและรับชำระผ่าน QR</h3>
+          <p class="problem"><strong>ปัญหา</strong> รับยอดจองและตรวจสลิปด้วยมือ ผู้สูงอายุใช้ระบบยาก</p>
+          <p class="benefit"><strong>ประโยชน์</strong> คนจองเองได้ เจ้าหน้าที่ตรวจจากคิวเดียว และป้องกันการจองเกิน</p>
+          <p class="tags">ไม่ต้องสมัคร · ไม่เกิน 3 ขั้นตอน · PromptPay</p>
+        </article>
+        <article class="impact-item">
+          <h3>ระบบติดตามผลงานวิจัยและงบประมาณ</h3>
+          <p class="problem"><strong>ปัญหา</strong> รวบรวมผลงานและคำนวณภาระงานหลายระดับได้ช้า</p>
+          <p class="benefit"><strong>ประโยชน์</strong> คำนวณคะแนนและแบ่งงบอัตโนมัติ ติดตามสถานะงานได้ในที่เดียว</p>
+          <p class="tags">คะแนน 0–14 จาก 6 งาน · งบหลายปี · รายงาน 3 มุมมอง</p>
+        </article>
+        <article class="impact-item">
+          <h3>รายงานค่าคอมมิชชันและ incentive</h3>
+          <p class="problem"><strong>ปัญหา</strong> คำนวณยอดรายเดือนด้วยมือ เสี่ยงคิดผิด</p>
+          <p class="benefit"><strong>ประโยชน์</strong> ได้รายงานรายเดือนและรายช่วงโปรโมชันจากฐานข้อมูลโดยตรง</p>
+          <p class="tags">SQL · PL/pgSQL · รายงานรายเดือน</p>
+        </article>
+        <article class="impact-item">
+          <h3>ตรวจสุขภาพเครื่องคอมพิวเตอร์ระยะไกล</h3>
+          <p class="problem"><strong>ปัญหา</strong> ต้องให้ช่างเข้าไปตรวจทีละเครื่อง</p>
+          <p class="benefit"><strong>ประโยชน์</strong> เห็นเครื่องที่มีปัญหาในหน้าเดียว แก้ได้ก่อนกระทบงาน</p>
+          <p class="tags">PowerShell · Webhook · Dashboard แยกสถานที่</p>
+        </article>
+        <article class="impact-item">
+          <h3>ฐานข้อมูลกลางหลายโปรเจกต์</h3>
+          <p class="problem"><strong>ปัญหา</strong> ตั้งฐานข้อมูลแยกทุกงาน สิทธิ์ปะปนกัน</p>
+          <p class="benefit"><strong>ประโยชน์</strong> เริ่มโปรเจกต์ใหม่เร็วขึ้น และแยกสิทธิ์ผู้ดูแลกับแอปชัดเจน</p>
+          <p class="tags">PostgreSQL 17 · PostGIS · pgvector · Docker</p>
+        </article>
+        <article class="impact-item">
+          <h3>GIS stack และบริการข้อมูลน้ำ</h3>
+          <p class="problem"><strong>ปัญหา</strong> ข้อมูลแผนที่และอากาศกระจายหลายแหล่ง</p>
+          <p class="benefit"><strong>ประโยชน์</strong> ระบบอื่นเรียกใช้จากจุดเดียว โดยไม่เก็บรหัสฐานข้อมูลใน GeoServer</p>
+          <p class="tags">GeoServer · PostGIS · WFS · FastAPI</p>
+        </article>
+      </div>
     </section>
 
     <section class="wrap" id="expertise" aria-labelledby="h-expertise">
@@ -290,7 +334,12 @@
     </section>
     <section class="wrap contact" id="contact" aria-labelledby="h-contact">
       <h2 id="h-contact">ติดต่อ</h2>
-      <p>เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์ ทั้งงาน backend, infrastructure และระบบ GIS</p>
+      <p>เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์ รับงานผ่าน Fastwork ที่บัญชี @add หรือติดต่อโดยตรงได้</p>
+      <div class="services">
+        <article class="service-item"><h3>ระบบเว็บแทนงานมือ</h3><p>ระบบจอง อนุมัติ และรายงานที่พร้อมใช้งาน</p></article>
+        <article class="service-item"><h3>ติดตั้งเซิร์ฟเวอร์และ deploy</h3><p>Linux, Docker, โดเมน, SSL, Cloudflare และคู่มือส่งมอบ</p></article>
+        <article class="service-item"><h3>ระบบแผนที่และข้อมูล GIS</h3><p>GeoServer, PostGIS และ API ข้อมูลแผนที่</p></article>
+      </div>
       <div class="links">
         <a class="btn btn-primary" href="mailto:siwapan6395@gmail.com">siwapan6395@gmail.com</a>
         <a class="btn" href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295">LinkedIn</a>
@@ -304,6 +353,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
