@@ -19,6 +19,17 @@ function el(tag, props = {}, ...children) {
 }
 const $ = (id) => document.getElementById(id);
 
+function icon(name, className = "icon") {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", className);
+  svg.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS(svgNS, "use");
+  use.setAttribute("href", `#i-${name}`);
+  svg.append(use);
+  return svg;
+}
+
 const MOTION = document.documentElement.classList.contains("motion");
 
 function ringPath(cx, cy, radius, ring) {
@@ -211,7 +222,7 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".stats", "main h2", ".contact p", ".contact .links", "main .section-note", ".skills article", ".also", ".stack h3",
+    ".hero-copy > *", ".stats", "main h2", ".contact p", ".contact .links", "main .section-note", ".skills article", ".also", ".stack h3", ".logo-wall",
     ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".impact-item", ".service-item", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
   ];
   groups.forEach((selector) => {
@@ -231,6 +242,13 @@ function reveal() {
   heatObserver.observe(heat);
 }
 
+const STAT_ICONS = {
+  "Private projects": "lock",
+  "Public projects": "globe",
+  "Contributions 12 เดือน": "activity",
+  "วันที่มี contributions": "calendar",
+};
+
 function renderStats(data) {
   const c = data.contributions.latest;
   const items = [
@@ -241,7 +259,7 @@ function renderStats(data) {
   ];
   $("stats").append(
     ...items.map(([label, value, sub]) =>
-      el("div", {}, el("dt", { textContent: label }), el("dd", {}, String(value), el("span", { className: "sub-stat", textContent: sub })))
+      el("div", {}, el("dt", {}, icon(STAT_ICONS[label]), label), el("dd", {}, String(value), el("span", { className: "sub-stat", textContent: sub })))
     )
   );
 }
@@ -336,6 +354,16 @@ function renderActivity(data) {
   wireHeatTooltip();
 }
 
+const CATEGORY_ICONS = {
+  "โครงสร้างพื้นฐานและข้อมูล": "server",
+  "ระบบงานธุรกิจและองค์กร": "briefcase",
+  "AI และเครื่องมือสำหรับ agent": "cpu",
+  "ภูมิสารสนเทศและข้อมูลน้ำ": "map",
+  "แอป native และ mobile": "phone",
+  "ต้นแบบและงานทดลอง": "flask",
+  "ยังไม่มีเนื้อหา": "inbox",
+};
+
 function renderPrivate(data) {
   const { private: total, privateActive90d, privateByAccount, privateComplete } = data.counts;
   $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน ตัวเลขนับจาก @siwapanD ${privateByAccount.siwapanD} และ @KhunchayNe ${privateByAccount.KhunchayNe}${privateComplete ? "" : " เฉพาะ repo ที่บัญชีหลักเข้าถึงได้"}`;
@@ -344,7 +372,7 @@ function renderPrivate(data) {
       el("div", { className: `p-row${cat.stack.length ? "" : " muted"}` },
         el("div", { className: "p-count", textContent: cat.count }),
         el("div", {},
-          el("h3", { textContent: cat.title }),
+          el("h3", { className: "with-icon" }, icon(CATEGORY_ICONS[cat.title] || "help", "icon icon-accent"), cat.title),
           el("p", { textContent: cat.summary }),
           cat.stack.length ? el("p", { className: "tags", textContent: cat.stack.join(" · ") }) : null))
     )

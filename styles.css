@@ -253,12 +253,10 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 .infra-item p { margin: 6px 0 0; color: var(--ink-2); font-size: 0.95rem; }
 .infra-item .tags { margin-top: 10px; font: 400 0.8125rem/1.6 var(--mono); color: var(--ink-3); }
 .impact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.impact-item { display: flex; flex-direction: column; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
-.impact-item p { margin: 8px 0 0; color: var(--ink-2); font-size: 0.95rem; }
-.impact-item strong { display: block; color: var(--ink-3); font: 500 0.75rem/1.6 var(--mono); }
-.impact-item .benefit { color: var(--ink); font-weight: 500; }
-.impact-item .benefit strong { color: var(--accent); }
-.impact-item .tags { margin-top: auto; padding-top: 12px; color: var(--ink-3); font: 400 0.8125rem/1.6 var(--mono); }
+.impact-item { padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.impact-item h3 { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 0.875rem; font-weight: 500; }
+.impact-item .after { margin: 10px 0 0; color: var(--ink); font-size: 1.2rem; font-weight: 600; line-height: 1.35; }
+.impact-item .before { margin: 8px 0 0; color: var(--ink-3); font-size: 0.875rem; line-height: 1.5; }
 .services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
 .service-item { padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
 .contact .service-item p { margin: 6px 0 0; font-size: 0.9rem; }
@@ -390,7 +388,6 @@ footer p { margin: 0; }
 }
 @media (max-width: 600px) {
   .wrap { padding-inline: 16px; }
-  .brand { display: none; }
   .topnav { padding-left: 6px; }
   .topnav-links { justify-content: flex-start; }
   .topnav-links a { padding-inline: 10px; }
@@ -535,4 +532,71 @@ footer p { margin: 0; }
   .mascot { grid-row: 1; width: 124px; }
   .mascot-bubble { bottom: auto; top: 22%; left: 100%; max-width: 170px; transform: translate(4px, 6px); }
   .mascot-bubble.show { transform: translate(4px, 0); }
+}
+
+/* Icons */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.icon {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.2em;
+}
+.icon-fill { fill: currentColor; stroke: none; }
+.icon-accent { color: var(--accent); }
+.icon-tile {
+  box-sizing: content-box;
+  width: 22px;
+  height: 22px;
+  padding: 8px;
+  color: var(--accent);
+  background: var(--glow);
+  border-radius: 10px;
+  stroke-width: 1.75;
+}
+.with-icon { display: flex; align-items: center; gap: 10px; }
+h2.with-icon { gap: 12px; }
+.stack-group h4.with-icon { gap: 8px; }
+.btn { gap: 8px; }
+.focus li { display: inline-flex; align-items: center; gap: 6px; }
+summary .icon { margin-right: 8px; }
+.stats dt { display: flex; align-items: center; gap: 6px; }
+.p-row h3.with-icon { gap: 8px; }
+
+/* Logos stay on a white tile in both themes, since many are dark or multi-colour. */
+.brand { display: inline-flex; flex: none; align-items: center; gap: 8px; }
+.brand img { display: block; flex: none; width: 24px; height: 27px; }
+.chip-logo { flex: none; width: 18px; height: 18px; }
+.logo-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+  margin: 16px 0 28px;
+  padding: 0;
+  list-style: none;
+}
+.logo-wall li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+.logo-wall li:hover { border-color: var(--accent); }
+.logo-wall img { width: 32px; height: 32px; padding: 4px; box-sizing: content-box; background: #fff; border-radius: 8px; object-fit: contain; }
+@media (max-width: 600px) {
+  .brand { gap: 0; font-size: 0; }
 }
