@@ -210,8 +210,8 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".stats", "main h2", "main .section-note", ".skills article", ".also", ".langs h3",
-    ".bar-row", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
+    ".hero-copy > *", ".stats", "main h2", "main .section-note", ".skills article", ".also", ".stack h3",
+    ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
   ];
   groups.forEach((selector) => {
     document.querySelectorAll(selector).forEach((node, index) => {
@@ -241,21 +241,6 @@ function renderStats(data) {
   $("stats").append(
     ...items.map(([label, value, sub]) =>
       el("div", {}, el("dt", { textContent: label }), el("dd", {}, String(value), el("span", { className: "sub-stat", textContent: sub })))
-    )
-  );
-}
-
-function renderLanguages(languages) {
-  const top = languages.slice(0, 6);
-  const rest = languages.slice(6).reduce((sum, [, n]) => sum + n, 0);
-  const rows = rest ? [...top, ["อื่น ๆ", rest]] : top;
-  const max = Math.max(...rows.map(([, n]) => n));
-  $("languages").append(
-    ...rows.map(([name, n]) =>
-      el("div", { className: "bar-row" },
-        el("span", { textContent: name }),
-        el("div", { className: "track" }, el("div", { className: `fill${name === "อื่น ๆ" ? " muted" : ""}`, style: `width:${(n / max) * 100}%` })),
-        el("span", { className: "n", textContent: n }))
     )
   );
 }
@@ -437,7 +422,6 @@ async function main() {
   const response = await fetch("data/profile.json");
   const data = await response.json();
   renderStats(data);
-  renderLanguages(data.languages);
   renderActivity(data);
   renderPrivate(data);
   renderPublic(data);

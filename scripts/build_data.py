@@ -129,8 +129,10 @@ def main():
     today = date.today()
     recent = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
 
+    # Pinned infrastructure work comes first; the rest stays newest-first.
+    newest_first = sorted(own, key=lambda r: r["pushedAt"], reverse=True)
     cards = []
-    for r in sorted(own, key=lambda r: r["pushedAt"], reverse=True):
+    for r in sorted(newest_first, key=lambda r: not NOTES["projects"].get(r["key"], {}).get("pin")):
         note = NOTES["projects"].get(r["key"], {})
         cards.append({
             "name": r["name"], "owner": r["owner"], "url": r["url"], "homepage": r["homepageUrl"] or None,

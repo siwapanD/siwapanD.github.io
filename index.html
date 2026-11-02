@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <header class="hero">
@@ -31,7 +31,7 @@
       <div class="hero-copy">
       <p class="eyebrow">@siwapanD · @KhunchayNe</p>
       <h1>Siwapan Boonthong</h1>
-      <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure</p>
+      <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure Engineer</p>
       <p class="lede">สร้างซอฟต์แวร์ตั้งแต่สถาปัตยกรรมแอป API และฐานข้อมูล ไปจนถึงการ deploy และโครงสร้างพื้นฐาน งานช่วงหลังเน้นระบบข้อมูลภูมิสารสนเทศและการนำ AI มาใช้ในงานวิศวกรรมจริง เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
       <nav class="links" aria-label="ช่องทางติดต่อ">
         <a href="https://github.com/siwapanD">GitHub @siwapanD</a>
@@ -103,6 +103,34 @@
   </header>
 
   <main>
+    <section class="wrap infra" id="infra" aria-labelledby="h-infra">
+      <h2 id="h-infra">งาน Infrastructure</h2>
+      <p class="infra-lede">ดูแลระบบตั้งแต่เครื่องเซิร์ฟเวอร์ ฐานข้อมูล ไปจนถึงการ deploy ทั้งบน Ubuntu และ Windows Server เน้นให้ติดตั้งซ้ำได้ ตรวจสอบย้อนหลังได้ และกู้คืนได้เมื่อเกิดปัญหา</p>
+      <div class="infra-grid">
+        <article class="infra-item">
+          <h3>เซิร์ฟเวอร์และการ deploy</h3>
+          <p>ตั้งค่าเครื่องใหม่ด้วยสคริปต์ รันแอปด้วย container และเปิดบริการผ่าน reverse proxy หรือ Cloudflare Tunnel</p>
+          <p class="tags">Ubuntu · IIS · Docker Compose · Nginx · Cloudflare Zero Trust</p>
+        </article>
+        <article class="infra-item">
+          <h3>ฐานข้อมูลกลางและการกู้คืน</h3>
+          <p>ฐานข้อมูลกลางที่ใช้ร่วมกันหลายโปรเจกต์ แยกฐานและ role ตามโปรเจกต์ พร้อมเครื่องมือสำรองและกู้คืนข้อมูล</p>
+          <p class="tags">PostgreSQL · PostGIS · pgvector · Oracle · Liquibase</p>
+        </article>
+        <article class="infra-item">
+          <h3>แพลตฟอร์มจัดการ infra</h3>
+          <p>รวมข้อมูลเซิร์ฟเวอร์ โดเมน DNS SSL และแอปไว้ที่เดียว เก็บ credential แบบเข้ารหัส คุมสิทธิ์ด้วย RBAC และมี audit log</p>
+          <p class="tags">Next.js · Credential vault · RBAC · Audit log</p>
+        </article>
+        <article class="infra-item">
+          <h3>CI/CD และการดูแลเครื่อง</h3>
+          <p>pipeline สำหรับ build และ deploy เครื่องมือตรวจสุขภาพเครื่อง Windows และ dashboard ติดตามสถานะเครื่องในองค์กร</p>
+          <p class="tags">Jenkins · GitHub/GitLab Pipelines · PowerShell · Python</p>
+        </article>
+      </div>
+      <p class="infra-links">ดูตัวอย่างโค้ดได้ที่ <a href="https://github.com/siwapanD/ubuntu-setup">ubuntu-setup</a> และ <a href="https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application">2026-Docker-RealWorld-AI-Application</a></p>
+    </section>
+
     <section class="wrap" id="expertise" aria-labelledby="h-expertise">
       <h2 id="h-expertise">ความเชี่ยวชาญ</h2>
       <p class="section-note">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเองจากทั้ง 2 บัญชี ไม่นับ fork</p>
@@ -138,13 +166,49 @@
           <p class="tags">Swift · ScreenCaptureKit · VideoToolbox · C++ · Flutter · Firebase · Expo</p>
         </article>
       </div>
-      <p class="also"><strong>ทักษะอื่นที่ระบุในโปรไฟล์ GitHub:</strong> Kubernetes, AWS, RabbitMQ, Windows Server (IIS), Cloudflare, MySQL, JWT, Penetration Testing, Vulnerability Assessment, CI/CD, GitOps</p>
       <p class="also"><strong>ประสบการณ์ที่ระบุในโปรไฟล์ GitHub:</strong> ระบบ FinTech และการเชื่อม API, Library Automation, Smart Kiosk, Acquisition Module, การ sync ข้อมูลจากฐานข้อมูล Oracle, การ deploy บน Ubuntu และ IIS, การให้คำปรึกษาด้านเทคนิค</p>
 
-      <div class="langs">
-        <h3>ภาษาหลักของ repo ที่เป็นงานตัวเอง</h3>
-        <p class="section-note">นับจำนวน repo ตามภาษาหลักที่ GitHub ตรวจพบ ทั้ง public และ private</p>
-        <div id="languages"></div>
+      <div class="stack">
+        <h3>Tech stack</h3>
+        <div class="stack-grid">
+          <div class="stack-group">
+            <h4>Primary Stack</h4>
+            <ul>
+              <li>Next.js, React, Node.js, TypeScript, NestJS, Prisma</li>
+              <li>PostgreSQL, Oracle, MongoDB</li>
+              <li>RESTful API, Microservices, RabbitMQ</li>
+              <li>System Analysis, API Design, Database Schema Design</li>
+            </ul>
+          </div>
+          <div class="stack-group">
+            <h4>DevOps</h4>
+            <ul>
+              <li>Docker, Docker Compose, Container Deployment</li>
+              <li>CI/CD (Jenkins, GitHub/GitLab Pipelines)</li>
+              <li>Cloudflare Tunnel (Zero Trust)</li>
+              <li>Ubuntu Server, IIS, Infrastructure Management</li>
+            </ul>
+          </div>
+          <div class="stack-group">
+            <h4>Security</h4>
+            <ul>
+              <li>API Security Hardening</li>
+              <li>JWT Authentication, Single Sign-On (SSO)</li>
+              <li>Microsoft 365 &amp; ThaiD Authentication Integration</li>
+              <li>Vulnerability Assessment &amp; Penetration Testing</li>
+            </ul>
+          </div>
+          <div class="stack-group">
+            <h4>Other Skills</h4>
+            <ul>
+              <li>C#, .NET Core, VB.NET</li>
+              <li>Angular, Flutter</li>
+              <li>Requirement Analysis, System Design, Data Flow</li>
+              <li>SQL Optimization, System Integration</li>
+              <li>Tools: Visual Studio, Postman, SQL Developer, Liquibase, Figma, Playwright, Git</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -198,6 +262,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
