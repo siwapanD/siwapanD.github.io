@@ -211,7 +211,7 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".stats", "main h2", "main .section-note", ".skills article", ".also", ".stack h3",
+    ".hero-copy > *", ".stats", "main h2", ".contact p", ".contact .links", "main .section-note", ".skills article", ".also", ".stack h3",
     ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
   ];
   groups.forEach((selector) => {
@@ -417,8 +417,33 @@ function wireThemeToggle() {
   sync();
 }
 
+function wireNav() {
+  const nav = $("topnav-links");
+  const links = new Map([...nav.querySelectorAll("a")].map((a) => [a.getAttribute("href").slice(1), a]));
+  const activate = (id) => {
+    links.forEach((a) => a.removeAttribute("aria-current"));
+    const active = links.get(id);
+    if (!active) return;
+    active.setAttribute("aria-current", "true");
+    // Keep the active link visible in the phone's scrolling menu, without moving the page.
+    nav.scrollTo({ left: active.offsetLeft - nav.offsetLeft - 8, behavior: MOTION ? "smooth" : "auto" });
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) activate(entry.target.id);
+    });
+  }, { rootMargin: "-35% 0px -60% 0px" });
+  links.forEach((_, id) => observer.observe($(id)));
+  observer.observe($("top"));
+  // The last section is too short to reach the observed band, so the page end selects it.
+  addEventListener("scroll", () => {
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) activate("contact");
+  }, { passive: true });
+}
+
 async function main() {
   wireThemeToggle();
+  wireNav();
   drawContours();
   const response = await fetch("data/profile.json");
   const data = await response.json();
