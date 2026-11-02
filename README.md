@@ -12,4 +12,4 @@ python3 -m http.server 8000       # ดูตัวอย่างที่ http
 - `scripts/public_notes.json` คำอธิบาย public repo และรายการที่ซ่อน
 - บัญชีที่รวมอยู่ในตัวแปร `ACCOUNTS` ของ `scripts/build_data.py`
 
-ถ้าต้องการให้อัปเดตทุกวัน ให้ตั้ง secret `PROFILE_TOKEN` เป็น classic token ที่มีสิทธิ์ `repo`
+ถ้าต้องการให้อัปเดตทุกวัน ให้ตั้ง secret `PROFILE_TOKEN` เป็น classic token ที่มีสิทธิ์ `repo` และตั้ง `PROFILE_TOKEN_KHUNCHAYNE` เป็น token แบบเดียวกันของบัญชี KhunchayNe

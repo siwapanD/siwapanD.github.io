@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate data/profile.json from GitHub. Private repos contribute aggregates only."""
 import json
+import os
 import subprocess
 from collections import Counter
 from datetime import date, datetime, timedelta, timezone
@@ -10,6 +11,8 @@ ROOT = Path(__file__).resolve().parent.parent
 NOTES = json.loads((ROOT / "scripts/public_notes.json").read_text())
 OVERVIEW = json.loads((ROOT / "data/private-overview.json").read_text())
 ACCOUNTS = ["siwapanD", "KhunchayNe"]
+# A token only sees its own account's private repos. Without one, the default token is used.
+ACCOUNT_TOKEN_ENV = {"KhunchayNe": "PROFILE_TOKEN_KHUNCHAYNE"}
 
 CALENDAR_FIELDS = """
   restrictedContributionsCount
@@ -19,14 +22,24 @@ CALENDAR_FIELDS = """
 """
 
 
-def gh(*args):
-    return subprocess.run(["gh", *args], check=True, capture_output=True, text=True).stdout
+def account_token(login):
+    token = os.environ.get(ACCOUNT_TOKEN_ENV.get(login, ""))
+    if token or os.environ.get("GITHUB_ACTIONS"):
+        return token
+    local = subprocess.run(["gh", "auth", "token", "--user", login], capture_output=True, text=True)
+    return local.stdout.strip() if local.returncode == 0 else None
+
+
+def gh(*args, login=None):
+    token = account_token(login) if login else None
+    env = {**os.environ, "GH_TOKEN": token} if token else None
+    return subprocess.run(["gh", *args], check=True, capture_output=True, text=True, env=env).stdout
 
 
 def calendar(login, start=None, end=None):
     window = f'(from: "{start}", to: "{end}")' if start else ""
     query = f'{{ user(login: "{login}") {{ contributionsCollection{window} {{ {CALENDAR_FIELDS} }} }} }}'
-    c = json.loads(gh("api", "graphql", "-f", f"query={query}"))["data"]["user"]["contributionsCollection"]
+    c = json.loads(gh("api", "graphql", "-f", f"query={query}", login=login))["data"]["user"]["contributionsCollection"]
     days = {
         d["date"]: d["contributionCount"]
         for w in c["contributionCalendar"]["weeks"]
@@ -73,7 +86,7 @@ def longest_streak(days):
 
 def has_own_commits(login, name):
     try:
-        return gh("api", f"repos/{login}/{name}/commits?author={login}&per_page=1", "--jq", "length").strip() != "0"
+        return gh("api", f"repos/{login}/{name}/commits?author={login}&per_page=1", "--jq", "length", login=login).strip() != "0"
     except subprocess.CalledProcessError:  # empty repository
         return False
 
@@ -81,11 +94,17 @@ def has_own_commits(login, name):
 def main():
     repos = []
     created = {}
+    complete = True
     for login in ACCOUNTS:
+        # Workflow logs on this public repo are public: never print private repo names here.
+        token_owner = gh("api", "user", "--jq", ".login", login=login).strip()
+        complete = complete and token_owner == login
+        print(f"{login}: token belongs to the account: {token_owner == login}")
         created[login] = int(json.loads(gh("api", f"users/{login}"))["created_at"][:4])
         rows = json.loads(gh(
             "repo", "list", login, "--limit", "500", "--json",
             "name,visibility,isFork,parent,description,primaryLanguage,pushedAt,url,homepageUrl,stargazerCount",
+            login=login,
         ))
         repos += [{**r, "owner": login, "key": f"{login}/{r['name']}"} for r in rows]
 
@@ -126,8 +145,16 @@ def main():
         "ownCommits": has_own_commits(r["owner"], r["name"]),
     } for r in shown_forks]
 
-    categorized = sum(c["count"] for c in OVERVIEW["categories"])
-    if categorized != len(private):
+    categories = list(OVERVIEW["categories"])
+    categorized = sum(c["count"] for c in categories)
+    if categorized < len(private):
+        categories.append({
+            "title": "ยังไม่ได้จัดหมวด",
+            "count": len(private) - categorized,
+            "summary": "โปรเจกต์ที่นับเข้ามาแล้ว แต่ยังไม่ได้สรุปเป็นหมวดงาน",
+            "stack": [],
+        })
+    elif categorized > len(private):
         print(f"warning: private-overview.json lists {categorized} repos, GitHub has {len(private)}")
 
     latest = merge([calendar(login) for login in ACCOUNTS])
@@ -146,6 +173,7 @@ def main():
         "counts": {
             "private": len(private),
             "privateByAccount": dict(Counter(r["owner"] for r in private)),
+            "privateComplete": complete,
             "privateActive90d": sum(r["pushedAt"] >= recent for r in private),
             "publicShown": len(cards),
             "publicFeatured": sum(c["group"] == "featured" for c in cards),
@@ -161,7 +189,7 @@ def main():
             "longestStreak": longest_streak(all_days),
         },
         "languages": languages.most_common(),
-        "private": {"categories": OVERVIEW["categories"], "categorized": categorized},
+        "private": {"categories": categories, "categorized": categorized},
         "public": cards,
         "forks": fork_rows,
     }

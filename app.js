@@ -161,8 +161,8 @@ function renderActivity(data) {
 }
 
 function renderPrivate(data) {
-  const { private: total, privateActive90d, privateByAccount } = data.counts;
-  $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน ตัวเลขนับจาก @siwapanD ${privateByAccount.siwapanD} และ @KhunchayNe ${privateByAccount.KhunchayNe} เฉพาะ repo ที่บัญชีหลักเข้าถึงได้`;
+  const { private: total, privateActive90d, privateByAccount, privateComplete } = data.counts;
+  $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน ตัวเลขนับจาก @siwapanD ${privateByAccount.siwapanD} และ @KhunchayNe ${privateByAccount.KhunchayNe}${privateComplete ? "" : " เฉพาะ repo ที่บัญชีหลักเข้าถึงได้"}`;
   $("private-list").append(
     ...data.private.categories.map((cat) =>
       el("div", { className: `p-row${cat.stack.length ? "" : " muted"}` },
