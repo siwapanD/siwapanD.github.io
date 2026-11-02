@@ -108,6 +108,8 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 .theme-toggle svg { width: 20px; height: 20px; }
 .eyebrow { font: 500 0.875rem var(--mono); color: var(--ink-2); margin: 0 0 12px; }
 .role { font-size: 1.15rem; font-weight: 500; margin: 8px 0 16px; }
+.focus { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
+.focus li { padding: 3px 12px; color: var(--accent); background: var(--bg); border: 1px solid var(--accent); border-radius: 999px; font: 500 0.875rem/1.5 var(--mono); }
 .lede { max-width: 58ch; color: var(--ink-2); margin: 0 0 20px; }
 .links { display: flex; flex-wrap: wrap; gap: 8px 20px; font-weight: 500; }
 .links a { overflow-wrap: anywhere; }
@@ -140,14 +142,14 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 .also strong { font-weight: 600; color: var(--ink); }
 
 .stack { margin-top: 44px; }
-.stack-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 32px; margin-top: 16px; }
+.stack-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px 24px; margin-top: 16px; }
 .stack-group h4 { margin: 0 0 8px; font-size: 0.95rem; font-weight: 600; color: var(--accent); }
 .stack-group ul { margin: 0; padding: 0; list-style: none; }
 .stack-group li { padding-block: 5px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 0.9rem; line-height: 1.55; }
 
 /* Infrastructure */
 .infra-lede { max-width: 62ch; margin: 8px 0 24px; color: var(--ink-2); }
-.infra-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.infra-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .infra-item { padding: 18px 20px; background: var(--panel); border-radius: 8px; border-left: 3px solid var(--bar); }
 .infra-item p { margin: 6px 0 0; color: var(--ink-2); font-size: 0.95rem; }
 .infra-item .tags { margin-top: 10px; font: 400 0.8125rem/1.6 var(--mono); color: var(--ink-3); }
@@ -269,6 +271,7 @@ footer p { margin: 0; }
 @media (max-width: 860px) {
   .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .infra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {

@@ -146,6 +146,7 @@ function wireMascot(data) {
     `มี ${fmt(data.counts.private)} โปรเจกต์ private นะ`,
     `12 เดือนนี้ ${fmt(data.contributions.latest.total)} contributions`,
     `ภาษาที่ใช้มากสุดคือ ${data.languages[0][0]}`,
+    "ถนัด Linux, Docker, Cloudflare, DNS และ GIS",
     "ลองกดสลับธีมดูสิ",
   ];
   mascot.addEventListener("click", () => {

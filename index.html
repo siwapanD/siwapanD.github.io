@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <header class="hero">
@@ -32,7 +32,10 @@
       <p class="eyebrow">@siwapanD · @KhunchayNe</p>
       <h1>Siwapan Boonthong</h1>
       <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure Engineer</p>
-      <p class="lede">สร้างซอฟต์แวร์ตั้งแต่สถาปัตยกรรมแอป API และฐานข้อมูล ไปจนถึงการ deploy และโครงสร้างพื้นฐาน งานช่วงหลังเน้นระบบข้อมูลภูมิสารสนเทศและการนำ AI มาใช้ในงานวิศวกรรมจริง เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
+      <ul class="focus" aria-label="งานที่เน้น">
+        <li>Linux</li><li>Docker</li><li>Cloudflare</li><li>DNS</li><li>GIS</li>
+      </ul>
+      <p class="lede">ดูแลโครงสร้างพื้นฐานบน Linux และ Docker เปิดบริการผ่าน Cloudflare จัดการ DNS และวางระบบ GIS พร้อมพัฒนาแอป API และฐานข้อมูลที่รันอยู่บนระบบเหล่านั้น เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
       <nav class="links" aria-label="ช่องทางติดต่อ">
         <a href="https://github.com/siwapanD">GitHub @siwapanD</a>
         <a href="https://github.com/KhunchayNe">GitHub @KhunchayNe</a>
@@ -105,12 +108,27 @@
   <main>
     <section class="wrap infra" id="infra" aria-labelledby="h-infra">
       <h2 id="h-infra">งาน Infrastructure</h2>
-      <p class="infra-lede">ดูแลระบบตั้งแต่เครื่องเซิร์ฟเวอร์ ฐานข้อมูล ไปจนถึงการ deploy ทั้งบน Ubuntu และ Windows Server เน้นให้ติดตั้งซ้ำได้ ตรวจสอบย้อนหลังได้ และกู้คืนได้เมื่อเกิดปัญหา</p>
+      <p class="infra-lede">ดูแลตั้งแต่เครื่อง Linux, Docker, Cloudflare และ DNS ไปจนถึงระบบ GIS เน้นให้ติดตั้งซ้ำได้ ตรวจสอบย้อนหลังได้ และกู้คืนได้เมื่อเกิดปัญหา</p>
       <div class="infra-grid">
         <article class="infra-item">
-          <h3>เซิร์ฟเวอร์และการ deploy</h3>
-          <p>ตั้งค่าเครื่องใหม่ด้วยสคริปต์ รันแอปด้วย container และเปิดบริการผ่าน reverse proxy หรือ Cloudflare Tunnel</p>
-          <p class="tags">Ubuntu · IIS · Docker Compose · Nginx · Cloudflare Zero Trust</p>
+          <h3>Linux Server</h3>
+          <p>ตั้งค่าเซิร์ฟเวอร์ Ubuntu ใหม่ด้วยสคริปต์ทั้ง SSH, firewall และเครื่องมือพื้นฐาน แล้วดูแลต่อบนเครื่องจริง</p>
+          <p class="tags">Ubuntu Server · SSH · UFW · Shell · Nginx</p>
+        </article>
+        <article class="infra-item">
+          <h3>Docker และ Container</h3>
+          <p>รันแอปและฐานข้อมูลด้วย container แยกแต่ละบริการด้วย Compose และ build image เองเมื่อต้องเพิ่มส่วนขยาย</p>
+          <p class="tags">Docker · Docker Compose · Dockerfile · Container Deployment</p>
+        </article>
+        <article class="infra-item">
+          <h3>Cloudflare และ DNS</h3>
+          <p>เปิดบริการจาก server สู่ภายนอกผ่าน Cloudflare Tunnel แบบ Zero Trust พร้อมจัดการโดเมน DNS และ SSL ให้เป็นระบบ</p>
+          <p class="tags">Cloudflare Tunnel · Zero Trust · DNS · SSL · Reverse Proxy</p>
+        </article>
+        <article class="infra-item">
+          <h3>โครงสร้างพื้นฐาน GIS</h3>
+          <p>วาง GIS stack ด้วย Docker ให้ GeoServer ต่อกับ PostGIS และเผยแพร่ layer ผ่าน WFS รวมถึงบริการรวมข้อมูลดิน น้ำ และอากาศ</p>
+          <p class="tags">GeoServer · PostGIS · WFS · GeoJSON · FastAPI</p>
         </article>
         <article class="infra-item">
           <h3>ฐานข้อมูลกลางและการกู้คืน</h3>
@@ -118,14 +136,9 @@
           <p class="tags">PostgreSQL · PostGIS · pgvector · Oracle · Liquibase</p>
         </article>
         <article class="infra-item">
-          <h3>แพลตฟอร์มจัดการ infra</h3>
-          <p>รวมข้อมูลเซิร์ฟเวอร์ โดเมน DNS SSL และแอปไว้ที่เดียว เก็บ credential แบบเข้ารหัส คุมสิทธิ์ด้วย RBAC และมี audit log</p>
-          <p class="tags">Next.js · Credential vault · RBAC · Audit log</p>
-        </article>
-        <article class="infra-item">
-          <h3>CI/CD และการดูแลเครื่อง</h3>
-          <p>pipeline สำหรับ build และ deploy เครื่องมือตรวจสุขภาพเครื่อง Windows และ dashboard ติดตามสถานะเครื่องในองค์กร</p>
-          <p class="tags">Jenkins · GitHub/GitLab Pipelines · PowerShell · Python</p>
+          <h3>จัดการ infra และ CI/CD</h3>
+          <p>รวมข้อมูลเซิร์ฟเวอร์ โดเมน DNS SSL และ credential ไว้ที่เดียว คุมสิทธิ์ด้วย RBAC มี audit log และใช้ pipeline สำหรับ build และ deploy</p>
+          <p class="tags">RBAC · Audit log · Jenkins · GitHub/GitLab Pipelines · IIS</p>
         </article>
       </div>
       <p class="infra-links">ดูตัวอย่างโค้ดได้ที่ <a href="https://github.com/siwapanD/ubuntu-setup">ubuntu-setup</a> และ <a href="https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application">2026-Docker-RealWorld-AI-Application</a></p>
@@ -148,7 +161,7 @@
         <article>
           <h3>ภูมิสารสนเทศและข้อมูลน้ำ</h3>
           <p>รวมข้อมูลดิน น้ำ อากาศ และเผยแพร่เป็น API หรือ layer แผนที่ให้ระบบอื่นใช้ต่อ</p>
-          <p class="tags">PostGIS · GeoServer · GeoJSON · FastAPI · Python</p>
+          <p class="tags">PostGIS · GeoServer · WFS · GeoJSON · FastAPI · Python</p>
         </article>
         <article>
           <h3>AI engineering</h3>
@@ -158,7 +171,7 @@
         <article>
           <h3>DevOps และโครงสร้างพื้นฐาน</h3>
           <p>ติดตั้งเซิร์ฟเวอร์ จัดการ container ระบบสำรองข้อมูล และการเก็บ credential พร้อม audit log</p>
-          <p class="tags">Docker · Compose · Ubuntu · Nginx · Shell · PowerShell</p>
+          <p class="tags">Linux · Docker · Compose · Cloudflare · DNS · Nginx · Shell</p>
         </article>
         <article>
           <h3>Native และ mobile</h3>
@@ -185,8 +198,16 @@
             <ul>
               <li>Docker, Docker Compose, Container Deployment</li>
               <li>CI/CD (Jenkins, GitHub/GitLab Pipelines)</li>
-              <li>Cloudflare Tunnel (Zero Trust)</li>
-              <li>Ubuntu Server, IIS, Infrastructure Management</li>
+              <li>Cloudflare Tunnel (Zero Trust), DNS, SSL</li>
+              <li>Linux (Ubuntu Server), IIS, Infrastructure Management</li>
+            </ul>
+          </div>
+          <div class="stack-group">
+            <h4>GIS</h4>
+            <ul>
+              <li>PostGIS, GeoServer, GeoJSON</li>
+              <li>WFS, Spatial Data API</li>
+              <li>Soil, Water &amp; Weather Data Integration</li>
             </ul>
           </div>
           <div class="stack-group">
@@ -262,6 +283,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
