@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -53,6 +53,41 @@
     <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol>
     <symbol id="i-github" viewBox="0 0 24 24"><path class="brand" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
     <symbol id="i-linkedin" viewBox="0 0 24 24"><path class="brand" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+  </svg>
+  <svg class="scene" id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="s-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sky-a"/><stop offset="0.7" class="sky-b"/></linearGradient>
+      <radialGradient id="s-glow"><stop offset="0" class="glow-a"/><stop offset="1" class="glow-b"/></radialGradient>
+      <linearGradient id="s-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="beam-a"/><stop offset="1" class="beam-b"/></linearGradient>
+      <linearGradient id="s-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="water-a"/><stop offset="1" class="water-b"/></linearGradient>
+    </defs>
+    <rect width="1600" height="900" fill="url(#s-sky)"/>
+    <circle cx="1000" cy="130" r="280" fill="url(#s-glow)"/>
+    <g class="rays"><path d="M1000 38V4" transform="rotate(0 1000 130)"/><path d="M1000 38V4" transform="rotate(30 1000 130)"/><path d="M1000 38V4" transform="rotate(60 1000 130)"/><path d="M1000 38V4" transform="rotate(90 1000 130)"/><path d="M1000 38V4" transform="rotate(120 1000 130)"/><path d="M1000 38V4" transform="rotate(150 1000 130)"/><path d="M1000 38V4" transform="rotate(180 1000 130)"/><path d="M1000 38V4" transform="rotate(210 1000 130)"/><path d="M1000 38V4" transform="rotate(240 1000 130)"/><path d="M1000 38V4" transform="rotate(270 1000 130)"/><path d="M1000 38V4" transform="rotate(300 1000 130)"/><path d="M1000 38V4" transform="rotate(330 1000 130)"/></g>
+    <circle class="sun" cx="1000" cy="130" r="62"/>
+    <g class="clouds cloud-1"><ellipse cx="300" cy="150" rx="96" ry="28"/><ellipse cx="250" cy="134" rx="56" ry="30"/><ellipse cx="340" cy="130" rx="62" ry="36"/></g>
+    <g class="clouds cloud-2"><ellipse cx="1330" cy="240" rx="82" ry="22"/><ellipse cx="1290" cy="226" rx="46" ry="24"/><ellipse cx="1370" cy="224" rx="52" ry="28"/></g>
+    <path class="mtn-far" d="M0 520 180 340 330 460 520 300 700 470 860 340 1040 480 1240 350 1420 470 1600 380V900H0Z"/>
+    <path class="mtn-mid" d="M0 610 220 480 420 590 590 450 730 432 790 530 900 590 1120 520 1330 600 1600 540V900H0Z"/>
+    <path class="meadow-far" d="M0 650C300 600 520 625 760 628 1000 632 1300 590 1600 640V900H0Z"/>
+    <path class="meadow-near" d="M0 770C400 725 600 775 900 775 1150 775 1400 735 1600 770V900H0Z"/>
+    <polygon class="beam" points="962,180 1038,180 1085,720 790,720"/>
+    <rect class="fall" x="692" y="438" width="44" height="194" rx="10"/>
+    <g class="flow fall-lines"><path d="M702 442V630"/><path d="M714 440V632"/><path d="M727 442V630"/></g>
+    <ellipse class="foam" cx="714" cy="634" rx="52" ry="11"/>
+    <path class="river" d="M690 630C672 672 730 700 694 748 655 795 478 815 372 900H650C770 820 846 780 810 722 790 682 752 662 740 630Z"/>
+    <g class="flow river-lines"><path d="M714 640C700 684 772 712 738 762 700 812 575 832 500 900"/><path d="M730 645C724 684 796 716 768 770 742 815 642 845 590 900"/><path d="M700 648C690 684 742 708 708 758 672 806 530 826 430 900"/></g>
+    <path class="weir" d="M682 716 822 706 826 732 680 744Z"/>
+    <g class="flow weir-lines"><path d="M700 745V768"/><path d="M730 743V766"/><path d="M760 741V764"/><path d="M790 739V762"/></g>
+    <path class="channel" d="M822 722C860 736 886 760 906 792"/>
+    <path class="flow channel-flow" d="M822 722C860 736 886 760 906 792"/>
+    <g class="grass"><path d="M240 800q-5 -14 -9 -20M240 800q1 -16 0 -25M240 800q6 -13 11 -19"/><path d="M330 850q-5 -14 -9 -20M330 850q1 -16 0 -25M330 850q6 -13 11 -19"/><path d="M520 770q-5 -14 -9 -20M520 770q1 -16 0 -25M520 770q6 -13 11 -19"/><path d="M1120 800q-5 -14 -9 -20M1120 800q1 -16 0 -25M1120 800q6 -13 11 -19"/><path d="M1250 850q-5 -14 -9 -20M1250 850q1 -16 0 -25M1250 850q6 -13 11 -19"/><path d="M1400 785q-5 -14 -9 -20M1400 785q1 -16 0 -25M1400 785q6 -13 11 -19"/><path d="M1060 860q-5 -14 -9 -20M1060 860q1 -16 0 -25M1060 860q6 -13 11 -19"/><path d="M160 870q-5 -14 -9 -20M160 870q1 -16 0 -25M160 870q6 -13 11 -19"/><path d="M1500 860q-5 -14 -9 -20M1500 860q1 -16 0 -25M1500 860q6 -13 11 -19"/><path d="M610 860q-5 -14 -9 -20M610 860q1 -16 0 -25M610 860q6 -13 11 -19"/><path d="M1000 830q-5 -14 -9 -20M1000 830q1 -16 0 -25M1000 830q6 -13 11 -19"/><path d="M860 860q-5 -14 -9 -20M860 860q1 -16 0 -25M860 860q6 -13 11 -19"/></g>
+    <g id="tree"><g class="tree-sway">
+      <path class="trunk" d="M916 794C925 720 921 660 927 560L939 560C945 660 941 720 950 794Z"/>
+      <path class="branch" d="M930 680C900 640 870 615 845 590M936 650C965 615 990 595 1015 570M932 610C915 570 900 540 885 500M934 600C950 565 968 535 985 505"/>
+      <circle class="leaf leaf-b" cx="933" cy="520" r="74" data-at="0.45"/><circle class="leaf leaf-a" cx="860" cy="560" r="56" data-at="0.3"/><circle class="leaf leaf-a" cx="1005" cy="560" r="56" data-at="0.35"/><circle class="leaf leaf-a" cx="885" cy="470" r="52" data-at="0.55"/><circle class="leaf leaf-a" cx="985" cy="470" r="52" data-at="0.6"/><circle class="leaf leaf-b" cx="933" cy="425" r="50" data-at="0.7"/><circle class="leaf leaf-a" cx="800" cy="600" r="36" data-at="0.75"/><circle class="leaf leaf-b" cx="1062" cy="600" r="36" data-at="0.8"/><circle class="leaf leaf-b" cx="830" cy="500" r="40" data-at="0.85"/><circle class="leaf leaf-a" cx="1035" cy="505" r="40" data-at="0.9"/>
+    </g></g>
+    <ellipse class="tree-shadow" cx="933" cy="796" rx="60" ry="6"/>
   </svg>
   <a class="skip" href="#infra">ข้ามไปยังเนื้อหา</a>
   <nav class="topnav" aria-label="เมนูหลัก">
@@ -409,7 +444,9 @@
     <p>Build thoughtfully. Automate responsibly. Keep learning.</p>
   </footer>
 
+  <div class="scene-end" aria-hidden="true"></div>
+
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

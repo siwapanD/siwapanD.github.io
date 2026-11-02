@@ -43,24 +43,47 @@ function ringPath(cx, cy, radius, ring) {
   return `${d}Z`;
 }
 
-// The contour rings radiate from the mascot, as if it were standing in water.
 const contourCenter = { x: 0, y: 0, base: 0 };
 
 function drawContours() {
   const svg = $("contours");
   const box = svg.getBoundingClientRect();
   const mascot = $("mascot").getBoundingClientRect();
-  const { x: cx, y: cy, base } = Object.assign(contourCenter, {
+  Object.assign(contourCenter, {
     x: mascot.left + mascot.width / 2 - box.left,
     y: mascot.top + mascot.height * 0.62 - box.top,
     base: mascot.width * 0.5,
   });
   svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
-  const paths = [];
-  for (let ring = 1; ring <= 16; ring++) {
-    paths.push(`<path d="${ringPath(cx, cy, base + ring * 40, ring)}" fill="none" stroke="currentColor" stroke-width="1"/>`);
-  }
-  svg.innerHTML = `<g id="rings-move"><g id="rings" style="transform-origin:${cx}px ${cy}px">${paths.join("")}</g></g>`;
+}
+
+// The tree grows from a sapling to full size as the visitor reads down the page.
+function wireTree() {
+  const tree = $("tree");
+  const leaves = [...tree.querySelectorAll(".leaf")].map((leaf) => [leaf, Number(leaf.dataset.at)]);
+  let queued = false;
+  const draw = () => {
+    queued = false;
+    const range = document.documentElement.scrollHeight - innerHeight;
+    const progress = range > 0 ? Math.min(1, scrollY / range) : 1;
+    const scale = 0.32 + 0.68 * progress;
+    tree.setAttribute("transform", `translate(933 794) scale(${scale.toFixed(3)}) translate(-933 -794)`);
+    leaves.forEach(([leaf, at]) => {
+      // The first clusters are there from the start, so the sapling already has leaves.
+      const grown = Math.max(0, Math.min(1, (progress + 0.35 - at) / 0.2));
+      leaf.style.opacity = grown;
+      leaf.style.transform = `scale(${(0.4 + 0.6 * grown).toFixed(3)})`;
+    });
+  };
+  const request = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(draw);
+  };
+  addEventListener("scroll", request, { passive: true });
+  addEventListener("resize", request);
+  request();
+  return request;
 }
 
 function ripple() {
@@ -92,7 +115,6 @@ function wireMascot(data) {
     parts.tilt.setAttribute("transform", `rotate(${(look.x * 5).toFixed(2)} 100 208)`);
     parts.face.setAttribute("transform", `translate(${(look.x * 13).toFixed(2)} ${(look.y * 9).toFixed(2)})`);
     parts.pupils.setAttribute("transform", `translate(${(look.x * 7).toFixed(2)} ${(look.y * 6).toFixed(2)})`);
-    if (MOTION) $("rings-move")?.setAttribute("transform", `translate(${(look.x * -10).toFixed(2)} ${(look.y * -6).toFixed(2)})`);
   };
   const frame = () => {
     const ease = MOTION ? 0.13 : 1;
@@ -483,8 +505,10 @@ async function main() {
   drawContours();
   wireMascot(data);
   wireHeroPause();
+  const redrawTree = wireTree();
   countUp();
   reveal();
+  redrawTree();
   let resizeTimer;
   addEventListener("resize", () => {
     clearTimeout(resizeTimer);
