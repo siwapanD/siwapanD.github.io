@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-02",
+ "generatedAt": "2026-11-03",
  "accounts": [
   "siwapanD",
   "KhunchayNe"
@@ -11,16 +11,16 @@
    "KhunchayNe": 90
   },
   "privateComplete": true,
-  "privateActive90d": 32,
+  "privateActive90d": 33,
   "publicShown": 40,
   "publicFeatured": 11,
-  "forks": 196,
-  "forksShown": 194,
+  "forks": 197,
+  "forksShown": 195,
   "forksWithOwnCommits": 3
  },
  "contributions": {
   "latest": {
-   "total": 872,
+   "total": 874,
    "private": 709,
    "days": [
     {
@@ -1850,8 +1850,13 @@
     },
     {
      "d": "2026-11-02",
-     "n": 4,
+     "n": 5,
      "l": "THIRD_QUARTILE"
+    },
+    {
+     "d": "2026-11-03",
+     "n": 1,
+     "l": "SECOND_QUARTILE"
     }
    ]
   },
@@ -18346,7 +18351,7 @@
     ]
    },
    "2026": {
-    "total": 845,
+    "total": 847,
     "private": 705,
     "days": [
      {
@@ -19876,13 +19881,13 @@
      },
      {
       "d": "2026-11-02",
-      "n": 4,
+      "n": 5,
       "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-11-03",
-      "n": 0,
-      "l": "NONE"
+      "n": 1,
+      "l": "SECOND_QUARTILE"
      },
      {
       "d": "2026-11-04",
@@ -20177,14 +20182,14 @@
     ]
    }
   },
-  "allTime": 1195,
-  "activeDays": 351,
+  "allTime": 1197,
+  "activeDays": 352,
   "longestStreak": 11
  },
  "languages": [
   [
    "TypeScript",
-   52
+   53
   ],
   [
    "Dart",
@@ -20211,12 +20216,12 @@
    8
   ],
   [
-   "Shell",
+   "PLpgSQL",
    5
   ],
   [
-   "PLpgSQL",
-   5
+   "Shell",
+   4
   ],
   [
    "Visual Basic",
@@ -20778,6 +20783,15 @@
   }
  ],
  "forks": [
+  {
+   "name": "craft-anything-for-me",
+   "owner": "siwapanD",
+   "url": "https://github.com/siwapanD/craft-anything-for-me",
+   "language": "Rust",
+   "pushedAt": "2026-11-03",
+   "description": "Craft Anything: understand how any software works, and craft your own.",
+   "ownCommits": false
+  },
   {
    "name": "mcp-reverse",
    "owner": "siwapanD",
