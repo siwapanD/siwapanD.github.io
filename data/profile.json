@@ -1,17 +1,17 @@
 {
- "generatedAt": "2026-11-10",
+ "generatedAt": "2026-11-12",
  "accounts": [
   "siwapanD",
   "KhunchayNe"
  ],
  "counts": {
-  "private": 128,
+  "private": 129,
   "privateByAccount": {
-   "siwapanD": 38,
+   "siwapanD": 39,
    "KhunchayNe": 90
   },
   "privateComplete": true,
-  "privateActive90d": 33,
+  "privateActive90d": 34,
   "publicShown": 41,
   "publicFeatured": 11,
   "forks": 198,
@@ -20,8 +20,8 @@
  },
  "contributions": {
   "latest": {
-   "total": 908,
-   "private": 732,
+   "total": 927,
+   "private": 743,
    "days": [
     {
      "d": "2025-11-09",
@@ -1825,8 +1825,8 @@
     },
     {
      "d": "2026-11-04",
-     "n": 1,
-     "l": "SECOND_QUARTILE"
+     "n": 3,
+     "l": "THIRD_QUARTILE"
     },
     {
      "d": "2026-11-05",
@@ -1857,6 +1857,16 @@
      "d": "2026-11-10",
      "n": 10,
      "l": "FOURTH_QUARTILE"
+    },
+    {
+     "d": "2026-11-11",
+     "n": 16,
+     "l": "FOURTH_QUARTILE"
+    },
+    {
+     "d": "2026-11-12",
+     "n": 1,
+     "l": "SECOND_QUARTILE"
     }
    ]
   },
@@ -18351,8 +18361,8 @@
     ]
    },
    "2026": {
-    "total": 883,
-    "private": 728,
+    "total": 900,
+    "private": 739,
     "days": [
      {
       "d": "2026-01-01",
@@ -19157,7 +19167,7 @@
      {
       "d": "2026-06-10",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-06-11",
@@ -19192,7 +19202,7 @@
      {
       "d": "2026-06-17",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-06-18",
@@ -19427,7 +19437,7 @@
      {
       "d": "2026-08-03",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-08-04",
@@ -19502,7 +19512,7 @@
      {
       "d": "2026-08-18",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-08-19",
@@ -19567,7 +19577,7 @@
      {
       "d": "2026-08-31",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-09-01",
@@ -19712,7 +19722,7 @@
      {
       "d": "2026-09-29",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-09-30",
@@ -19887,12 +19897,12 @@
      {
       "d": "2026-11-03",
       "n": 6,
-      "l": "FOURTH_QUARTILE"
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-11-04",
-      "n": 1,
-      "l": "SECOND_QUARTILE"
+      "n": 3,
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-11-05",
@@ -19926,13 +19936,13 @@
      },
      {
       "d": "2026-11-11",
-      "n": 2,
-      "l": "SECOND_QUARTILE"
+      "n": 16,
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-11-12",
-      "n": 0,
-      "l": "NONE"
+      "n": 1,
+      "l": "SECOND_QUARTILE"
      },
      {
       "d": "2026-11-13",
@@ -20182,9 +20192,9 @@
     ]
    }
   },
-  "allTime": 1233,
-  "activeDays": 360,
-  "longestStreak": 18
+  "allTime": 1250,
+  "activeDays": 361,
+  "longestStreak": 19
  },
  "languages": [
   [
@@ -20216,12 +20226,12 @@
    9
   ],
   [
-   "PLpgSQL",
+   "Shell",
    5
   ],
   [
-   "Shell",
-   4
+   "PLpgSQL",
+   5
   ],
   [
    "Visual Basic",
@@ -20333,7 +20343,7 @@
    },
    {
     "title": "ยังไม่ได้จัดหมวด",
-    "count": 89,
+    "count": 90,
     "summary": "โปรเจกต์ที่นับเข้ามาแล้ว แต่ยังไม่ได้สรุปเป็นหมวดงาน",
     "stack": []
    }
@@ -20348,7 +20358,7 @@
    "homepage": null,
    "language": "Shell",
    "stars": 0,
-   "pushedAt": "2026-11-10",
+   "pushedAt": "2026-11-11",
    "note": "สคริปต์ตั้งค่า Ubuntu 24.04 เครื่องใหม่ในคำสั่งเดียว ติดตั้ง SSH, UFW, Docker และเครื่องมือพัฒนา",
    "group": "featured"
   },
