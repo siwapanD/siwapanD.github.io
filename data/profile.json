@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-12",
+ "generatedAt": "2026-11-13",
  "accounts": [
   "siwapanD",
   "KhunchayNe"
@@ -14,14 +14,14 @@
   "privateActive90d": 34,
   "publicShown": 41,
   "publicFeatured": 11,
-  "forks": 198,
-  "forksShown": 196,
+  "forks": 200,
+  "forksShown": 198,
   "forksWithOwnCommits": 3
  },
  "contributions": {
   "latest": {
-   "total": 928,
-   "private": 744,
+   "total": 932,
+   "private": 745,
    "days": [
     {
      "d": "2025-11-09",
@@ -1867,6 +1867,11 @@
      "d": "2026-11-12",
      "n": 2,
      "l": "SECOND_QUARTILE"
+    },
+    {
+     "d": "2026-11-13",
+     "n": 4,
+     "l": "THIRD_QUARTILE"
     }
    ]
   },
@@ -18361,8 +18366,8 @@
     ]
    },
    "2026": {
-    "total": 901,
-    "private": 740,
+    "total": 905,
+    "private": 741,
     "days": [
      {
       "d": "2026-01-01",
@@ -19167,7 +19172,7 @@
      {
       "d": "2026-06-10",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-06-11",
@@ -19202,7 +19207,7 @@
      {
       "d": "2026-06-17",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-06-18",
@@ -19437,7 +19442,7 @@
      {
       "d": "2026-08-03",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-08-04",
@@ -19512,7 +19517,7 @@
      {
       "d": "2026-08-18",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-08-19",
@@ -19577,7 +19582,7 @@
      {
       "d": "2026-08-31",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-09-01",
@@ -19722,7 +19727,7 @@
      {
       "d": "2026-09-29",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-09-30",
@@ -19897,7 +19902,7 @@
      {
       "d": "2026-11-03",
       "n": 6,
-      "l": "THIRD_QUARTILE"
+      "l": "FOURTH_QUARTILE"
      },
      {
       "d": "2026-11-04",
@@ -19946,8 +19951,8 @@
      },
      {
       "d": "2026-11-13",
-      "n": 0,
-      "l": "NONE"
+      "n": 4,
+      "l": "THIRD_QUARTILE"
      },
      {
       "d": "2026-11-14",
@@ -20192,9 +20197,9 @@
     ]
    }
   },
-  "allTime": 1251,
-  "activeDays": 361,
-  "longestStreak": 19
+  "allTime": 1255,
+  "activeDays": 362,
+  "longestStreak": 20
  },
  "languages": [
   [
@@ -20804,6 +20809,24 @@
   }
  ],
  "forks": [
+  {
+   "name": "snowy-mac",
+   "owner": "siwapanD",
+   "url": "https://github.com/siwapanD/snowy-mac",
+   "language": "Swift",
+   "pushedAt": "2026-11-12",
+   "description": "A little winter for your Mac. Interactive desktop snow, plus a browser playground.",
+   "ownCommits": false
+  },
+  {
+   "name": "chibi-cat-pet",
+   "owner": "siwapanD",
+   "url": "https://github.com/siwapanD/chibi-cat-pet",
+   "language": "TypeScript",
+   "pushedAt": "2026-11-10",
+   "description": "",
+   "ownCommits": false
+  },
   {
    "name": "diagram-design",
    "owner": "siwapanD",
