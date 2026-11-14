@@ -48,7 +48,7 @@
 <main>
   <header>
     <h1>Sprite Player</h1>
-    <p>Sprite sheet 8 × 2 เฟรม เล่นบน Canvas · <span id="sheet-desc"></span> · <a href="./">กลับหน้าหลัก</a></p>
+    <p>Sprite sheet เล่นบน Canvas · เลือกเวอร์ชันบนเว็บได้ที่ env.js · <span id="sheet-desc"></span> · <a href="./">กลับหน้าหลัก</a></p>
   </header>
 
   <section class="player">
@@ -62,10 +62,7 @@
         <button id="restart" type="button">Restart</button>
       </div>
       <label>ชีต
-        <select id="sheet-pick">
-          <option value="v2">v2 · นั่งหน้าจอโค้ง (ใช้บนเว็บ)</option>
-          <option value="v1">v1 · เดินเข้าโต๊ะยืน</option>
-        </select>
+        <select id="sheet-pick"></select>
       </label>
       <label>ความเร็ว <output id="fps-out" class="mono">8 FPS</output>
         <input id="fps" type="range" min="1" max="24" step="1" value="8">
@@ -108,26 +105,18 @@
   </section>
 </main>
 
+<script src="env.js?v=1"></script>
 <script src="sprite-player.js?v=1"></script>
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
-const SHEETS = {
-  v2: {
-    src: "assets/sprite-desk-v2.webp",
-    desc: "นั่งพิมพ์งาน หันมองจอซ้าย-ขวา วนทั้ง 16 เฟรม (0–15)",
-    segments: [{ name: "นั่งพิมพ์งาน (วน)", from: 0, to: 15, loop: true }],
-  },
-  v1: {
-    src: "assets/sprite-desk.webp",
-    desc: "เดินเข้าโต๊ะ (0–7) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15)",
-    segments: [
-      { name: "เดินเข้าโต๊ะ", from: 0, to: 7, loop: false },
-      { name: "เตรียมพิมพ์", from: 8, to: 9, loop: false },
-      { name: "พิมพ์งาน (วน)", from: 10, to: 15, loop: true },
-    ],
-  },
-};
+const SHEETS = window.SPRITES;
+const ENV_VERSION = window.SITE_ENV.SPRITE_VERSION;
+for (const key of Object.keys(SHEETS)) {
+  const option = new Option(`${key}${key === ENV_VERSION ? " · ใช้บนเว็บ" : ""}`, key);
+  $("sheet-pick").append(option);
+}
+$("sheet-pick").value = window.spriteVersion();
 
 const canvas = $("canvas");
 const sheet = $("sheet");
@@ -164,9 +153,10 @@ async function load(key) {
   sheet.width = image.naturalWidth;
   sheet.height = image.naturalHeight;
   player = new SpritePlayer({
-    canvas, image, cols: 8, rows: 2, segments: config.segments,
-    fps: Number($("fps").value), onFrame: readout,
+    canvas, image, cols: config.cols, rows: config.rows, segments: config.segments,
+    fps: config.fps, onFrame: readout,
   });
+  $("fps").value = config.fps;
   player.setDebug($("debug").checked);
   $("r-size").textContent = `${image.naturalWidth} × ${image.naturalHeight}`;
   $("r-cell").textContent = `${player.frameWidth} × ${player.frameHeight}`;
@@ -228,7 +218,12 @@ $("debug").addEventListener("change", (e) => { $("debug-tools").hidden = !e.targ
 $("prev").addEventListener("click", () => player && player.step(-1));
 $("next").addEventListener("click", () => player && player.step(1));
 $("reveal").addEventListener("change", () => player && drawSheet(player.frame));
-$("sheet-pick").addEventListener("change", (e) => load(e.target.value));
+$("sheet-pick").addEventListener("change", (e) => {
+  load(e.target.value);
+  const url = new URL(location.href);
+  url.searchParams.set("sprite", e.target.value);
+  history.replaceState(null, "", url);
+});
 new ResizeObserver(() => player && player.resize()).observe(canvas);
 load($("sheet-pick").value);
 
