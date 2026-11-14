@@ -27,6 +27,7 @@ Changing the variable does not redeploy: run **Deploy site** from the Actions ta
 
 ### Sprite sheets
 
+- `scripts/layer_frames.py` stacks a fixed desk layer and per-frame person layers (desk legs and front edge in front of the person).
 - `scripts/pack_frames.py` packs separate frames (best: one image per frame, 600 × 800 or larger) into a sheet without trimming them.
 - `scripts/chroma_key.py` turns a green-screen sheet transparent.
 - `scripts/stabilize.py` re-cuts a sheet whose cells drift (an object that should stay put slides between frames).
