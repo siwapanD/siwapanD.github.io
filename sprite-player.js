@@ -4,12 +4,14 @@
 // the desk and the person stay where the artist put them. The player never trims frames to their
 // content, which would make the figure jump between frames.
 //
-// The animation is a list of segments that play in order. A segment with loop: true repeats
-// forever, so it must be the last one.
+// The animation is a list of segments that play in order. A segment plays `times` times (default
+// 1); one with loop: true repeats forever, so it must be the last one. With repeat: true the whole
+// list starts over after the last segment, so the sequence never settles on one pose. A segment's
+// speed multiplies fps for that segment only.
 "use strict";
 
 class SpritePlayer {
-  constructor({ canvas, image, cols, rows, segments, fps = 8, onFrame = null }) {
+  constructor({ canvas, image, cols, rows, segments, fps = 8, repeat = false, onFrame = null }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.image = image;
@@ -20,6 +22,8 @@ class SpritePlayer {
     this.onFrame = onFrame;
     this.debug = false;
     this.playing = false;
+    this.repeat = repeat;
+    this.pass = 0;
     this.segment = 0;
     this.frame = segments[0].from;
     this.elapsed = 0;
@@ -59,6 +63,7 @@ class SpritePlayer {
   }
 
   restart() {
+    this.pass = 0;
     this.segment = 0;
     this.frame = this.segments[0].from;
     this.elapsed = 0;
@@ -78,6 +83,7 @@ class SpritePlayer {
     this.frame = (this.frame + delta + this.frameCount) % this.frameCount;
     const owner = this.segments.findIndex((s) => this.frame >= s.from && this.frame <= s.to);
     this.segment = owner === -1 ? 0 : owner;
+    this.pass = 0;
     this.elapsed = 0;
     this.draw();
     this.emit();
@@ -87,6 +93,7 @@ class SpritePlayer {
     this.frame = index;
     const owner = this.segments.findIndex((s) => index >= s.from && index <= s.to);
     this.segment = owner === -1 ? 0 : owner;
+    this.pass = 0;
     this.draw();
     this.emit();
   }
@@ -104,7 +111,8 @@ class SpritePlayer {
     const delta = this.last ? Math.min(now - this.last, 250) : 0;
     this.last = now;
     this.elapsed += delta;
-    const duration = 1000 / this.fps;
+    // A segment may set speed (a multiplier of fps), e.g. 0.6 to play the typing loop slower.
+    const duration = 1000 / (this.fps * (this.segments[this.segment].speed || 1));
     let advanced = false;
     while (this.elapsed >= duration) {
       this.elapsed -= duration;
@@ -121,12 +129,26 @@ class SpritePlayer {
     const seg = this.segments[this.segment];
     if (this.frame < seg.to) {
       this.frame += 1;
-    } else if (seg.loop) {
-      this.frame = seg.from;
-    } else if (this.segment < this.segments.length - 1) {
-      this.segment += 1;
-      this.frame = this.segments[this.segment].from;
+      return;
     }
+    if (seg.loop) {
+      this.frame = seg.from;
+      return;
+    }
+    this.pass += 1;
+    if (this.pass < (seg.times || 1)) {
+      this.frame = seg.from;
+      return;
+    }
+    this.pass = 0;
+    if (this.segment < this.segments.length - 1) {
+      this.segment += 1;
+    } else if (this.repeat) {
+      this.segment = 0;
+    } else {
+      return;
+    }
+    this.frame = this.segments[this.segment].from;
   }
 
   // Match the backing store to the element's layout size × devicePixelRatio, so the frame is not
