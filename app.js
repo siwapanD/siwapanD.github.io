@@ -145,7 +145,7 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".display-stage", ".focus", ".manifesto-text", ".stats > div", ".section-head > *", ".bento > *", ".after-note", ".slide", ".paddles",
+    ".hero-copy > *", ".display-stage", ".focus", ".manifesto-text", ".numbers h2", ".stats > div", ".section-head > *", ".bento > *", ".after-note", ".slide", ".paddles",
     ".also", ".stack", ".forks",
   ];
   groups.forEach((selector) => {
@@ -165,26 +165,65 @@ function reveal() {
   heatObserver.observe(heat);
 }
 
-const STAT_ICONS = {
-  "Private projects": "lock",
-  "Public projects": "globe",
-  "Contributions 12 เดือน": "activity",
-  "วันที่มี contributions": "calendar",
-};
-
 function renderStats(data) {
   const c = data.contributions.latest;
   const items = [
-    ["Private projects", data.counts.private, `อัปเดตใน 90 วันล่าสุด ${data.counts.privateActive90d} โปรเจกต์`],
-    ["Public projects", data.counts.publicShown, "repo ของตัวเอง ไม่นับ fork"],
-    ["Contributions 12 เดือน", fmt(c.total), `อยู่ใน private repo ${fmt(c.private)} ครั้ง`],
-    ["วันที่มี contributions", fmt(data.contributions.activeDays), `ติดต่อกันนานสุด ${data.contributions.longestStreak} วัน`],
+    ["Private projects", data.counts.private, ""],
+    ["Public projects ไม่นับ fork", data.counts.publicShown, ""],
+    ["Contributions ใน 12 เดือน", c.total, ""],
+    ["อยู่ใน private repo", c.private, " ครั้ง"],
+    ["วันที่มี contributions", data.contributions.activeDays, " วัน"],
+    ["ติดต่อกันนานสุด", data.contributions.longestStreak, " วัน"],
   ];
   $("stats").append(
-    ...items.map(([label, value, sub]) =>
-      el("div", {}, el("dt", {}, icon(STAT_ICONS[label]), label), el("dd", {}, el("span", { className: "num", textContent: String(value) }), el("span", { className: "sub-stat", textContent: sub })))
-    )
+    ...items.map(([label, value, unit]) => el("div", {}, el("dt", { textContent: label }), el("dd", {}, el("span", { className: "num", textContent: fmt(value) }), unit)))
   );
+}
+
+// The lit patch of subpixels trails the pointer; with no pointer over the section it drifts on its own.
+function wireSubpixels() {
+  if (!MOTION) return;
+  const section = $("numbers");
+  const lit = $("subpixels-lit");
+  const pos = { x: 0, y: 0 };
+  const target = { x: 0, y: 0 };
+  let hovering = false;
+  let visible = false;
+  let started = false;
+  let frameId = 0;
+  const frame = (now) => {
+    const box = section.getBoundingClientRect();
+    if (!hovering) {
+      const t = now / 1000;
+      target.x = box.width * (0.5 + 0.34 * Math.sin(t * 0.42));
+      target.y = box.height * (0.5 + 0.3 * Math.sin(t * 0.63 + 1.3));
+    }
+    if (!started) {
+      Object.assign(pos, target);
+      started = true;
+    }
+    pos.x += (target.x - pos.x) * (hovering ? 0.14 : 0.04);
+    pos.y += (target.y - pos.y) * (hovering ? 0.14 : 0.04);
+    lit.style.setProperty("--mx", `${pos.x.toFixed(1)}px`);
+    lit.style.setProperty("--my", `${pos.y.toFixed(1)}px`);
+    // A slow shimmer in size keeps the patch alive while the pointer rests.
+    lit.style.setProperty("--r", `${(250 + 22 * Math.sin(now / 900)).toFixed(1)}px`);
+    frameId = visible ? requestAnimationFrame(frame) : 0;
+  };
+  const follow = (e) => {
+    const box = section.getBoundingClientRect();
+    hovering = true;
+    target.x = e.clientX - box.left;
+    target.y = e.clientY - box.top;
+  };
+  section.addEventListener("pointermove", follow, { passive: true });
+  section.addEventListener("pointerdown", follow, { passive: true });
+  section.addEventListener("pointerleave", () => (hovering = false));
+  section.addEventListener("pointercancel", () => (hovering = false));
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !frameId) frameId = requestAnimationFrame(frame);
+  }).observe(section);
 }
 
 function renderHeat(range, today) {
@@ -408,6 +447,7 @@ async function main() {
   countUp();
   reveal();
   wireScroll();
+  wireSubpixels();
 }
 
 main().catch((error) => {

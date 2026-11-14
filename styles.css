@@ -224,7 +224,7 @@ h1 { font-size: clamp(2.75rem, 9.2vw, 6.5rem); font-weight: 700; line-height: 1.
 .chip-logo { flex: none; width: 18px; height: 18px; }
 
 /* Manifesto and headline numbers */
-.manifesto { padding-block: clamp(88px, 14vw, 180px) clamp(72px, 10vw, 128px); }
+.manifesto { padding-block: clamp(88px, 14vw, 180px); }
 .manifesto-text {
   max-width: 21em;
   margin-inline: auto;
@@ -236,25 +236,38 @@ h1 { font-size: clamp(2.75rem, 9.2vw, 6.5rem); font-weight: 700; line-height: 1.
 .manifesto-text .w { transition: color 0.35s var(--ease); }
 .motion .manifesto-text.dimmed .w:not(.lit) { color: var(--dim); }
 
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 28px; margin: clamp(72px, 10vw, 128px) 0 0; }
-.stats > div { display: flex; flex-direction: column; padding-top: 18px; border-top: 1px solid var(--line); }
-.stats dt { order: 2; display: flex; align-items: center; gap: 7px; margin-top: 6px; color: var(--ink); font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }
-.stats dt .icon { color: var(--ink-3); }
-.stats dd { order: 1; display: contents; }
-.stats .num {
-  order: 1;
-  width: fit-content;
-  color: transparent;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  font-size: clamp(2.75rem, 6.2vw, 5rem);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
+/* Numbers: a black screen of RGB subpixels that light up under the pointer, in both themes. */
+.numbers { position: relative; display: grid; align-items: center; min-height: min(100vh, 980px); padding-block: 120px; color: #f5f5f7; background: #000; text-align: center; overflow: hidden; isolation: isolate; }
+.subpixels, .subpixels-lit {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-size: 12px 12px;
+  --rows: repeating-linear-gradient(0deg, #000 0 8px, transparent 8px 12px);
 }
-.stats .sub-stat { order: 3; margin-top: 4px; color: var(--ink-3); font-size: 0.875rem; line-height: 1.45; }
+.subpixels {
+  background-image: linear-gradient(90deg, rgb(255 255 255 / 0.075) 0 2px, transparent 2px 4px, rgb(255 255 255 / 0.075) 4px 6px, transparent 6px 8px, rgb(255 255 255 / 0.075) 8px 10px, transparent 10px);
+  -webkit-mask-image: var(--rows), radial-gradient(ellipse at center, #000 30%, transparent 85%);
+  mask-image: var(--rows), radial-gradient(ellipse at center, #000 30%, transparent 85%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.subpixels-lit {
+  --spot: radial-gradient(circle var(--r, 260px) at var(--mx, 62%) var(--my, 72%), #000 0, rgb(0 0 0 / 0.7) 28%, rgb(0 0 0 / 0.22) 62%, transparent 100%);
+  z-index: 0;
+  background-image: linear-gradient(90deg, #ff2d2d 0 2px, transparent 2px 4px, #1fe04a 4px 6px, transparent 6px 8px, #2a5cff 8px 10px, transparent 10px);
+  -webkit-mask-image: var(--rows), var(--spot);
+  mask-image: var(--rows), var(--spot);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  opacity: var(--o, 0.9);
+  will-change: mask-image;
+}
+.numbers h2 { margin: 0; font-size: clamp(2rem, 4.4vw, 3.25rem); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(48px, 7vw, 96px) 24px; max-width: 1040px; margin: clamp(56px, 8vw, 104px) auto 0; }
+.stats > div { display: flex; flex-direction: column; align-items: center; }
+.stats dt { color: #f5f5f7; font-size: 0.875rem; line-height: 1.4; }
+.stats dd { margin: 4px 0 0; font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 
 /* Sections */
 .band { padding-block: clamp(80px, 11vw, 160px); }
@@ -496,8 +509,8 @@ footer { padding-block: 20px 36px; background: var(--bg-alt); border-top: 1px so
   .gallery-track { gap: 12px; padding-inline: 16px; }
   .gallery { scroll-padding-inline: 16px; }
   .slide { min-height: 360px; }
-  .stats { gap: 28px 16px; }
-  .stats dt { font-size: 0.9375rem; }
+  .stats { gap: 44px 12px; }
+  .numbers { padding-block: 88px; }
   .stack-grid { grid-template-columns: minmax(0, 1fr); }
   .segments button { min-height: 44px; }
   .rows li { grid-template-columns: minmax(0, 1fr) auto; }

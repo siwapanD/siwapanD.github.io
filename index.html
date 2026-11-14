@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=17">
+  <link rel="stylesheet" href="styles.css?v=18">
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -107,7 +107,14 @@
   <main>
     <section class="manifesto wrap" aria-label="แนะนำตัว">
       <p class="manifesto-text" id="manifesto">ช่วยเปลี่ยนงานที่ทำมือหรือกระจัดกระจาย ให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้งบน Linux, Docker และ Cloudflare เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
-      <dl class="stats" id="stats"></dl>
+    </section>
+
+    <section class="numbers" id="numbers" aria-labelledby="h-numbers">
+      <div class="subpixels" aria-hidden="true"><div class="subpixels-lit" id="subpixels-lit"></div></div>
+      <div class="wrap numbers-inner">
+        <h2 id="h-numbers">วัดกันที่ตัวเลข</h2>
+        <dl class="stats" id="stats"></dl>
+      </div>
     </section>
 
     <section class="band" id="infra" aria-labelledby="h-infra">
@@ -444,6 +451,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=17"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>
