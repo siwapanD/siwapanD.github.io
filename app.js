@@ -180,7 +180,7 @@ function renderStats(data) {
   );
 }
 
-// Subpixels light up under the pointer and fade behind it. Each cell holds an energy level; blue
+// Subpixels light up under a moving pointer and fade behind it. Each cell holds an energy level; blue
 // responds to the least energy, so the edge of the patch and its fading trail turn blue first.
 function wireSubpixels() {
   if (!MOTION) return;
@@ -222,28 +222,41 @@ function wireSubpixels() {
     }
   };
 
-  const ramp = (value, from, to) => (value <= from ? 0 : value >= to ? 1 : (value - from) / (to - from));
+  const ramp = (value, from, to) => {
+    const t = value <= from ? 0 : value >= to ? 1 : (value - from) / (to - from);
+    return t * t * (3 - 2 * t);
+  };
   // [colour, x, y, width, height, energy where it starts to glow, energy where it is fully lit]
   const SUBPIXELS = [
-    ["#1414f0", 0, 0, 5, 8, 0.06, 0.7],
-    ["#2fe04a", 6, 0, 3, 5, 0.22, 0.85],
-    ["#f02a2a", 6, 5.5, 3, 2.5, 0.3, 0.9],
+    ["#1818f2", 0.5, 0.5, 5.6, 8.6, 0.05, 0.62],
+    ["#3df05a", 6.9, 0.5, 2.7, 4.7, 0.2, 0.8],
+    ["#f5302c", 6.9, 5.8, 2.7, 3.3, 0.27, 0.86],
   ];
   const draw = () => {
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.clearRect(0, 0, columns * PITCH, rows * PITCH);
+    // A blue wash across the whole cell fills the gaps, so lit pixels bloom into each other.
+    ctx.fillStyle = "#1414c8";
+    for (let i = 0; i < energy.length; i++) {
+      if (energy[i] <= 0.1) continue;
+      ctx.globalAlpha = 0.36 * ramp(energy[i], 0.1, 1);
+      ctx.fillRect((i % columns) * PITCH, Math.floor(i / columns) * PITCH, PITCH, PITCH);
+    }
     for (const [colour, x, y, width, height, from, to] of SUBPIXELS) {
       ctx.fillStyle = colour;
       for (let i = 0; i < energy.length; i++) {
         if (energy[i] <= from) continue;
         ctx.globalAlpha = ramp(energy[i], from, to);
-        ctx.fillRect((i % columns) * PITCH + x, Math.floor(i / columns) * PITCH + y, width, height);
+        ctx.beginPath();
+        ctx.roundRect((i % columns) * PITCH + x, Math.floor(i / columns) * PITCH + y, width, height, 1);
+        ctx.fill();
       }
     }
     ctx.globalAlpha = 1;
   };
 
-  const pointer = { x: 0, y: 0, inside: false, used: false };
+  // The light appears only while the pointer is moving; a resting pointer lets it fade out.
+  const pointer = { x: 0, y: 0, moved: false };
   const last = { x: 0, y: 0, known: false };
   let visible = false;
   let frameId = 0;
@@ -251,7 +264,6 @@ function wireSubpixels() {
   const frame = (now) => {
     const dt = Math.min(0.05, (now - previous) / 1000 || 0.016);
     previous = now;
-    const box = section.getBoundingClientRect();
     const decay = Math.exp(-dt / FADE);
     let lit = false;
     for (let i = 0; i < energy.length; i++) {
@@ -259,16 +271,11 @@ function wireSubpixels() {
       energy[i] = energy[i] < 0.02 ? 0 : energy[i] * decay;
       lit = true;
     }
-    // Until a mouse has been over the section, the patch wanders on its own (and always on touch screens).
-    const wander = !pointer.used;
-    if (pointer.inside || wander) {
-      let x = pointer.x - box.left;
-      let y = pointer.y - box.top;
-      if (!pointer.inside) {
-        const t = now / 1000;
-        x = box.width * (0.5 + 0.34 * Math.sin(t * 0.5));
-        y = box.height * (0.5 + 0.3 * Math.sin(t * 0.76 + 1.3));
-      }
+    if (pointer.moved) {
+      pointer.moved = false;
+      const box = section.getBoundingClientRect();
+      const x = pointer.x - box.left;
+      const y = pointer.y - box.top;
       // Stamp along the path since the last frame so a fast pointer leaves a continuous trail.
       const steps = last.known ? Math.min(12, Math.ceil(Math.hypot(x - last.x, y - last.y) / 24)) || 1 : 1;
       for (let step = 1; step <= steps; step++) {
@@ -277,8 +284,6 @@ function wireSubpixels() {
       }
       Object.assign(last, { x, y, known: true });
       lit = true;
-    } else {
-      last.known = false;
     }
     draw();
     frameId = visible && lit ? requestAnimationFrame(frame) : 0;
@@ -292,17 +297,13 @@ function wireSubpixels() {
   const follow = (e) => {
     pointer.x = e.clientX;
     pointer.y = e.clientY;
-    if (!pointer.inside) last.known = false;
-    pointer.inside = true;
-    if (e.pointerType === "mouse") pointer.used = true;
+    pointer.moved = true;
     wake();
   };
-  const leave = () => (pointer.inside = false);
+  const leave = () => (last.known = false);
   section.addEventListener("pointermove", follow, { passive: true });
-  section.addEventListener("pointerdown", follow, { passive: true });
   section.addEventListener("pointerleave", leave);
   section.addEventListener("pointercancel", leave);
-  section.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && leave());
   new ResizeObserver(() => {
     resize();
     last.known = false;
