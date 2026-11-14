@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sprite Player</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/logo.svg?v=2" type="image/svg+xml">
+  <style>
+    :root { --bg: #000; --panel: #161617; --line: rgb(255 255 255 / 0.16); --text: #f5f5f7; --muted: #a1a1a6; --accent: #2997ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Noto Sans Thai", sans-serif; }
+    main { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
+    h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.01em; }
+    p { margin: 0; color: var(--muted); }
+    a { color: var(--accent); }
+    .player { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+    .stage { position: relative; height: min(70vh, 620px); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+    .stage[data-bg="dark"] { background: #000; }
+    .stage[data-bg="light"] { background: #fff; }
+    .stage[data-bg="checker"] { background: repeating-conic-gradient(#3a3a3c 0 25%, #2c2c2e 0 50%) 0 0 / 24px 24px; }
+    .stage canvas { display: block; width: 100%; height: 100%; }
+    .panel { display: grid; gap: 16px; padding: 18px; background: var(--panel); border-radius: 20px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: #2c2c2e; color: var(--text); font: inherit; cursor: pointer; }
+    button:hover { background: #3a3a3c; }
+    button.primary { background: var(--accent); color: #fff; }
+    button:disabled { opacity: .4; cursor: default; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    label { display: grid; gap: 6px; color: var(--muted); font-size: .875rem; }
+    .inline { display: flex; gap: 8px; align-items: center; color: var(--text); font-size: .9375rem; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    select { min-height: 36px; border: 1px solid var(--line); border-radius: 10px; background: #000; color: var(--text); font: inherit; padding: 0 8px; }
+    output, .mono { font-family: ui-monospace, "SF Mono", monospace; font-variant-numeric: tabular-nums; }
+    .readout { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: .875rem; }
+    .readout dt { color: var(--muted); }
+    .readout dd { margin: 0; }
+    .debug-only[hidden] { display: none; }
+    .sheet-wrap { padding: 18px; background: var(--panel); border-radius: 20px; display: grid; gap: 12px; }
+    .sheet { position: relative; width: 100%; background: repeating-conic-gradient(#3a3a3c 0 25%, #2c2c2e 0 50%) 0 0 / 16px 16px; border-radius: 8px; overflow: hidden; }
+    .sheet canvas { display: block; width: 100%; height: auto; cursor: pointer; }
+    .note { padding: 14px 16px; border-left: 3px solid #ff9f0a; background: rgb(255 159 10 / 0.08); border-radius: 0 12px 12px 0; color: var(--text); font-size: .9rem; }
+    .note ul { margin: 6px 0 0; padding-left: 20px; }
+    @media (max-width: 760px) { .player { grid-template-columns: minmax(0, 1fr); } .stage { height: 60vh; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Sprite Player · ยืนพิมพ์งานที่โต๊ะ</h1>
+    <p>Sprite sheet 8 × 2 เฟรม เล่นบน Canvas: เดินเข้าโต๊ะ (0–7) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15) · <a href="./">กลับหน้าหลัก</a></p>
+  </header>
+
+  <section class="player">
+    <div class="stage" id="stage" data-bg="dark">
+      <canvas id="canvas" role="img" aria-label="แอนิเมชันเดินเข้าโต๊ะแล้วพิมพ์งานบน MacBook"></canvas>
+    </div>
+    <div class="panel">
+      <div class="row">
+        <button class="primary" id="play" type="button">Play</button>
+        <button id="pause" type="button">Pause</button>
+        <button id="restart" type="button">Restart</button>
+      </div>
+      <label>ความเร็ว <output id="fps-out" class="mono">8 FPS</output>
+        <input id="fps" type="range" min="1" max="24" step="1" value="8">
+      </label>
+      <label>พื้นหลัง
+        <select id="bg">
+          <option value="dark">ดำ</option>
+          <option value="light">ขาว</option>
+          <option value="checker">ตารางโปร่งใส</option>
+        </select>
+      </label>
+      <label class="inline"><input id="debug" type="checkbox"> โหมด Debug</label>
+      <div class="debug-only" id="debug-tools" hidden>
+        <div class="row">
+          <button id="prev" type="button">◀ Previous</button>
+          <button id="next" type="button">Next ▶</button>
+        </div>
+      </div>
+      <dl class="readout">
+        <dt>เฟรม</dt><dd class="mono" id="r-frame">–</dd>
+        <dt>ช่วง</dt><dd id="r-seg">–</dd>
+        <dt>สถานะ</dt><dd id="r-state">–</dd>
+        <dt>ภาพจริง</dt><dd class="mono" id="r-size">–</dd>
+        <dt>ขนาดเฟรม</dt><dd class="mono" id="r-cell">–</dd>
+        <dt>source</dt><dd class="mono" id="r-src">–</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sheet-wrap">
+    <div class="row" style="justify-content: space-between">
+      <strong>ทั้งชีต · กรอบแดง = ช่องที่กำลังวาด (คลิกช่องเพื่อกระโดดไปเฟรมนั้น)</strong>
+      <label class="inline"><input id="reveal" type="checkbox"> เผยพิกเซลโปร่งใสบางส่วน (alpha &gt; 0)</label>
+    </div>
+    <div class="sheet"><canvas id="sheet"></canvas></div>
+    <div class="note" id="report">
+      <strong>ผลตรวจภาพต้นฉบับ</strong>
+      <ul id="report-list"><li>กำลังตรวจ…</li></ul>
+    </div>
+  </section>
+</main>
+
+<script src="sprite-player.js?v=1"></script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const SEGMENTS = [
+  { name: "เดินเข้าโต๊ะ", from: 0, to: 7, loop: false },
+  { name: "เตรียมพิมพ์", from: 8, to: 9, loop: false },
+  { name: "พิมพ์งาน (วน)", from: 10, to: 15, loop: true },
+];
+
+const image = new Image();
+image.decoding = "async";
+image.src = "assets/sprite-desk.webp";
+
+image.decode().then(() => {
+  const sheet = $("sheet");
+  const sheetCtx = sheet.getContext("2d");
+  sheet.width = image.naturalWidth;
+  sheet.height = image.naturalHeight;
+
+  const player = new SpritePlayer({
+    canvas: $("canvas"), image, cols: 8, rows: 2, segments: SEGMENTS, fps: 8,
+    onFrame: (p) => {
+      const src = p.sourceRect(p.frame);
+      $("r-frame").textContent = `${p.frame} / ${p.frameCount - 1}`;
+      $("r-seg").textContent = SEGMENTS[p.segment].name;
+      $("r-state").textContent = p.playing ? "กำลังเล่น" : "หยุด";
+      $("r-src").textContent = `sx ${src.x}, sy ${src.y}`;
+      $("fps-out").textContent = `${p.fps} FPS`;
+      $("play").disabled = p.playing;
+      $("pause").disabled = !p.playing;
+      drawSheet(p.frame);
+    },
+  });
+
+  $("r-size").textContent = `${image.naturalWidth} × ${image.naturalHeight}`;
+  $("r-cell").textContent = `${player.frameWidth} × ${player.frameHeight}`;
+
+  // Alpha in the sheet is drawn as-is; "reveal" multiplies it so near-invisible residue shows.
+  let revealed = null;
+  function revealCanvas() {
+    if (revealed) return revealed;
+    revealed = document.createElement("canvas");
+    revealed.width = image.naturalWidth;
+    revealed.height = image.naturalHeight;
+    const c = revealed.getContext("2d");
+    c.drawImage(image, 0, 0);
+    const data = c.getImageData(0, 0, revealed.width, revealed.height);
+    for (let i = 3; i < data.data.length; i += 4) {
+      if (data.data[i] > 0) data.data[i] = Math.min(255, data.data[i] * 40);
+    }
+    c.putImageData(data, 0, 0);
+    return revealed;
+  }
+
+  function drawSheet(current) {
+    sheetCtx.clearRect(0, 0, sheet.width, sheet.height);
+    sheetCtx.drawImage($("reveal").checked ? revealCanvas() : image, 0, 0);
+    const fw = player.frameWidth, fh = player.frameHeight;
+    sheetCtx.lineWidth = 1;
+    sheetCtx.strokeStyle = "rgb(255 255 255 / 0.35)";
+    for (let c = 1; c < player.cols; c++) { sheetCtx.beginPath(); sheetCtx.moveTo(c * fw, 0); sheetCtx.lineTo(c * fw, sheet.height); sheetCtx.stroke(); }
+    for (let r = 1; r < player.rows; r++) { sheetCtx.beginPath(); sheetCtx.moveTo(0, r * fh); sheetCtx.lineTo(sheet.width, r * fh); sheetCtx.stroke(); }
+    sheetCtx.font = "14px ui-monospace, monospace";
+    sheetCtx.fillStyle = "#fff";
+    for (let i = 0; i < player.frameCount; i++) {
+      const s = player.sourceRect(i);
+      sheetCtx.fillText(String(i), s.x + 6, s.y + 18);
+    }
+    const s = player.sourceRect(current);
+    sheetCtx.lineWidth = 3;
+    sheetCtx.strokeStyle = "#ff3b30";
+    sheetCtx.strokeRect(s.x + 1.5, s.y + 1.5, s.w - 3, s.h - 3);
+  }
+
+  sheet.addEventListener("click", (e) => {
+    const box = sheet.getBoundingClientRect();
+    const x = (e.clientX - box.left) / box.width * sheet.width;
+    const y = (e.clientY - box.top) / box.height * sheet.height;
+    player.pause();
+    player.show(Math.floor(y / player.frameHeight) * player.cols + Math.floor(x / player.frameWidth));
+  });
+
+  $("play").addEventListener("click", () => player.play());
+  $("pause").addEventListener("click", () => player.pause());
+  $("restart").addEventListener("click", () => { player.restart(); player.play(); });
+  $("fps").addEventListener("input", (e) => player.setFps(Number(e.target.value)));
+  $("bg").addEventListener("change", (e) => { $("stage").dataset.bg = e.target.value; });
+  $("debug").addEventListener("change", (e) => { $("debug-tools").hidden = !e.target.checked; player.setDebug(e.target.checked); });
+  $("prev").addEventListener("click", () => player.step(-1));
+  $("next").addEventListener("click", () => player.step(1));
+  $("reveal").addEventListener("change", () => drawSheet(player.frame));
+
+  new ResizeObserver(() => player.resize()).observe($("canvas"));
+  player.resize();
+  player.play();
+
+  report(player);
+}).catch(() => {
+  $("report-list").innerHTML = "<li>โหลดภาพ assets/sprite-desk.webp ไม่สำเร็จ</li>";
+});
+
+// Checks the real pixels, cell by cell, and lists what cropping cannot fix.
+function report(player) {
+  const c = document.createElement("canvas");
+  c.width = image.naturalWidth;
+  c.height = image.naturalHeight;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(image, 0, 0);
+  const { data } = ctx.getImageData(0, 0, c.width, c.height);
+  const alphaAt = (x, y) => data[(y * c.width + x) * 4 + 3];
+  const items = [];
+
+  let faint = 0, opaque = 0;
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] > 0 && data[i] < 16) faint++;
+    if (data[i] === 255) opaque++;
+  }
+  const total = c.width * c.height;
+  if (faint / total > 0.01) {
+    items.push(`พื้นหลังไม่โปร่งใสสนิท: ${(faint / total * 100).toFixed(0)}% ของพิกเซลมี alpha 1–15 (คราบจาง ๆ รอบตัวและโต๊ะ ติ๊ก “เผยพิกเซล” ด้านบนเพื่อดู) การ crop ลบไม่ได้ ต้องแก้ไฟล์ต้นฉบับ`);
+  }
+  if (opaque === 0) items.push("ไม่มีพิกเซลทึบ 100% เลย (alpha สูงสุดต่ำกว่า 255) ตัวคนและโต๊ะจะโปร่งแสงเล็กน้อยทุกเฟรม");
+
+  const fw = player.frameWidth, fh = player.frameHeight;
+  if (!Number.isInteger(fw) || !Number.isInteger(fh)) {
+    items.push(`ขนาดภาพ ${c.width}×${c.height} หาร 8×2 ไม่ลงตัว (เฟรมละ ${fw}×${fh}) ขอบเฟรมจึงอยู่กลางพิกเซล ควร export ให้กว้างหาร 8 ลงตัว`);
+  }
+  if (fh < 400) items.push(`ความละเอียดต่ำ: เฟรมละ ${Math.round(fw)}×${fh} px ถูกขยายเมื่อแสดงใหญ่ จะดูเบลอ ควรใช้ไฟล์ต้นฉบับขนาดเต็ม`);
+
+  // Opaque pixels on a cell's right edge mean the drawing was cut off by the grid.
+  const clipped = [];
+  for (let i = 0; i < player.frameCount; i++) {
+    const s = player.sourceRect(i);
+    const x = Math.floor(s.x + s.w) - 1;
+    let hits = 0;
+    for (let y = s.y; y < s.y + s.h; y++) if (alphaAt(x, y) > 128) hits++;
+    if (hits > 4) clipped.push(i);
+  }
+  if (clipped.length) items.push(`เฟรม ${clipped.join(", ")}: เท้าหลังชนขอบขวาของช่อง ถูกตัดขาดตั้งแต่ในต้นฉบับ`);
+
+  // Desk: left foot bottom; person: shoe bottom, measured in each cell.
+  const heights = [];
+  for (let i = 0; i < player.frameCount; i++) {
+    const s = player.sourceRect(i);
+    let top = -1, bottom = -1;
+    const x0 = Math.floor(s.x + s.w * 0.52), x1 = Math.floor(s.x + s.w) - 1;
+    for (let y = s.y; y < s.y + s.h && top < 0; y++) for (let x = x0; x < x1; x++) if (alphaAt(x, y) > 128) { top = y - s.y; break; }
+    for (let y = s.y + s.h - 1; y >= s.y && bottom < 0; y--) for (let x = Math.floor(s.x + s.w * 0.62); x < x1; x++) if (alphaAt(x, y) > 128) { bottom = y - s.y; break; }
+    heights.push(bottom - top);
+  }
+  const min = Math.min(...heights), max = Math.max(...heights);
+  if (max - min > min * 0.04) {
+    let jump = 1;
+    for (let i = 2; i < heights.length; i++) if (Math.abs(heights[i] - heights[i - 1]) > Math.abs(heights[jump] - heights[jump - 1])) jump = i;
+    items.push(`ตัวละครสูงไม่เท่ากัน: ${min}–${max} px (ต่างกัน ${((max - min) / min * 100).toFixed(0)}%) ช่วงเดินตัวเล็กกว่าช่วงพิมพ์ เปลี่ยนมากสุดที่เฟรม ${jump - 1}→${jump} (${heights[jump - 1]}→${heights[jump]} px) แบ่งช่องเท่ากันแก้ไม่ได้ ต้องแก้ภาพต้นฉบับ`);
+  }
+  if (!items.length) items.push("ไม่พบปัญหา");
+  $("report-list").innerHTML = items.map((t) => `<li>${t}</li>`).join("");
+}
+</script>
+</body>
+</html>
