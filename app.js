@@ -195,14 +195,19 @@ function wireSubpixels() {
   let rows = 0;
   let energy = new Float32Array(0);
   let scale = 1;
+  // Runs on every size notification, so it only resets the grid when the size really changed.
   const resize = () => {
     const box = section.getBoundingClientRect();
     scale = Math.min(2, devicePixelRatio || 1);
-    canvas.width = Math.round(box.width * scale);
-    canvas.height = Math.round(box.height * scale);
+    const width = Math.round(box.width * scale);
+    const height = Math.round(box.height * scale);
+    if (width === canvas.width && height === canvas.height) return;
+    canvas.width = width;
+    canvas.height = height;
     columns = Math.ceil(box.width / PITCH);
     rows = Math.ceil(box.height / PITCH);
     energy = new Float32Array(columns * rows);
+    last.known = false;
   };
 
   // Raise cells around a point to a soft elliptical falloff; never lowers a cell.
@@ -232,6 +237,7 @@ function wireSubpixels() {
     ["#3df05a", 6.9, 0.5, 2.7, 4.7, 0.2, 0.8],
     ["#f5302c", 6.9, 5.8, 2.7, 3.3, 0.27, 0.86],
   ];
+  const ROUNDED = typeof ctx.roundRect === "function";
   const draw = () => {
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.clearRect(0, 0, columns * PITCH, rows * PITCH);
@@ -247,9 +253,15 @@ function wireSubpixels() {
       for (let i = 0; i < energy.length; i++) {
         if (energy[i] <= from) continue;
         ctx.globalAlpha = ramp(energy[i], from, to);
-        ctx.beginPath();
-        ctx.roundRect((i % columns) * PITCH + x, Math.floor(i / columns) * PITCH + y, width, height, 1);
-        ctx.fill();
+        const left = (i % columns) * PITCH + x;
+        const top = Math.floor(i / columns) * PITCH + y;
+        if (ROUNDED) {
+          ctx.beginPath();
+          ctx.roundRect(left, top, width, height, 1);
+          ctx.fill();
+        } else {
+          ctx.fillRect(left, top, width, height);
+        }
       }
     }
     ctx.globalAlpha = 1;
@@ -285,8 +297,9 @@ function wireSubpixels() {
       Object.assign(last, { x, y, known: true });
       lit = true;
     }
-    draw();
+    // Schedule first: a drawing error must never leave the loop marked as running.
     frameId = visible && lit ? requestAnimationFrame(frame) : 0;
+    draw();
   };
   const wake = () => {
     if (frameId || !visible) return;
@@ -294,21 +307,22 @@ function wireSubpixels() {
     frameId = requestAnimationFrame(frame);
   };
 
+  // Listens on the window and hit-tests the section, so nothing layered over it can swallow the event.
   const follow = (e) => {
+    const box = section.getBoundingClientRect();
+    if (e.clientY < box.top || e.clientY > box.bottom || e.clientX < box.left || e.clientX > box.right) {
+      last.known = false;
+      return;
+    }
     pointer.x = e.clientX;
     pointer.y = e.clientY;
     pointer.moved = true;
     wake();
   };
-  const leave = () => (last.known = false);
-  section.addEventListener("pointermove", follow, { passive: true });
-  section.addEventListener("pointerleave", leave);
-  section.addEventListener("pointercancel", leave);
-  new ResizeObserver(() => {
-    resize();
-    last.known = false;
-    wake();
-  }).observe(section);
+  addEventListener("PointerEvent" in window ? "pointermove" : "mousemove", follow, { passive: true });
+  addEventListener("resize", resize);
+  new ResizeObserver(resize).observe(section);
+  resize();
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     wake();
