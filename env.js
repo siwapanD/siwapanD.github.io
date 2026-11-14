@@ -10,7 +10,9 @@
 //   cols/rows grid size
 //   fps       starting playback speed
 //   still     frame to show when the visitor prefers reduced motion
-//   segments  play in order; only the last one may loop
+//   segments  play in order; times = how often a segment plays (default 1); only the last may loop
+//   repeat    true = start the whole sequence over after the last segment
+//   speed     on a segment: multiplier of fps for that segment (0.5 = half speed)
 //   alt       description for screen readers
 //   desc      one line shown on sprite.html
 "use strict";
@@ -117,10 +119,10 @@ window.SPRITES = {
     segments: [
       { name: "เดินเข้าโต๊ะ", from: 0, to: 6, loop: false },
       { name: "เตรียมพิมพ์", from: 8, to: 9, loop: false },
-      { name: "พิมพ์งาน (วน)", from: 10, to: 15, loop: true },
+      { name: "พิมพ์งาน (วน ช้าลง)", from: 10, to: 15, loop: true, speed: 0.5 },
     ],
     alt: "ภาพเจ้าของเว็บไซต์ในชุดสูทเดินเข้ามาหลังโต๊ะปรับระดับแล้วยืนพิมพ์งานบน MacBook",
-    desc: "HD: เฟรมละ 1200×1600 ย่อเป็น 840×1120 · เดินเข้าโต๊ะ (0–6, ข้ามเฟรม 7 ที่ชุดผิด) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15)",
+    desc: "HD: เฟรมละ 1200×1600 ย่อเป็น 840×1120 · เดินเข้าโต๊ะ (0–6, ข้ามเฟรม 7 ที่ชุดผิด) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำช้าลงครึ่งหนึ่ง (10–15)",
   },
 };
 

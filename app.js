@@ -109,7 +109,7 @@ function wireSprite() {
   image.src = sheet.src;
   image.decode().then(() => {
     const player = new SpritePlayer({
-      canvas, image, cols: sheet.cols, rows: sheet.rows, fps: sheet.fps, segments: sheet.segments,
+      canvas, image, cols: sheet.cols, rows: sheet.rows, fps: sheet.fps, segments: sheet.segments, repeat: Boolean(sheet.repeat),
     });
     new ResizeObserver(() => player.resize()).observe(canvas);
     player.resize();

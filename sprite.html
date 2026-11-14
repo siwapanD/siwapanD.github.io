@@ -105,8 +105,8 @@
   </section>
 </main>
 
-<script src="env.js?v=8"></script>
-<script src="sprite-player.js?v=2"></script>
+<script src="env.js?v=10"></script>
+<script src="sprite-player.js?v=4"></script>
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
@@ -158,7 +158,7 @@ async function load(key) {
   sheet.width = image.naturalWidth;
   sheet.height = image.naturalHeight;
   player = new SpritePlayer({
-    canvas, image, cols: config.cols, rows: config.rows, segments: config.segments,
+    canvas, image, cols: config.cols, rows: config.rows, segments: config.segments, repeat: Boolean(config.repeat),
     fps: config.fps, onFrame: readout,
   });
   $("fps").value = config.fps;
