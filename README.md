@@ -13,3 +13,14 @@ python3 -m http.server 8000       # ดูตัวอย่างที่ http
 - บัญชีที่รวมอยู่ในตัวแปร `ACCOUNTS` ของ `scripts/build_data.py`
 
 ถ้าต้องการให้อัปเดตทุกวัน ให้ตั้ง secret `PROFILE_TOKEN` เป็น classic token ที่มีสิทธิ์ `repo` และตั้ง `PROFILE_TOKEN_KHUNCHAYNE` เป็น token แบบเดียวกันของบัญชี KhunchayNe
+
+## Deploy and settings
+
+`.github/workflows/pages.yml` publishes the site on every push to `main`.
+Settings → Pages → Source must be set to **GitHub Actions**.
+
+The About section's sprite sheet is chosen by the repository variable `SPRITE_VERSION`
+(Settings → Secrets and variables → Actions → Variables), for example `v1` or `v2`.
+The versions are listed in `SPRITES` in `env.js`; without the variable, `env.js` decides.
+Changing the variable does not redeploy: run **Deploy site** from the Actions tab
+(it also takes a one-off `sprite_version` input).

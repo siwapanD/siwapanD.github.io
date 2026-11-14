@@ -1,7 +1,9 @@
-// Site settings. Edit this file to change which sprite sheet the About section plays.
+// Site settings.
 //
-// SPRITE_VERSION picks a key from SPRITES below. To try another version without editing this
-// file, add ?sprite=<key> to the page URL, for example https://siwapand.github.io/?sprite=v1
+// SPRITE_VERSION picks a key from SPRITES below. It is only the default: when the repository
+// variable SPRITE_VERSION is set (Settings → Secrets and variables → Actions → Variables), the
+// "Deploy site" workflow writes that value here before publishing. To try another version without
+// editing anything, add ?sprite=<key> to the page URL, for example https://siwapand.github.io/?sprite=v1
 //
 // To add a sheet, put the image in assets/ and add an entry to SPRITES:
 //   src       image path; must be a grid of cols × rows equal cells
