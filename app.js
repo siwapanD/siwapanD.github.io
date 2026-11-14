@@ -180,49 +180,137 @@ function renderStats(data) {
   );
 }
 
-// The lit patch of subpixels trails the pointer; with no pointer over the section it drifts on its own.
+// Subpixels light up under the pointer and fade behind it. Each cell holds an energy level; blue
+// responds to the least energy, so the edge of the patch and its fading trail turn blue first.
 function wireSubpixels() {
   if (!MOTION) return;
+  const PITCH = 10;
+  const SIGMA_X = 118;
+  const SIGMA_Y = 92;
+  const FADE = 0.55; // seconds for energy to fall to about a third
   const section = $("numbers");
-  const lit = $("subpixels-lit");
-  const pos = { x: 0, y: 0 };
-  const target = { x: 0, y: 0 };
-  let hovering = false;
+  const canvas = $("subpixels");
+  const ctx = canvas.getContext("2d");
+  let columns = 0;
+  let rows = 0;
+  let energy = new Float32Array(0);
+  let scale = 1;
+  const resize = () => {
+    const box = section.getBoundingClientRect();
+    scale = Math.min(2, devicePixelRatio || 1);
+    canvas.width = Math.round(box.width * scale);
+    canvas.height = Math.round(box.height * scale);
+    columns = Math.ceil(box.width / PITCH);
+    rows = Math.ceil(box.height / PITCH);
+    energy = new Float32Array(columns * rows);
+  };
+
+  // Raise cells around a point to a soft elliptical falloff; never lowers a cell.
+  const stamp = (x, y, strength) => {
+    const c0 = Math.max(0, Math.floor((x - SIGMA_X * 2.6) / PITCH));
+    const c1 = Math.min(columns - 1, Math.ceil((x + SIGMA_X * 2.6) / PITCH));
+    const r0 = Math.max(0, Math.floor((y - SIGMA_Y * 2.6) / PITCH));
+    const r1 = Math.min(rows - 1, Math.ceil((y + SIGMA_Y * 2.6) / PITCH));
+    for (let r = r0; r <= r1; r++) {
+      const dy = (r * PITCH + PITCH / 2 - y) / SIGMA_Y;
+      for (let c = c0; c <= c1; c++) {
+        const dx = (c * PITCH + PITCH / 2 - x) / SIGMA_X;
+        const value = strength * Math.exp(-0.5 * (dx * dx + dy * dy));
+        const i = r * columns + c;
+        if (value > energy[i]) energy[i] = value;
+      }
+    }
+  };
+
+  const ramp = (value, from, to) => (value <= from ? 0 : value >= to ? 1 : (value - from) / (to - from));
+  // [colour, x, y, width, height, energy where it starts to glow, energy where it is fully lit]
+  const SUBPIXELS = [
+    ["#1414f0", 0, 0, 5, 8, 0.06, 0.7],
+    ["#2fe04a", 6, 0, 3, 5, 0.22, 0.85],
+    ["#f02a2a", 6, 5.5, 3, 2.5, 0.3, 0.9],
+  ];
+  const draw = () => {
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.clearRect(0, 0, columns * PITCH, rows * PITCH);
+    for (const [colour, x, y, width, height, from, to] of SUBPIXELS) {
+      ctx.fillStyle = colour;
+      for (let i = 0; i < energy.length; i++) {
+        if (energy[i] <= from) continue;
+        ctx.globalAlpha = ramp(energy[i], from, to);
+        ctx.fillRect((i % columns) * PITCH + x, Math.floor(i / columns) * PITCH + y, width, height);
+      }
+    }
+    ctx.globalAlpha = 1;
+  };
+
+  const pointer = { x: 0, y: 0, inside: false, used: false };
+  const last = { x: 0, y: 0, known: false };
   let visible = false;
-  let started = false;
   let frameId = 0;
+  let previous = 0;
   const frame = (now) => {
+    const dt = Math.min(0.05, (now - previous) / 1000 || 0.016);
+    previous = now;
     const box = section.getBoundingClientRect();
-    if (!hovering) {
-      const t = now / 1000;
-      target.x = box.width * (0.5 + 0.34 * Math.sin(t * 0.42));
-      target.y = box.height * (0.5 + 0.3 * Math.sin(t * 0.63 + 1.3));
+    const decay = Math.exp(-dt / FADE);
+    let lit = false;
+    for (let i = 0; i < energy.length; i++) {
+      if (energy[i] === 0) continue;
+      energy[i] = energy[i] < 0.02 ? 0 : energy[i] * decay;
+      lit = true;
     }
-    if (!started) {
-      Object.assign(pos, target);
-      started = true;
+    // Until a mouse has been over the section, the patch wanders on its own (and always on touch screens).
+    const wander = !pointer.used;
+    if (pointer.inside || wander) {
+      let x = pointer.x - box.left;
+      let y = pointer.y - box.top;
+      if (!pointer.inside) {
+        const t = now / 1000;
+        x = box.width * (0.5 + 0.34 * Math.sin(t * 0.5));
+        y = box.height * (0.5 + 0.3 * Math.sin(t * 0.76 + 1.3));
+      }
+      // Stamp along the path since the last frame so a fast pointer leaves a continuous trail.
+      const steps = last.known ? Math.min(12, Math.ceil(Math.hypot(x - last.x, y - last.y) / 24)) || 1 : 1;
+      for (let step = 1; step <= steps; step++) {
+        const t = step / steps;
+        stamp(last.known ? last.x + (x - last.x) * t : x, last.known ? last.y + (y - last.y) * t : y, 1);
+      }
+      Object.assign(last, { x, y, known: true });
+      lit = true;
+    } else {
+      last.known = false;
     }
-    pos.x += (target.x - pos.x) * (hovering ? 0.14 : 0.04);
-    pos.y += (target.y - pos.y) * (hovering ? 0.14 : 0.04);
-    lit.style.setProperty("--mx", `${pos.x.toFixed(1)}px`);
-    lit.style.setProperty("--my", `${pos.y.toFixed(1)}px`);
-    // A slow shimmer in size keeps the patch alive while the pointer rests.
-    lit.style.setProperty("--r", `${(250 + 22 * Math.sin(now / 900)).toFixed(1)}px`);
-    frameId = visible ? requestAnimationFrame(frame) : 0;
+    draw();
+    frameId = visible && lit ? requestAnimationFrame(frame) : 0;
   };
+  const wake = () => {
+    if (frameId || !visible) return;
+    previous = performance.now();
+    frameId = requestAnimationFrame(frame);
+  };
+
   const follow = (e) => {
-    const box = section.getBoundingClientRect();
-    hovering = true;
-    target.x = e.clientX - box.left;
-    target.y = e.clientY - box.top;
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    if (!pointer.inside) last.known = false;
+    pointer.inside = true;
+    if (e.pointerType === "mouse") pointer.used = true;
+    wake();
   };
+  const leave = () => (pointer.inside = false);
   section.addEventListener("pointermove", follow, { passive: true });
   section.addEventListener("pointerdown", follow, { passive: true });
-  section.addEventListener("pointerleave", () => (hovering = false));
-  section.addEventListener("pointercancel", () => (hovering = false));
+  section.addEventListener("pointerleave", leave);
+  section.addEventListener("pointercancel", leave);
+  section.addEventListener("pointerup", (e) => e.pointerType !== "mouse" && leave());
+  new ResizeObserver(() => {
+    resize();
+    last.known = false;
+    wake();
+  }).observe(section);
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
-    if (visible && !frameId) frameId = requestAnimationFrame(frame);
+    wake();
   }).observe(section);
 }
 
