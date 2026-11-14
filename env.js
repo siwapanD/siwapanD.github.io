@@ -16,7 +16,7 @@
 "use strict";
 
 window.SITE_ENV = {
-  SPRITE_VERSION: "v3",
+  SPRITE_VERSION: "v4",
 };
 
 window.SPRITES = {
@@ -53,6 +53,16 @@ window.SPRITES = {
     segments: [{ name: "นั่งพิมพ์งาน (วน)", from: 0, to: 15, loop: true }],
     alt: "ภาพเจ้าของเว็บไซต์ในชุดสูทนั่งเก้าอี้ทำงาน พิมพ์งานหน้าจอโค้งที่แสดง Music, Code และ Claude แล้วหันมองหน้าจอ",
     desc: "นั่งมุมข้างหลัง พื้นเขียวลบแล้ว: พิมพ์งานและหันมองจอ วนทั้ง 16 เฟรม (0–15)",
+  },
+  v4: {
+    src: "assets/sprite-desk-v4.webp",
+    cols: 8,
+    rows: 2,
+    fps: 8,
+    still: 0,
+    segments: [{ name: "นั่งพิมพ์งาน (วน)", from: 0, to: 15, loop: true }],
+    alt: "ภาพเจ้าของเว็บไซต์ในชุดสูทนั่งเก้าอี้ทำงาน พิมพ์งานหน้าจอโค้งที่แสดง Music, Code และ Claude แล้วหันมองหน้าจอ",
+    desc: "v3 ขยาย 3 เท่าด้วย AI (ESRGAN) แล้วลบพื้นเขียว: เฟรมละ 750×999",
   },
 };
 
