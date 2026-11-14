@@ -24,3 +24,12 @@ The About section's sprite sheet is chosen by the repository variable `SPRITE_VE
 The versions are listed in `SPRITES` in `env.js`; without the variable, `env.js` decides.
 Changing the variable does not redeploy: run **Deploy site** from the Actions tab
 (it also takes a one-off `sprite_version` input).
+
+### Sprite sheets
+
+- `scripts/layer_frames.py` stacks a fixed desk layer and per-frame person layers (desk legs and front edge in front of the person).
+- `scripts/pack_frames.py` packs separate frames (best: one image per frame, 600 × 800 or larger) into a sheet without trimming them.
+- `scripts/chroma_key.py` turns a green-screen sheet transparent.
+- `scripts/stabilize.py` re-cuts a sheet whose cells drift (an object that should stay put slides between frames).
+- `scripts/upscale.js` upscales a green-screen sheet 3× with ESRGAN.
+- `sprite.html` plays any version from `env.js` and checks the image: haze, cell size, frames touching cell edges, and drift.
