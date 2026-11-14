@@ -129,13 +129,13 @@ class SpritePlayer {
     }
   }
 
-  // Match the backing store to the element's CSS size × devicePixelRatio, so the frame is not
-  // scaled twice.
+  // Match the backing store to the element's layout size × devicePixelRatio, so the frame is not
+  // scaled twice. clientWidth/Height ignore CSS transforms; getBoundingClientRect() would return
+  // the tilted, projected box and leave the bitmap a little too small or too large.
   resize() {
-    const box = this.canvas.getBoundingClientRect();
     const ratio = window.devicePixelRatio || 1;
-    const width = Math.max(1, Math.round(box.width * ratio));
-    const height = Math.max(1, Math.round(box.height * ratio));
+    const width = Math.max(1, Math.round(this.canvas.clientWidth * ratio));
+    const height = Math.max(1, Math.round(this.canvas.clientHeight * ratio));
     if (this.canvas.width !== width || this.canvas.height !== height) {
       this.canvas.width = width;
       this.canvas.height = height;
