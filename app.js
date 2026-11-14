@@ -32,48 +32,48 @@ function icon(name, className = "icon") {
 
 const MOTION = document.documentElement.classList.contains("motion");
 
-function ringPath(cx, cy, radius, ring) {
-  let d = "";
-  for (let step = 0; step <= 120; step++) {
-    const t = (step / 120) * Math.PI * 2;
-    const wobble =
-      1 + 0.13 * Math.sin(3 * t + 0.6 + ring * 0.05) + 0.07 * Math.sin(5 * t + ring * 0.21) + 0.03 * Math.sin(9 * t - ring * 0.3);
-    d += `${step ? "L" : "M"}${(cx + radius * wobble * 1.25 * Math.cos(t)).toFixed(1)} ${(cy + radius * wobble * Math.sin(t)).toFixed(1)}`;
-  }
-  return `${d}Z`;
+// The hero screen: the last 364 days as pixels, two weeks per column, oldest on the left.
+function renderDisplay(data) {
+  const LEVELS = { NONE: 0, FIRST_QUARTILE: 1, SECOND_QUARTILE: 2, THIRD_QUARTILE: 3, FOURTH_QUARTILE: 4 };
+  const ROWS = 14;
+  const COLUMNS = 26;
+  const latest = data.contributions.latest;
+  const days = latest.days.filter((d) => d.d <= data.generatedAt).slice(-ROWS * COLUMNS);
+  const pixels = $("pixels");
+  pixels.append(
+    ...days.map((day, i) => {
+      const column = Math.floor(i / ROWS);
+      return el("i", { className: "px", style: `--c:${column};--h:${Math.round(205 + (column / (COLUMNS - 1)) * 130)}`, dataset: { l: LEVELS[day.l] ?? 0 } });
+    })
+  );
+  $("display-caption").textContent = `${fmt(latest.total)} contributions ใน 12 เดือนล่าสุด · หนึ่งจุดคือหนึ่งวัน`;
+  if (!MOTION) return;
+  pixels.classList.add("wait");
+  requestAnimationFrame(() => pixels.classList.replace("wait", "play"));
 }
 
-const contourCenter = { x: 0, y: 0, base: 0 };
-
-function drawContours() {
-  const svg = $("contours");
-  const box = svg.getBoundingClientRect();
-  const mascot = $("mascot").getBoundingClientRect();
-  Object.assign(contourCenter, {
-    x: mascot.left + mascot.width / 2 - box.left,
-    y: mascot.top + mascot.height * 0.62 - box.top,
-    base: mascot.width * 0.5,
-  });
-  svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
-}
-
-// The tree grows from a sapling to full size as the visitor reads down the page.
-function wireTree() {
-  const tree = $("tree");
-  const leaves = [...tree.querySelectorAll(".leaf")].map((leaf) => [leaf, Number(leaf.dataset.at)]);
+// Scroll-linked effects share one rAF-throttled listener.
+function wireScroll() {
+  if (!MOTION) return;
+  const display = $("display");
+  const manifesto = $("manifesto");
+  const words = [...manifesto.querySelectorAll(".w")];
+  manifesto.classList.add("dimmed");
   let queued = false;
   const draw = () => {
     queued = false;
-    const range = document.documentElement.scrollHeight - innerHeight;
-    const progress = range > 0 ? Math.min(1, scrollY / range) : 1;
-    const scale = 0.32 + 0.68 * progress;
-    tree.setAttribute("transform", `translate(933 794) scale(${scale.toFixed(3)}) translate(-933 -794)`);
-    leaves.forEach(([leaf, at]) => {
-      // The first clusters are there from the start, so the sapling already has leaves.
-      const grown = Math.max(0, Math.min(1, (progress + 0.35 - at) / 0.2));
-      leaf.style.opacity = grown;
-      leaf.style.transform = `scale(${(0.4 + 0.6 * grown).toFixed(3)})`;
-    });
+    // The screen grows to full size as it rises from the bottom edge to mid-viewport.
+    const box = display.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (innerHeight - box.top) / (innerHeight * 0.6)));
+    display.style.setProperty("--s", (0.88 + 0.12 * p).toFixed(4));
+    display.style.setProperty("--p", p.toFixed(3));
+    // Words light up one by one while the paragraph crosses the middle of the viewport.
+    const text = manifesto.getBoundingClientRect();
+    const start = innerHeight * 0.85;
+    const end = innerHeight * 0.35;
+    const read = Math.max(0, Math.min(1, (start - text.top) / (start - end + text.height * 0.6)));
+    const lit = Math.round(read * words.length);
+    words.forEach((word, i) => word.classList.toggle("lit", i < lit));
   };
   const request = () => {
     if (queued) return;
@@ -82,156 +82,57 @@ function wireTree() {
   };
   addEventListener("scroll", request, { passive: true });
   addEventListener("resize", request);
-  request();
-  return request;
+  draw();
 }
 
-function ripple() {
-  if (!MOTION) return;
-  const { x, y, base } = contourCenter;
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("class", "ripple");
-  path.setAttribute("d", ringPath(x, y, base, 3));
-  path.style.transformOrigin = `${x}px ${y}px`;
-  path.addEventListener("animationend", () => path.remove());
-  $("contours").append(path);
+// Thai has no spaces between words, so the paragraph is split with Intl.Segmenter.
+function splitManifesto() {
+  const node = $("manifesto");
+  if (!MOTION || !("Segmenter" in Intl)) return;
+  const text = node.textContent;
+  node.replaceChildren(
+    ...[...new Intl.Segmenter("th", { granularity: "word" }).segment(text)].map((part) =>
+      part.isWordLike ? el("span", { className: "w", textContent: part.segment }) : part.segment
+    )
+  );
 }
 
-function wireMascot(data) {
-  const SLEEP_AFTER = 20000;
-  const mascot = $("mascot");
-  const bubble = $("mascot-bubble");
-  const squish = $("m-squish");
-  const parts = { tilt: $("m-tilt"), face: $("m-face"), pupils: $("m-pupils") };
-  const target = { x: 0, y: 0 };
-  const look = { x: 0, y: 0 };
-  let running = false;
-  let sleepTimer;
-  let stateTimer;
-  let bubbleTimer;
-  let clicks = 0;
-
-  const apply = () => {
-    parts.tilt.setAttribute("transform", `rotate(${(look.x * 5).toFixed(2)} 100 208)`);
-    parts.face.setAttribute("transform", `translate(${(look.x * 13).toFixed(2)} ${(look.y * 9).toFixed(2)})`);
-    parts.pupils.setAttribute("transform", `translate(${(look.x * 7).toFixed(2)} ${(look.y * 6).toFixed(2)})`);
+function wireGallery() {
+  const gallery = $("gallery");
+  const prev = $("gallery-prev");
+  const next = $("gallery-next");
+  const step = () => gallery.querySelector(".slide").getBoundingClientRect().width + 20;
+  const sync = () => {
+    prev.disabled = gallery.scrollLeft <= 2;
+    next.disabled = gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth - 2;
   };
-  const frame = () => {
-    const ease = MOTION ? 0.13 : 1;
-    look.x += (target.x - look.x) * ease;
-    look.y += (target.y - look.y) * ease;
-    apply();
-    if (Math.abs(target.x - look.x) + Math.abs(target.y - look.y) > 0.002) requestAnimationFrame(frame);
-    else running = false;
-  };
-  const lookAt = (clientX, clientY) => {
-    const box = mascot.getBoundingClientRect();
-    const dx = clientX - (box.left + box.width / 2);
-    const dy = clientY - (box.top + box.height * 0.6);
-    const distance = Math.hypot(dx, dy);
-    const strength = distance < 24 ? 0 : Math.min(1, distance / 280);
-    target.x = distance ? (dx / distance) * strength : 0;
-    target.y = distance ? (dy / distance) * strength : 0;
-    if (!running) {
-      running = true;
-      requestAnimationFrame(frame);
-    }
-  };
-
-  const setState = (state, duration) => {
-    clearTimeout(stateTimer);
-    // Re-entering a state restarts its one-shot animations.
-    mascot.dataset.state = "idle";
-    void mascot.getBoundingClientRect();
-    mascot.dataset.state = state;
-    if (duration) stateTimer = setTimeout(() => (mascot.dataset.state = "idle"), duration);
-  };
-  const say = (text, duration = 2600) => {
-    clearTimeout(bubbleTimer);
-    bubble.textContent = text;
-    bubble.classList.add("show");
-    bubbleTimer = setTimeout(() => bubble.classList.remove("show"), duration);
-  };
-  const wake = () => {
-    clearTimeout(sleepTimer);
-    if (mascot.dataset.state === "sleep") setState("surprised", 700);
-    sleepTimer = setTimeout(() => {
-      target.x = 0;
-      target.y = 0.25;
-      if (!running) {
-        running = true;
-        requestAnimationFrame(frame);
-      }
-      setState("sleep");
-    }, SLEEP_AFTER);
-  };
-  const blink = () => {
-    setTimeout(() => {
-      if (mascot.dataset.state === "idle") {
-        mascot.classList.add("blink");
-        setTimeout(() => mascot.classList.remove("blink"), 130);
-      }
-      blink();
-    }, 2400 + Math.random() * 3600);
-  };
-
-  const lines = [
-    `มี ${fmt(data.counts.private)} โปรเจกต์ private นะ`,
-    `12 เดือนนี้ ${fmt(data.contributions.latest.total)} contributions`,
-    `ภาษาที่ใช้มากสุดคือ ${data.languages[0][0]}`,
-    "ถนัด Linux, Docker, Cloudflare, DNS และ GIS",
-    "ลองกดสลับธีมดูสิ",
-  ];
-  mascot.addEventListener("click", () => {
-    wake();
-    setState(clicks % 3 === 2 ? "surprised" : "happy", 1500);
-    say(lines[clicks % lines.length]);
-    clicks++;
-    squish.classList.remove("go");
-    void squish.getBoundingClientRect();
-    squish.classList.add("go");
-    ripple();
-  });
-  squish.addEventListener("animationend", () => squish.classList.remove("go"));
-  addEventListener("pointermove", (e) => {
-    wake();
-    lookAt(e.clientX, e.clientY);
-  }, { passive: true });
-  addEventListener("pointerdown", (e) => {
-    wake();
-    lookAt(e.clientX, e.clientY);
-  }, { passive: true });
-  addEventListener("scroll", wake, { passive: true });
-  addEventListener("keydown", wake);
-
-  wake();
-  if (MOTION) blink();
-  setTimeout(() => {
-    if (!clicks) say("สวัสดี! กดฉันดูสิ");
-  }, 900);
-}
-
-function wireHeroPause() {
-  if (!MOTION) return;
-  new IntersectionObserver(([entry]) => {
-    document.querySelector(".hero").classList.toggle("off", !entry.isIntersecting);
-  }).observe(document.querySelector(".hero"));
+  const move = (direction) => gallery.scrollBy({ left: direction * step(), behavior: MOTION ? "smooth" : "auto" });
+  prev.addEventListener("click", () => move(-1));
+  next.addEventListener("click", () => move(1));
+  gallery.addEventListener("scroll", sync, { passive: true });
+  addEventListener("resize", sync);
+  sync();
 }
 
 function countUp() {
   if (!MOTION) return;
-  document.querySelectorAll("#stats dd").forEach((dd) => {
-    const node = dd.firstChild;
-    const final = node.textContent;
-    const end = Number(final.replaceAll(",", ""));
-    const started = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - started) / 1100);
-      node.textContent = t < 1 ? fmt(Math.round(end * (1 - (1 - t) ** 3))) : final;
-      if (t < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      observer.unobserve(entry.target);
+      const node = entry.target;
+      const final = node.textContent;
+      const end = Number(final.replaceAll(",", ""));
+      const started = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - started) / 1400);
+        node.textContent = t < 1 ? fmt(Math.round(end * (1 - (1 - t) ** 3))) : final;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll("#stats .num").forEach((node) => observer.observe(node));
 }
 
 function reveal() {
@@ -244,8 +145,8 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".stats", "main h2", ".contact p", ".contact .links", "main .section-note", ".skills article", ".also", ".stack h3", ".logo-wall",
-    ".stack-group", ".infra-lede", ".infra-item", ".infra-links", ".impact-item", ".service-item", ".segments", ".heat-scroll", ".heat-foot", ".table-view", ".p-row", ".card", "#public details",
+    ".hero-copy > *", ".display-stage", ".focus", ".manifesto-text", ".numbers h2", ".stats > div", ".section-head > *", ".bento > *", ".after-note", ".slide", ".paddles",
+    ".also", ".stack", ".forks",
   ];
   groups.forEach((selector) => {
     document.querySelectorAll(selector).forEach((node, index) => {
@@ -264,26 +165,65 @@ function reveal() {
   heatObserver.observe(heat);
 }
 
-const STAT_ICONS = {
-  "Private projects": "lock",
-  "Public projects": "globe",
-  "Contributions 12 เดือน": "activity",
-  "วันที่มี contributions": "calendar",
-};
-
 function renderStats(data) {
   const c = data.contributions.latest;
   const items = [
-    ["Private projects", data.counts.private, `อัปเดตใน 90 วันล่าสุด ${data.counts.privateActive90d} โปรเจกต์`],
-    ["Public projects", data.counts.publicShown, "repo ของตัวเอง ไม่นับ fork"],
-    ["Contributions 12 เดือน", fmt(c.total), `อยู่ใน private repo ${fmt(c.private)} ครั้ง`],
-    ["วันที่มี contributions", fmt(data.contributions.activeDays), `ติดต่อกันนานสุด ${data.contributions.longestStreak} วัน`],
+    ["Private projects", data.counts.private, ""],
+    ["Public projects ไม่นับ fork", data.counts.publicShown, ""],
+    ["Contributions ใน 12 เดือน", c.total, ""],
+    ["อยู่ใน private repo", c.private, " ครั้ง"],
+    ["วันที่มี contributions", data.contributions.activeDays, " วัน"],
+    ["ติดต่อกันนานสุด", data.contributions.longestStreak, " วัน"],
   ];
   $("stats").append(
-    ...items.map(([label, value, sub]) =>
-      el("div", {}, el("dt", {}, icon(STAT_ICONS[label]), label), el("dd", {}, String(value), el("span", { className: "sub-stat", textContent: sub })))
-    )
+    ...items.map(([label, value, unit]) => el("div", {}, el("dt", { textContent: label }), el("dd", {}, el("span", { className: "num", textContent: fmt(value) }), unit)))
   );
+}
+
+// The lit patch of subpixels trails the pointer; with no pointer over the section it drifts on its own.
+function wireSubpixels() {
+  if (!MOTION) return;
+  const section = $("numbers");
+  const lit = $("subpixels-lit");
+  const pos = { x: 0, y: 0 };
+  const target = { x: 0, y: 0 };
+  let hovering = false;
+  let visible = false;
+  let started = false;
+  let frameId = 0;
+  const frame = (now) => {
+    const box = section.getBoundingClientRect();
+    if (!hovering) {
+      const t = now / 1000;
+      target.x = box.width * (0.5 + 0.34 * Math.sin(t * 0.42));
+      target.y = box.height * (0.5 + 0.3 * Math.sin(t * 0.63 + 1.3));
+    }
+    if (!started) {
+      Object.assign(pos, target);
+      started = true;
+    }
+    pos.x += (target.x - pos.x) * (hovering ? 0.14 : 0.04);
+    pos.y += (target.y - pos.y) * (hovering ? 0.14 : 0.04);
+    lit.style.setProperty("--mx", `${pos.x.toFixed(1)}px`);
+    lit.style.setProperty("--my", `${pos.y.toFixed(1)}px`);
+    // A slow shimmer in size keeps the patch alive while the pointer rests.
+    lit.style.setProperty("--r", `${(250 + 22 * Math.sin(now / 900)).toFixed(1)}px`);
+    frameId = visible ? requestAnimationFrame(frame) : 0;
+  };
+  const follow = (e) => {
+    const box = section.getBoundingClientRect();
+    hovering = true;
+    target.x = e.clientX - box.left;
+    target.y = e.clientY - box.top;
+  };
+  section.addEventListener("pointermove", follow, { passive: true });
+  section.addEventListener("pointerdown", follow, { passive: true });
+  section.addEventListener("pointerleave", () => (hovering = false));
+  section.addEventListener("pointercancel", () => (hovering = false));
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !frameId) frameId = requestAnimationFrame(frame);
+  }).observe(section);
 }
 
 function renderHeat(range, today) {
@@ -391,12 +331,11 @@ function renderPrivate(data) {
   $("private-note").textContent = `${total} โปรเจกต์ อัปเดตใน 90 วันล่าสุด ${privateActive90d} โปรเจกต์ โค้ดและชื่อโปรเจกต์ไม่เปิดเผย จึงสรุปเป็นหมวดงาน ตัวเลขนับจาก @siwapanD ${privateByAccount.siwapanD} และ @KhunchayNe ${privateByAccount.KhunchayNe}${privateComplete ? "" : " เฉพาะ repo ที่บัญชีหลักเข้าถึงได้"}`;
   $("private-list").append(
     ...data.private.categories.map((cat) =>
-      el("div", { className: `p-row${cat.stack.length ? "" : " muted"}` },
+      el("div", { className: `tile p-row${cat.stack.length ? "" : " muted"}` },
         el("div", { className: "p-count", textContent: cat.count }),
-        el("div", {},
-          el("h3", { className: "with-icon" }, icon(CATEGORY_ICONS[cat.title] || "help", "icon icon-accent"), cat.title),
-          el("p", { textContent: cat.summary }),
-          cat.stack.length ? el("p", { className: "tags", textContent: cat.stack.join(" · ") }) : null))
+        el("h3", { className: "with-icon" }, icon(CATEGORY_ICONS[cat.title] || "help", "icon icon-accent"), cat.title),
+        el("p", { textContent: cat.summary }),
+        cat.stack.length ? el("p", { className: "tags", textContent: cat.stack.join(" · ") }) : null)
     )
   );
 }
@@ -410,7 +349,7 @@ function renderPublic(data) {
   const learning = data.public.filter((p) => p.group === "learning");
   $("public-cards").append(
     ...featured.map((p) =>
-      el("article", { className: "card" },
+      el("article", { className: "tile card" },
         el("h3", {}, el("a", { href: p.url, textContent: p.name })),
         el("p", { textContent: p.note }),
         el("div", { className: "meta", textContent: [`@${p.owner}`, p.language, pushedLabel(p.pushedAt)].filter(Boolean).join(" · ") }))
@@ -446,8 +385,7 @@ const THEME_ICONS = {
 function wireThemeToggle() {
   const button = $("theme-toggle");
   const root = document.documentElement;
-  const system = matchMedia("(prefers-color-scheme: dark)");
-  const current = () => root.dataset.theme || (system.matches ? "dark" : "light");
+  const current = () => (root.dataset.theme === "light" ? "light" : "dark");
   // The icon shows the theme a click switches to.
   const sync = () => {
     const next = current() === "dark" ? "light" : "dark";
@@ -463,20 +401,26 @@ function wireThemeToggle() {
     } catch {}
     sync();
   });
-  system.addEventListener("change", sync);
   sync();
 }
 
 function wireNav() {
+  const bar = $("localnav");
+  const toggle = $("menu-toggle");
   const nav = $("topnav-links");
+  const setOpen = (open) => {
+    bar.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "ปิดเมนู" : "เปิดเมนู");
+  };
+  toggle.addEventListener("click", () => setOpen(!bar.classList.contains("open")));
+  nav.addEventListener("click", (e) => e.target.closest("a") && setOpen(false));
+  addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
+
   const links = new Map([...nav.querySelectorAll("a")].map((a) => [a.getAttribute("href").slice(1), a]));
   const activate = (id) => {
     links.forEach((a) => a.removeAttribute("aria-current"));
-    const active = links.get(id);
-    if (!active) return;
-    active.setAttribute("aria-current", "true");
-    // Keep the active link visible in the phone's scrolling menu, without moving the page.
-    nav.scrollTo({ left: active.offsetLeft - nav.offsetLeft - 8, behavior: MOTION ? "smooth" : "auto" });
+    links.get(id)?.setAttribute("aria-current", "true");
   };
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -485,35 +429,25 @@ function wireNav() {
   }, { rootMargin: "-35% 0px -60% 0px" });
   links.forEach((_, id) => observer.observe($(id)));
   observer.observe($("top"));
-  // The last section is too short to reach the observed band, so the page end selects it.
-  addEventListener("scroll", () => {
-    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) activate("contact");
-  }, { passive: true });
 }
 
 async function main() {
   wireThemeToggle();
   wireNav();
-  drawContours();
+  wireGallery();
+  splitManifesto();
   const response = await fetch("data/profile.json");
   const data = await response.json();
+  renderDisplay(data);
   renderStats(data);
   renderActivity(data);
   renderPrivate(data);
   renderPublic(data);
   $("updated").textContent = `ข้อมูลจาก GitHub ณ ${dayLabel(data.generatedAt)}`;
-  drawContours();
-  wireMascot(data);
-  wireHeroPause();
-  const redrawTree = wireTree();
   countUp();
   reveal();
-  redrawTree();
-  let resizeTimer;
-  addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(drawContours, 150);
-  });
+  wireScroll();
+  wireSubpixels();
 }
 
 main().catch((error) => {

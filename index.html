@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,18 +10,17 @@
   <meta property="og:type" content="profile">
   <meta property="og:url" content="https://siwapand.github.io/">
   <script>
-    // Runs before first paint so a saved theme never flashes the other one.
+    // Runs before first paint so a saved theme never flashes the other one. Dark is the default.
     try {
       if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) document.documentElement.classList.add("motion");
-      const saved = localStorage.getItem("theme");
-      if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+      if (localStorage.getItem("theme") === "light") document.documentElement.dataset.theme = "light";
     } catch {}
   </script>
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=18">
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -53,253 +52,222 @@
     <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol>
     <symbol id="i-github" viewBox="0 0 24 24"><path class="brand" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
     <symbol id="i-linkedin" viewBox="0 0 24 24"><path class="brand" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
-  </svg>
-  <svg class="scene" id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="s-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sky-a"/><stop offset="0.7" class="sky-b"/></linearGradient>
-      <radialGradient id="s-glow"><stop offset="0" class="glow-a"/><stop offset="1" class="glow-b"/></radialGradient>
-      <linearGradient id="s-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="beam-a"/><stop offset="1" class="beam-b"/></linearGradient>
-      <linearGradient id="s-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="water-a"/><stop offset="1" class="water-b"/></linearGradient>
-    </defs>
-    <rect width="1600" height="900" fill="url(#s-sky)"/>
-    <circle cx="1000" cy="130" r="280" fill="url(#s-glow)"/>
-    <g class="rays"><path d="M1000 38V4" transform="rotate(0 1000 130)"/><path d="M1000 38V4" transform="rotate(30 1000 130)"/><path d="M1000 38V4" transform="rotate(60 1000 130)"/><path d="M1000 38V4" transform="rotate(90 1000 130)"/><path d="M1000 38V4" transform="rotate(120 1000 130)"/><path d="M1000 38V4" transform="rotate(150 1000 130)"/><path d="M1000 38V4" transform="rotate(180 1000 130)"/><path d="M1000 38V4" transform="rotate(210 1000 130)"/><path d="M1000 38V4" transform="rotate(240 1000 130)"/><path d="M1000 38V4" transform="rotate(270 1000 130)"/><path d="M1000 38V4" transform="rotate(300 1000 130)"/><path d="M1000 38V4" transform="rotate(330 1000 130)"/></g>
-    <circle class="sun" cx="1000" cy="130" r="62"/>
-    <g class="clouds cloud-1"><ellipse cx="300" cy="150" rx="96" ry="28"/><ellipse cx="250" cy="134" rx="56" ry="30"/><ellipse cx="340" cy="130" rx="62" ry="36"/></g>
-    <g class="clouds cloud-2"><ellipse cx="1330" cy="240" rx="82" ry="22"/><ellipse cx="1290" cy="226" rx="46" ry="24"/><ellipse cx="1370" cy="224" rx="52" ry="28"/></g>
-    <path class="mtn-far" d="M0 520 180 340 330 460 520 300 700 470 860 340 1040 480 1240 350 1420 470 1600 380V900H0Z"/>
-    <path class="mtn-mid" d="M0 610 220 480 420 590 590 450 730 432 790 530 900 590 1120 520 1330 600 1600 540V900H0Z"/>
-    <path class="meadow-far" d="M0 650C300 600 520 625 760 628 1000 632 1300 590 1600 640V900H0Z"/>
-    <path class="meadow-near" d="M0 770C400 725 600 775 900 775 1150 775 1400 735 1600 770V900H0Z"/>
-    <polygon class="beam" points="962,180 1038,180 1085,720 790,720"/>
-    <rect class="fall" x="692" y="438" width="44" height="194" rx="10"/>
-    <g class="flow fall-lines"><path d="M702 442V630"/><path d="M714 440V632"/><path d="M727 442V630"/></g>
-    <ellipse class="foam" cx="714" cy="634" rx="52" ry="11"/>
-    <path class="river" d="M690 630C672 672 730 700 694 748 655 795 478 815 372 900H650C770 820 846 780 810 722 790 682 752 662 740 630Z"/>
-    <g class="flow river-lines"><path d="M714 640C700 684 772 712 738 762 700 812 575 832 500 900"/><path d="M730 645C724 684 796 716 768 770 742 815 642 845 590 900"/><path d="M700 648C690 684 742 708 708 758 672 806 530 826 430 900"/></g>
-    <path class="weir" d="M682 716 822 706 826 732 680 744Z"/>
-    <g class="flow weir-lines"><path d="M700 745V768"/><path d="M730 743V766"/><path d="M760 741V764"/><path d="M790 739V762"/></g>
-    <path class="channel" d="M822 722C860 736 886 760 906 792"/>
-    <path class="flow channel-flow" d="M822 722C860 736 886 760 906 792"/>
-    <g class="grass"><path d="M240 800q-5 -14 -9 -20M240 800q1 -16 0 -25M240 800q6 -13 11 -19"/><path d="M330 850q-5 -14 -9 -20M330 850q1 -16 0 -25M330 850q6 -13 11 -19"/><path d="M520 770q-5 -14 -9 -20M520 770q1 -16 0 -25M520 770q6 -13 11 -19"/><path d="M1120 800q-5 -14 -9 -20M1120 800q1 -16 0 -25M1120 800q6 -13 11 -19"/><path d="M1250 850q-5 -14 -9 -20M1250 850q1 -16 0 -25M1250 850q6 -13 11 -19"/><path d="M1400 785q-5 -14 -9 -20M1400 785q1 -16 0 -25M1400 785q6 -13 11 -19"/><path d="M1060 860q-5 -14 -9 -20M1060 860q1 -16 0 -25M1060 860q6 -13 11 -19"/><path d="M160 870q-5 -14 -9 -20M160 870q1 -16 0 -25M160 870q6 -13 11 -19"/><path d="M1500 860q-5 -14 -9 -20M1500 860q1 -16 0 -25M1500 860q6 -13 11 -19"/><path d="M610 860q-5 -14 -9 -20M610 860q1 -16 0 -25M610 860q6 -13 11 -19"/><path d="M1000 830q-5 -14 -9 -20M1000 830q1 -16 0 -25M1000 830q6 -13 11 -19"/><path d="M860 860q-5 -14 -9 -20M860 860q1 -16 0 -25M860 860q6 -13 11 -19"/></g>
-    <g id="tree"><g class="tree-sway">
-      <path class="trunk" d="M916 794C925 720 921 660 927 560L939 560C945 660 941 720 950 794Z"/>
-      <path class="branch" d="M930 680C900 640 870 615 845 590M936 650C965 615 990 595 1015 570M932 610C915 570 900 540 885 500M934 600C950 565 968 535 985 505"/>
-      <circle class="leaf leaf-b" cx="933" cy="520" r="74" data-at="0.45"/><circle class="leaf leaf-a" cx="860" cy="560" r="56" data-at="0.3"/><circle class="leaf leaf-a" cx="1005" cy="560" r="56" data-at="0.35"/><circle class="leaf leaf-a" cx="885" cy="470" r="52" data-at="0.55"/><circle class="leaf leaf-a" cx="985" cy="470" r="52" data-at="0.6"/><circle class="leaf leaf-b" cx="933" cy="425" r="50" data-at="0.7"/><circle class="leaf leaf-a" cx="800" cy="600" r="36" data-at="0.75"/><circle class="leaf leaf-b" cx="1062" cy="600" r="36" data-at="0.8"/><circle class="leaf leaf-b" cx="830" cy="500" r="40" data-at="0.85"/><circle class="leaf leaf-a" cx="1035" cy="505" r="40" data-at="0.9"/>
-    </g></g>
-    <ellipse class="tree-shadow" cx="933" cy="796" rx="60" ry="6"/>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
   </svg>
   <a class="skip" href="#infra">ข้ามไปยังเนื้อหา</a>
-  <nav class="topnav" aria-label="เมนูหลัก">
-    <a class="brand" href="#top" aria-label="siwapan กลับด้านบน"><img src="assets/logo.svg" alt="" width="24" height="27">siwapan</a>
-    <div class="topnav-links" id="topnav-links">
-      <a href="#infra">Infrastructure</a>
-      <a href="#work">ผลงาน</a>
-      <a href="#expertise">ความเชี่ยวชาญ</a>
-      <a href="#activity">Contributions</a>
-      <a href="#private">Private</a>
-      <a href="#public">Public</a>
-      <a href="#contact">ติดต่อ</a>
+  <nav class="localnav" id="localnav" aria-label="เมนูหลัก">
+    <div class="localnav-bar">
+      <a class="localnav-title" href="#top">Siwapan Boonthong</a>
+      <button class="localnav-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="topnav-links" aria-label="เปิดเมนู"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+      <div class="localnav-links" id="topnav-links">
+        <a href="#infra">Infrastructure</a>
+        <a href="#work">ผลงาน</a>
+        <a href="#expertise">ความเชี่ยวชาญ</a>
+        <a href="#activity">Contributions</a>
+        <a href="#private">Private</a>
+        <a href="#public">Public</a>
+        <a href="#contact">ติดต่อ</a>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" type="button"></button>
+      <a class="pill pill-small" href="mailto:siwapan6395@gmail.com">ติดต่องาน</a>
     </div>
-    <button class="theme-toggle" id="theme-toggle" type="button"></button>
   </nav>
+
   <header class="hero" id="top">
-    <svg class="contours" id="contours" aria-hidden="true"></svg>
-    <div class="wrap hero-inner">
-      <div class="hero-grid">
-      <div class="hero-copy">
-      <p class="eyebrow">@siwapanD · @KhunchayNe</p>
+    <div class="wrap hero-copy">
+      <p class="eyebrow grad">@siwapanD · @KhunchayNe</p>
       <h1>Siwapan Boonthong</h1>
+      <p class="hero-tagline">Backend. DevOps. Infrastructure.</p>
       <p class="position">เจ้าหน้าที่วิเคราะห์ระบบงานคอมพิวเตอร์ ฝ่ายแอปพลิเคชันโซลูชัน<br>ศูนย์นวัตกรรมดิจิทัล มหาวิทยาลัยวลัยลักษณ์</p>
       <p class="role">Senior Backend &amp; Full-Stack Developer · DevOps &amp; Infrastructure</p>
-      <ul class="focus" aria-label="งานที่เน้น">
-        <li><img class="chip-logo" src="assets/logos/linux.svg" alt="" width="18" height="18">Linux</li><li><img class="chip-logo" src="assets/logos/docker.svg" alt="" width="18" height="18">Docker</li><li><img class="chip-logo" src="assets/logos/cloudflare.svg" alt="" width="18" height="18">Cloudflare</li><li><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>DNS</li><li><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>GIS</li>
-      </ul>
-      <p class="lede">ช่วยเปลี่ยนงานที่ทำมือหรือกระจัดกระจาย ให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้งบน Linux, Docker และ Cloudflare เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
       <nav class="links" aria-label="ช่องทางติดต่อ">
-        <a class="btn btn-primary" href="mailto:siwapan6395@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>ติดต่องาน</a>
-        <a class="btn" href="https://github.com/siwapanD"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-github"/></svg>GitHub @siwapanD</a>
-        <a class="btn" href="https://github.com/KhunchayNe"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-github"/></svg>GitHub @KhunchayNe</a>
-        <a class="btn" href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a>
+        <a class="pill" href="mailto:siwapan6395@gmail.com">ติดต่องาน</a>
+        <a class="pill pill-ghost" href="#work">ดูผลงาน</a>
       </nav>
-      </div>
-      <button class="mascot" id="mascot" type="button" data-state="idle" aria-label="มาสคอตหยดน้ำ กดเพื่อทักทาย">
-        <span class="mascot-bubble" id="mascot-bubble" role="status"></span>
-        <svg viewBox="0 0 200 225" aria-hidden="true">
-          <defs>
-            <linearGradient id="m-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#9ec5f4"/>
-              <stop offset="1" stop-color="#2a78d6"/>
-            </linearGradient>
-          </defs>
-          <ellipse class="m-shadow" cx="100" cy="216" rx="52" ry="6"/>
-          <g class="m-bob">
-            <g class="m-squish" id="m-squish">
-              <g id="m-tilt">
-                <path fill="url(#m-fill)" d="M100 12C100 12 32 90 32 142a68 68 0 0 0 136 0C168 90 100 12 100 12Z"/>
-                <path class="m-gloss" d="M66 92C56 106 50 120 49 134"/>
-                <g id="m-face">
-                  <ellipse class="m-cheek" cx="52" cy="160" rx="11" ry="7"/>
-                  <ellipse class="m-cheek" cx="148" cy="160" rx="11" ry="7"/>
-                  <g class="m-open">
-                    <circle class="m-white" cx="74" cy="138" r="18"/>
-                    <circle class="m-white" cx="126" cy="138" r="18"/>
-                    <g id="m-pupils">
-                      <circle class="m-pupil" cx="74" cy="138" r="10"/>
-                      <circle class="m-pupil" cx="126" cy="138" r="10"/>
-                      <circle class="m-shine" cx="78" cy="134" r="3.2"/>
-                      <circle class="m-shine" cx="130" cy="134" r="3.2"/>
-                    </g>
-                  </g>
-                  <g class="m-only m-happy">
-                    <path class="m-line" d="M58 142Q74 122 90 142"/>
-                    <path class="m-line" d="M110 142Q126 122 142 142"/>
-                  </g>
-                  <g class="m-only m-sleep">
-                    <path class="m-line" d="M58 138Q74 150 90 138"/>
-                    <path class="m-line" d="M110 138Q126 150 142 138"/>
-                  </g>
-                  <path class="m-line m-mouth-idle" d="M90 166Q100 176 110 166"/>
-                  <path class="m-only m-happy m-mouth" d="M84 162Q100 190 116 162Z"/>
-                  <ellipse class="m-only m-surprised m-mouth" cx="100" cy="172" rx="9" ry="11"/>
-                  <ellipse class="m-only m-sleep m-mouth" cx="100" cy="170" rx="4" ry="3"/>
-                </g>
-              </g>
-            </g>
-          </g>
-          <g class="m-only m-happy">
-            <path class="m-heart" d="M28 62c-5-8-17-3-13 6 2 5 8 9 13 13 5-4 11-8 13-13 4-9-8-14-13-6Z"/>
-            <path class="m-heart m-heart-2" d="M172 44c-4-6-13-2-10 5 2 4 6 7 10 10 4-3 8-6 10-10 3-7-6-11-10-5Z"/>
-            <path class="m-heart m-heart-3" d="M160 92c-3-5-10-2-8 4 1 3 5 5 8 8 3-3 7-5 8-8 2-6-5-9-8-4Z"/>
-          </g>
-          <g class="m-only m-sleep">
-            <text class="m-z" x="158" y="78">z</text>
-            <text class="m-z m-z-2" x="172" y="60">z</text>
-            <text class="m-z m-z-3" x="186" y="42">z</text>
-          </g>
-          <text class="m-only m-surprised m-bang" x="164" y="56">!</text>
-        </svg>
-      </button>
-      </div>
-      <dl class="stats" id="stats"></dl>
+      <p class="hero-social">
+        <a class="more" href="https://github.com/siwapanD"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-github"/></svg>@siwapanD</a>
+        <a class="more" href="https://github.com/KhunchayNe"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-github"/></svg>@KhunchayNe</a>
+        <a class="more" href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a>
+      </p>
     </div>
+    <div class="display-stage">
+      <div class="display" id="display" aria-hidden="true">
+        <div class="display-glow"></div>
+        <div class="display-panel"><div class="pixels" id="pixels"></div></div>
+      </div>
+      <p class="display-caption" id="display-caption"></p>
+    </div>
+    <ul class="focus wrap" aria-label="งานที่เน้น">
+      <li><img class="chip-logo" src="assets/logos/linux.svg" alt="" width="18" height="18">Linux</li><li><img class="chip-logo" src="assets/logos/docker.svg" alt="" width="18" height="18">Docker</li><li><img class="chip-logo" src="assets/logos/cloudflare.svg" alt="" width="18" height="18">Cloudflare</li><li><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>DNS</li><li><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>GIS</li>
+    </ul>
   </header>
 
   <main>
-    <section class="wrap infra" id="infra" aria-labelledby="h-infra">
-      <h2 id="h-infra" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-server"/></svg>งาน Infrastructure</h2>
-      <p class="infra-lede">ดูแลตั้งแต่เครื่อง Linux, Docker, Cloudflare และ DNS ไปจนถึงระบบ GIS เน้นให้ติดตั้งซ้ำได้ ตรวจสอบย้อนหลังได้ และกู้คืนได้เมื่อเกิดปัญหา</p>
-      <div class="infra-grid">
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-terminal"/></svg>Linux Server</h3>
+    <section class="manifesto wrap" aria-label="แนะนำตัว">
+      <p class="manifesto-text" id="manifesto">ช่วยเปลี่ยนงานที่ทำมือหรือกระจัดกระจาย ให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้งบน Linux, Docker และ Cloudflare เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
+    </section>
+
+    <section class="numbers" id="numbers" aria-labelledby="h-numbers">
+      <div class="subpixels" aria-hidden="true"><div class="subpixels-lit" id="subpixels-lit"></div></div>
+      <div class="wrap numbers-inner">
+        <h2 id="h-numbers">วัดกันที่ตัวเลข</h2>
+        <dl class="stats" id="stats"></dl>
+      </div>
+    </section>
+
+    <section class="band" id="infra" aria-labelledby="h-infra">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Infrastructure</p>
+          <h2 id="h-infra">ติดตั้งซ้ำได้ <span>ตรวจสอบได้ กู้คืนได้</span></h2>
+          <p class="section-lede">ดูแลตั้งแต่เครื่อง Linux, Docker, Cloudflare และ DNS ไปจนถึงระบบ GIS เน้นให้ติดตั้งซ้ำได้ ตรวจสอบย้อนหลังได้ และกู้คืนได้เมื่อเกิดปัญหา</p>
+        </header>
+        <div class="bento">
+        <article class="tile span-3">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-terminal"/></svg>
+          <h3>Linux Server</h3>
           <p>ตั้งค่าเซิร์ฟเวอร์ Ubuntu ใหม่ด้วยสคริปต์ทั้ง SSH, firewall และเครื่องมือพื้นฐาน แล้วดูแลต่อบนเครื่องจริง</p>
           <p class="tags">Ubuntu Server · SSH · UFW · Shell · Nginx</p>
         </article>
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-box"/></svg>Docker และ Container</h3>
+        <article class="tile span-3">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-box"/></svg>
+          <h3>Docker และ Container</h3>
           <p>รันแอปและฐานข้อมูลด้วย container แยกแต่ละบริการด้วย Compose และ build image เองเมื่อต้องเพิ่มส่วนขยาย</p>
           <p class="tags">Docker · Docker Compose · Dockerfile · Container Deployment</p>
         </article>
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-cloud"/></svg>Cloudflare และ DNS</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-cloud"/></svg>
+          <h3>Cloudflare และ DNS</h3>
           <p>เปิดบริการจาก server สู่ภายนอกผ่าน Cloudflare Tunnel แบบ Zero Trust พร้อมจัดการโดเมน DNS และ SSL ให้เป็นระบบ</p>
           <p class="tags">Cloudflare Tunnel · Zero Trust · DNS · SSL · Reverse Proxy</p>
         </article>
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-map"/></svg>โครงสร้างพื้นฐาน GIS</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-map"/></svg>
+          <h3>โครงสร้างพื้นฐาน GIS</h3>
           <p>วาง GIS stack ด้วย Docker ให้ GeoServer ต่อกับ PostGIS และเผยแพร่ layer ผ่าน WFS รวมถึงบริการรวมข้อมูลดิน น้ำ และอากาศ</p>
           <p class="tags">GeoServer · PostGIS · WFS · GeoJSON · FastAPI</p>
         </article>
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-database"/></svg>ฐานข้อมูลกลางและการกู้คืน</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-database"/></svg>
+          <h3>ฐานข้อมูลกลางและการกู้คืน</h3>
           <p>ฐานข้อมูลกลางที่ใช้ร่วมกันหลายโปรเจกต์ แยกฐานและ role ตามโปรเจกต์ พร้อมเครื่องมือสำรองและกู้คืนข้อมูล</p>
           <p class="tags">PostgreSQL · PostGIS · pgvector · Oracle · Liquibase</p>
         </article>
-        <article class="infra-item">
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-layers"/></svg>จัดการ infra และ CI/CD</h3>
+        <article class="tile span-6">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-layers"/></svg>
+          <h3>จัดการ infra และ CI/CD</h3>
           <p>รวมข้อมูลเซิร์ฟเวอร์ โดเมน DNS SSL และ credential ไว้ที่เดียว คุมสิทธิ์ด้วย RBAC มี audit log และใช้ pipeline สำหรับ build และ deploy</p>
           <p class="tags">RBAC · Audit log · Jenkins · GitHub/GitLab Pipelines · IIS</p>
         </article>
-      </div>
-      <p class="infra-links">ดูตัวอย่างโค้ดได้ที่ <a href="https://github.com/siwapanD/ubuntu-setup">ubuntu-setup</a> และ <a href="https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application">2026-Docker-RealWorld-AI-Application</a></p>
-    </section>
-
-    <section class="wrap" id="work" aria-labelledby="h-work">
-      <h2 id="h-work" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-briefcase"/></svg>ผลงานและประโยชน์ที่ได้</h2>
-      <p class="section-note">เปลี่ยนงานที่ทำมือให้เป็นระบบ</p>
-      <div class="impact-grid">
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-qr"/></svg>ระบบจองผ่าน QR</h3>
-          <p class="after">จองเองได้ใน 3 ขั้นตอน</p>
-          <p class="before">แทน: รับจองและตรวจสลิปด้วยมือ</p>
-        </article>
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-chart"/></svg>ระบบผลงานวิจัย</h3>
-          <p class="after">คะแนนและงบคำนวณอัตโนมัติ</p>
-          <p class="before">แทน: รวบรวมและคำนวณหลายระดับ</p>
-        </article>
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-calculator"/></svg>รายงานค่าคอมมิชชัน</h3>
-          <p class="after">รายงานออกจากฐานข้อมูลโดยตรง</p>
-          <p class="before">แทน: คำนวณยอดรายเดือนด้วยมือ</p>
-        </article>
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-activity"/></svg>ตรวจเครื่องระยะไกล</h3>
-          <p class="after">เห็นเครื่องมีปัญหาในหน้าเดียว</p>
-          <p class="before">แทน: ให้ช่างตรวจทีละเครื่อง</p>
-        </article>
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-database"/></svg>ฐานข้อมูลกลาง</h3>
-          <p class="after">เริ่มโปรเจกต์ใหม่ได้เร็วขึ้น</p>
-          <p class="before">แทน: ตั้งฐานข้อมูลแยกทุกงาน</p>
-        </article>
-        <article class="impact-item">
-          <h3><svg class="icon icon-accent" aria-hidden="true"><use href="#i-map"/></svg>ระบบข้อมูล GIS</h3>
-          <p class="after">เรียกข้อมูลแผนที่จากจุดเดียว</p>
-          <p class="before">แทน: ข้อมูลกระจายหลายแหล่ง</p>
-        </article>
+        </div>
+        <p class="after-note">ดูตัวอย่างโค้ดได้ที่ <a class="more" href="https://github.com/siwapanD/ubuntu-setup">ubuntu-setup</a> และ <a class="more" href="https://github.com/KhunchayNe/2026-Docker-RealWorld-AI-Application">2026-Docker-RealWorld-AI-Application</a></p>
       </div>
     </section>
 
-    <section class="wrap" id="expertise" aria-labelledby="h-expertise">
-      <h2 id="h-expertise" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-award"/></svg>ความเชี่ยวชาญ</h2>
-      <p class="section-note">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเองจากทั้ง 2 บัญชี ไม่นับ fork</p>
-      <div class="skills">
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-code"/></svg>Backend และ Full-stack</h3>
+    <section class="band band-alt" id="work" aria-labelledby="h-work">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">ผลงานและประโยชน์ที่ได้</p>
+          <h2 id="h-work">เปลี่ยนงานที่ทำมือ <span>ให้เป็นระบบ</span></h2>
+        </header>
+      </div>
+      <div class="gallery" id="gallery" tabindex="0" role="region" aria-label="ผลงาน เลื่อนซ้ายขวาได้">
+        <ul class="gallery-track">
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-qr"/></svg>
+            <h3>ระบบจองผ่าน QR</h3>
+            <p class="after">จองเองได้ใน 3 ขั้นตอน</p>
+            <p class="before"><span>แทน</span>รับจองและตรวจสลิปด้วยมือ</p>
+          </li>
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-chart"/></svg>
+            <h3>ระบบผลงานวิจัย</h3>
+            <p class="after">คะแนนและงบคำนวณอัตโนมัติ</p>
+            <p class="before"><span>แทน</span>รวบรวมและคำนวณหลายระดับ</p>
+          </li>
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-calculator"/></svg>
+            <h3>รายงานค่าคอมมิชชัน</h3>
+            <p class="after">รายงานออกจากฐานข้อมูลโดยตรง</p>
+            <p class="before"><span>แทน</span>คำนวณยอดรายเดือนด้วยมือ</p>
+          </li>
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-activity"/></svg>
+            <h3>ตรวจเครื่องระยะไกล</h3>
+            <p class="after">เห็นเครื่องมีปัญหาในหน้าเดียว</p>
+            <p class="before"><span>แทน</span>ให้ช่างตรวจทีละเครื่อง</p>
+          </li>
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-database"/></svg>
+            <h3>ฐานข้อมูลกลาง</h3>
+            <p class="after">เริ่มโปรเจกต์ใหม่ได้เร็วขึ้น</p>
+            <p class="before"><span>แทน</span>ตั้งฐานข้อมูลแยกทุกงาน</p>
+          </li>
+          <li class="tile slide">
+            <svg class="icon tile-icon" aria-hidden="true"><use href="#i-map"/></svg>
+            <h3>ระบบข้อมูล GIS</h3>
+            <p class="after">เรียกข้อมูลแผนที่จากจุดเดียว</p>
+            <p class="before"><span>แทน</span>ข้อมูลกระจายหลายแหล่ง</p>
+          </li>
+        </ul>
+      </div>
+      <div class="wrap paddles">
+        <button class="paddle" id="gallery-prev" type="button" aria-label="เลื่อนไปก่อนหน้า"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <button class="paddle" id="gallery-next" type="button" aria-label="เลื่อนไปถัดไป"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
+    </section>
+
+    <section class="band" id="expertise" aria-labelledby="h-expertise">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">ความเชี่ยวชาญ</p>
+          <h2 id="h-expertise">หกด้าน <span>ที่ลงมือทำจริง</span></h2>
+          <p class="section-lede">สรุปจากโค้ดและ README ของ repo ที่เป็นงานของตัวเองจากทั้ง 2 บัญชี ไม่นับ fork</p>
+        </header>
+        <div class="bento">
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-code"/></svg>
+          <h3>Backend และ Full-stack</h3>
           <p>เว็บแอปและ API ที่มีระบบสิทธิ์และ workflow หลายขั้นตอน</p>
           <p class="tags">TypeScript · NestJS · C# / .NET · Go · Next.js · React · Angular</p>
         </article>
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-database"/></svg>ฐานข้อมูลและข้อมูลเชิงธุรกิจ</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-database"/></svg>
+          <h3>ฐานข้อมูลและข้อมูลเชิงธุรกิจ</h3>
           <p>ออกแบบฐานข้อมูลกลาง แยก role ตามงาน และเขียน SQL สำหรับรายงานบน production</p>
           <p class="tags">PostgreSQL · PL/pgSQL · pgvector · Oracle · MongoDB · Redis · Supabase</p>
         </article>
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-map"/></svg>ภูมิสารสนเทศและข้อมูลน้ำ</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-map"/></svg>
+          <h3>ภูมิสารสนเทศและข้อมูลน้ำ</h3>
           <p>รวมข้อมูลดิน น้ำ อากาศ และเผยแพร่เป็น API หรือ layer แผนที่ให้ระบบอื่นใช้ต่อ</p>
           <p class="tags">PostGIS · GeoServer · WFS · GeoJSON · FastAPI · Python</p>
         </article>
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-cpu"/></svg>AI engineering</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-cpu"/></svg>
+          <h3>AI engineering</h3>
           <p>AI gateway, NL-to-SQL ที่คุมสิทธิ์ และแม่แบบให้ coding agent ทำงานต่อได้อย่างมีมาตรฐาน</p>
           <p class="tags">LLM integration · Claude Code · Codex · Agent skills · Hooks</p>
         </article>
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-server"/></svg>DevOps และโครงสร้างพื้นฐาน</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-server"/></svg>
+          <h3>DevOps และโครงสร้างพื้นฐาน</h3>
           <p>ติดตั้งเซิร์ฟเวอร์ จัดการ container ระบบสำรองข้อมูล และการเก็บ credential พร้อม audit log</p>
           <p class="tags">Linux · Docker · Compose · Cloudflare · DNS · Nginx · Shell</p>
         </article>
-        <article>
-          <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-phone"/></svg>Native และ mobile</h3>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-phone"/></svg>
+          <h3>Native และ mobile</h3>
           <p>แอป macOS และ iOS รวมถึงงาน capture และ encode หน้าจอด้วยฮาร์ดแวร์</p>
           <p class="tags">Swift · ScreenCaptureKit · VideoToolbox · C++ · Flutter · Firebase · Expo</p>
         </article>
-      </div>
-      <p class="also"><strong>ประสบการณ์ที่ระบุในโปรไฟล์ GitHub:</strong> ระบบ FinTech และการเชื่อม API, Library Automation, Smart Kiosk, Acquisition Module, การ sync ข้อมูลจากฐานข้อมูล Oracle, การ deploy บน Ubuntu และ IIS, การให้คำปรึกษาด้านเทคนิค</p>
+        </div>
+        <p class="also"><strong>ประสบการณ์ที่ระบุในโปรไฟล์ GitHub:</strong> ระบบ FinTech และการเชื่อม API, Library Automation, Smart Kiosk, Acquisition Module, การ sync ข้อมูลจากฐานข้อมูล Oracle, การ deploy บน Ubuntu และ IIS, การให้คำปรึกษาด้านเทคนิค</p>
 
-      <div class="stack">
-        <h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-layers"/></svg>Tech stack</h3>
+        <div class="stack tile">
+          <h3>Tech stack</h3>
         <ul class="logo-wall">
           <li><img src="assets/logos/linux.svg" alt="" width="32" height="32" loading="lazy"><span>Linux</span></li>
           <li><img src="assets/logos/ubuntu.svg" alt="" width="32" height="32" loading="lazy"><span>Ubuntu</span></li>
@@ -334,7 +302,7 @@
         </ul>
         <div class="stack-grid">
           <div class="stack-group">
-            <h4 class="with-icon"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg>Primary Stack</h4>
+            <h4>Primary Stack</h4>
             <ul>
               <li>Next.js, React, Node.js, TypeScript, NestJS, Prisma</li>
               <li>PostgreSQL, Oracle, MongoDB</li>
@@ -343,7 +311,7 @@
             </ul>
           </div>
           <div class="stack-group">
-            <h4 class="with-icon"><svg class="icon" aria-hidden="true"><use href="#i-server"/></svg>DevOps</h4>
+            <h4>DevOps</h4>
             <ul>
               <li>Docker, Docker Compose, Container Deployment</li>
               <li>CI/CD (Jenkins, GitHub/GitLab Pipelines)</li>
@@ -352,7 +320,7 @@
             </ul>
           </div>
           <div class="stack-group">
-            <h4 class="with-icon"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>GIS</h4>
+            <h4>GIS</h4>
             <ul>
               <li>PostGIS, GeoServer, GeoJSON</li>
               <li>WFS, Spatial Data API</li>
@@ -360,7 +328,7 @@
             </ul>
           </div>
           <div class="stack-group">
-            <h4 class="with-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>Security</h4>
+            <h4>Security</h4>
             <ul>
               <li>API Security Hardening</li>
               <li>JWT Authentication, Single Sign-On (SSO)</li>
@@ -369,7 +337,7 @@
             </ul>
           </div>
           <div class="stack-group">
-            <h4 class="with-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg>Other Skills</h4>
+            <h4>Other Skills</h4>
             <ul>
               <li>C#, .NET Core, VB.NET</li>
               <li>Angular, Flutter</li>
@@ -379,74 +347,110 @@
             </ul>
           </div>
         </div>
+        </div>
       </div>
     </section>
 
-    <section class="wrap" id="activity" aria-labelledby="h-activity">
-      <h2 id="h-activity" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-calendar"/></svg>Contributions</h2>
-      <p class="section-note" id="activity-note"></p>
-      <div class="segments" id="ranges" role="group" aria-label="เลือกช่วงเวลา"></div>
-      <div class="heat-scroll" id="heat-scroll" tabindex="0" aria-label="แผนภาพ contributions เลื่อนซ้ายขวาได้">
-        <div class="heat" id="heat" role="img"></div>
+    <section class="band band-alt" id="activity" aria-labelledby="h-activity">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Contributions</p>
+          <h2 id="h-activity">หนึ่งจุด <span>หนึ่งวัน</span></h2>
+          <p class="section-lede" id="activity-note"></p>
+        </header>
+        <div class="tile heat-tile">
+          <div class="segments" id="ranges" role="group" aria-label="เลือกช่วงเวลา"></div>
+          <div class="heat-scroll" id="heat-scroll" tabindex="0" aria-label="แผนภาพ contributions เลื่อนซ้ายขวาได้">
+            <div class="heat" id="heat" role="img"></div>
+          </div>
+          <div class="heat-foot">
+            <span id="heat-total"></span>
+            <span class="legend" aria-label="สีสว่างหมายถึงมี contributions มากกว่า">น้อย
+              <i data-l="NONE"></i><i data-l="FIRST_QUARTILE"></i><i data-l="SECOND_QUARTILE"></i><i data-l="THIRD_QUARTILE"></i><i data-l="FOURTH_QUARTILE"></i>
+              มาก</span>
+          </div>
+          <details class="table-view">
+            <summary>ดูเป็นตารางรายเดือน</summary>
+            <table>
+              <thead><tr><th scope="col">เดือน</th><th scope="col">Contributions</th></tr></thead>
+              <tbody id="heat-table"></tbody>
+            </table>
+          </details>
+        </div>
       </div>
-      <div class="heat-foot">
-        <span id="heat-total"></span>
-        <span class="legend" aria-label="สีเข้มหมายถึงมี contributions มากกว่า">น้อย
-          <i data-l="NONE"></i><i data-l="FIRST_QUARTILE"></i><i data-l="SECOND_QUARTILE"></i><i data-l="THIRD_QUARTILE"></i><i data-l="FOURTH_QUARTILE"></i>
-          มาก</span>
-      </div>
-      <details class="table-view">
-        <summary>ดูเป็นตารางรายเดือน</summary>
-        <table>
-          <thead><tr><th scope="col">เดือน</th><th scope="col">Contributions</th></tr></thead>
-          <tbody id="heat-table"></tbody>
-        </table>
-      </details>
     </section>
 
-    <section class="wrap" id="private" aria-labelledby="h-private">
-      <h2 id="h-private" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-lock"/></svg>Private projects</h2>
-      <p class="section-note" id="private-note"></p>
-      <div id="private-list" class="private-list"></div>
+    <section class="band" id="private" aria-labelledby="h-private">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Private projects</p>
+          <h2 id="h-private">งานส่วนใหญ่ <span>อยู่ใน private</span></h2>
+          <p class="section-lede" id="private-note"></p>
+        </header>
+        <div id="private-list" class="bento"></div>
+      </div>
     </section>
 
-    <section class="wrap" id="public" aria-labelledby="h-public">
-      <h2 id="h-public" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-globe"/></svg>Public projects</h2>
-      <p class="section-note" id="public-note"></p>
-      <div class="cards" id="public-cards"></div>
-      <details class="forks">
-        <summary><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span id="learning-summary"></span></summary>
-        <ul class="rows" id="public-learning"></ul>
-      </details>
-      <details class="forks">
-        <summary><svg class="icon" aria-hidden="true"><use href="#i-fork"/></svg><span id="forks-summary"></span></summary>
-        <p class="section-note" id="forks-note"></p>
-        <ul class="rows" id="fork-list"></ul>
-      </details>
-    </section>
-    <section class="wrap contact" id="contact" aria-labelledby="h-contact">
-      <h2 id="h-contact" class="with-icon"><svg class="icon icon-tile" aria-hidden="true"><use href="#i-mail"/></svg>ติดต่อ</h2>
-      <p>เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์ รับงานผ่าน Fastwork ที่บัญชี @add หรือติดต่อโดยตรงได้</p>
-      <div class="services">
-        <article class="service-item"><h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-code"/></svg>ระบบเว็บแทนงานมือ</h3><p>ระบบจอง อนุมัติ และรายงานที่พร้อมใช้งาน</p></article>
-        <article class="service-item"><h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-server"/></svg>ติดตั้งเซิร์ฟเวอร์และ deploy</h3><p>Linux, Docker, โดเมน, SSL, Cloudflare และคู่มือส่งมอบ</p></article>
-        <article class="service-item"><h3 class="with-icon"><svg class="icon icon-accent" aria-hidden="true"><use href="#i-map"/></svg>ระบบแผนที่และข้อมูล GIS</h3><p>GeoServer, PostGIS และ API ข้อมูลแผนที่</p></article>
+    <section class="band band-alt" id="public" aria-labelledby="h-public">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Public projects</p>
+          <h2 id="h-public">เปิดโค้ด <span>ให้ดูได้เลย</span></h2>
+          <p class="section-lede" id="public-note"></p>
+        </header>
+        <div class="bento" id="public-cards"></div>
+        <details class="forks">
+          <summary><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span id="learning-summary"></span></summary>
+          <ul class="rows" id="public-learning"></ul>
+        </details>
+        <details class="forks">
+          <summary><svg class="icon" aria-hidden="true"><use href="#i-fork"/></svg><span id="forks-summary"></span></summary>
+          <p class="section-note" id="forks-note"></p>
+          <ul class="rows" id="fork-list"></ul>
+        </details>
       </div>
-      <div class="links">
-        <a class="btn btn-primary" href="mailto:siwapan6395@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>siwapan6395@gmail.com</a>
-        <a class="btn" href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a>
+    </section>
+
+    <section class="band contact" id="contact" aria-labelledby="h-contact">
+      <div class="wrap">
+        <header class="section-head center">
+          <p class="eyebrow grad">ติดต่อ</p>
+          <h2 id="h-contact">มีงานที่อยากเปลี่ยน<br>ให้เป็นระบบ <span>คุยกันได้</span></h2>
+          <p class="section-lede">เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์ รับงานผ่าน Fastwork ที่บัญชี @add หรือติดต่อโดยตรงได้</p>
+          <div class="links">
+            <a class="pill" href="mailto:siwapan6395@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>siwapan6395@gmail.com</a>
+            <a class="pill pill-ghost" href="https://www.linkedin.com/in/siwapan-boonthong-aa0b1b295"><svg class="icon icon-fill" aria-hidden="true"><use href="#i-linkedin"/></svg>LinkedIn</a>
+          </div>
+        </header>
+        <div class="bento services">
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-code"/></svg>
+          <h3>ระบบเว็บแทนงานมือ</h3>
+          <p>ระบบจอง อนุมัติ และรายงานที่พร้อมใช้งาน</p>
+        </article>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-server"/></svg>
+          <h3>ติดตั้งเซิร์ฟเวอร์และ deploy</h3>
+          <p>Linux, Docker, โดเมน, SSL, Cloudflare และคู่มือส่งมอบ</p>
+        </article>
+        <article class="tile span-2">
+          <svg class="icon tile-icon" aria-hidden="true"><use href="#i-map"/></svg>
+          <h3>ระบบแผนที่และข้อมูล GIS</h3>
+          <p>GeoServer, PostGIS และ API ข้อมูลแผนที่</p>
+        </article>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="wrap">
-    <p id="updated"></p>
-    <p>Build thoughtfully. Automate responsibly. Keep learning.</p>
+  <footer>
+    <div class="wrap">
+      <p id="updated"></p>
+      <p>Build thoughtfully. Automate responsibly. Keep learning.</p>
+    </div>
   </footer>
 
-  <div class="scene-end" aria-hidden="true"></div>
-
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>
