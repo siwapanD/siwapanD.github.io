@@ -105,7 +105,7 @@
   </section>
 </main>
 
-<script src="env.js?v=3"></script>
+<script src="env.js?v=4"></script>
 <script src="sprite-player.js?v=2"></script>
 <script>
 "use strict";
@@ -129,7 +129,7 @@ let revealed = null;
 function readout(p) {
   const src = p.sourceRect(p.frame);
   $("r-frame").textContent = `${p.frame} / ${p.frameCount - 1}`;
-  $("r-seg").textContent = config.segments[p.segment].name;
+  $("r-seg").textContent = p.segments[p.segment].name;
   $("r-state").textContent = p.playing ? "กำลังเล่น" : "หยุด";
   $("r-src").textContent = `sx ${src.x}, sy ${src.y}`;
   $("fps-out").textContent = `${p.fps} FPS`;
@@ -138,17 +138,22 @@ function readout(p) {
   drawSheet(p.frame);
 }
 
+let loading = 0;
 async function load(key) {
+  const token = ++loading;
   if (player) player.pause();
+  player = null;
   config = SHEETS[key];
   $("sheet-desc").textContent = config.desc;
   $("report-list").innerHTML = "<li>กำลังตรวจ…</li>";
   image = new Image();
   image.src = config.src;
   try { await image.decode(); } catch {
-    $("report-list").innerHTML = `<li>โหลดภาพ ${config.src} ไม่สำเร็จ</li>`;
+    if (token === loading) $("report-list").innerHTML = `<li>โหลดภาพ ${config.src} ไม่สำเร็จ</li>`;
     return;
   }
+  // A newer choice was made while this image decoded: let that one win.
+  if (token !== loading) return;
   revealed = null;
   sheet.width = image.naturalWidth;
   sheet.height = image.naturalHeight;
@@ -268,10 +273,51 @@ function report(p) {
   }
   if (clipped.length) bad.push(`เฟรม ${clipped.join(", ")}: ภาพชนขอบช่อง ถูกตัดตั้งแต่ในต้นฉบับ`);
   else ok.push("ไม่มีเฟรมไหนชนขอบช่อง");
-  const spread = (k) => Math.max(...boxes.map((x) => x[k])) - Math.min(...boxes.map((x) => x[k]));
-  const drift = Math.max(spread("l"), spread("r"), spread("t"), spread("b"));
-  if (drift > 4) bad.push(`กรอบเนื้อภาพขยับระหว่างเฟรมสูงสุด ${drift} px (ตัวคนหรือโต๊ะเปลี่ยนตำแหน่ง/ขนาด) แบ่งช่องเท่ากันแก้ไม่ได้`);
-  else ok.push(`ตำแหน่งภาพนิ่งทุกเฟรม (คลาดไม่เกิน ${drift} px)`);
+  // Still parts: pixels opaque in at least 80% of frames (the desk, the chair, the screens).
+  // Each frame is matched against frame 0 on those pixels only, so a person walking across the
+  // cell does not count as drift. Done on a downscaled copy (120 px wide cells) for speed.
+  const small = 120 / fw;
+  const sw = 120, sh = Math.round(fh * small);
+  const sc = document.createElement("canvas");
+  sc.width = sw * p.cols;
+  sc.height = sh * p.rows;
+  const sctx = sc.getContext("2d", { willReadFrequently: true });
+  for (let i = 0; i < p.frameCount; i++) {
+    const s = p.sourceRect(i);
+    sctx.drawImage(image, s.x, s.y, s.w, s.h, (i % p.cols) * sw, Math.floor(i / p.cols) * sh, sw, sh);
+  }
+  const sd = sctx.getImageData(0, 0, sc.width, sc.height).data;
+  const cellAlpha = (i) => {
+    const out = new Float32Array(sw * sh);
+    const ox = (i % p.cols) * sw, oy = Math.floor(i / p.cols) * sh;
+    for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) out[y * sw + x] = sd[((oy + y) * sc.width + ox + x) * 4 + 3] / 255;
+    return out;
+  };
+  const cells = Array.from({ length: p.frameCount }, (_, i) => cellAlpha(i));
+  const still = new Uint8Array(sw * sh);
+  for (let k = 0; k < sw * sh; k++) {
+    let n = 0;
+    for (const c of cells) if (c[k] > 0.5) n++;
+    still[k] = n >= p.frameCount * 0.8 ? 1 : 0;
+  }
+  const R = 6;
+  let drift = 0, worst = 0;
+  for (let i = 1; i < p.frameCount; i++) {
+    let best = Infinity, bx = 0, by = 0;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      let err = 0;
+      for (let y = R; y < sh - R; y++) for (let x = R; x < sw - R; x++) {
+        const k = y * sw + x;
+        if (still[k]) err += Math.abs(cells[i][(y + dy) * sw + x + dx] - cells[0][k]);
+      }
+      if (err < best || (err === best && Math.abs(dx) + Math.abs(dy) < Math.abs(bx) + Math.abs(by))) { best = err; bx = dx; by = dy; }
+    }
+    const d = Math.round(Math.max(Math.abs(bx), Math.abs(by)) / small);
+    if (d > drift) { drift = d; worst = i; }
+  }
+  const tol = Math.max(2, Math.round(1 / small));
+  if (drift > tol) bad.push(`ส่วนที่ควรอยู่นิ่ง (เช่นโต๊ะ) ขยับระหว่างเฟรม ประมาณ ${drift} px (มากสุดที่เฟรม ${worst} เทียบเฟรม 0) แบ่งช่องเท่ากันแก้ไม่ได้ ต้องแก้ภาพต้นฉบับหรือจัดแนวใหม่ (scripts/stabilize.py)`);
+  else ok.push(`ส่วนที่ควรอยู่นิ่งอยู่ที่เดิมทุกเฟรม (คลาดไม่เกินราว ${tol} px)`);
 
   $("report-list").innerHTML = [...bad.map((t) => `<li>⚠ ${t}</li>`), ...ok.map((t) => `<li>✓ ${t}</li>`)].join("");
 }
