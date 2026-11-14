@@ -97,6 +97,48 @@ function splitManifesto() {
   );
 }
 
+// The About figure is a sprite sheet (8 × 2 cells): walk to the desk once, get ready once, then
+// type in a loop. It starts when the section scrolls into view and pauses while off screen.
+function wireSprite() {
+  const canvas = $("explorer-photo");
+  const toggle = $("sprite-toggle");
+  const image = new Image();
+  image.decoding = "async";
+  image.src = "assets/sprite-desk.webp";
+  image.decode().then(() => {
+    const player = new SpritePlayer({
+      canvas, image, cols: 8, rows: 2, fps: 8,
+      segments: [
+        { from: 0, to: 7, loop: false },
+        { from: 8, to: 9, loop: false },
+        { from: 10, to: 15, loop: true },
+      ],
+    });
+    new ResizeObserver(() => player.resize()).observe(canvas);
+    player.resize();
+    // Without motion, show one typing frame and nothing else.
+    if (!MOTION) {
+      player.show(12);
+      return;
+    }
+    let stopped = false;
+    let visible = false;
+    toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      stopped = !stopped;
+      toggle.setAttribute("aria-pressed", String(stopped));
+      toggle.textContent = stopped ? "เล่นภาพเคลื่อนไหว" : "หยุดภาพเคลื่อนไหว";
+      if (stopped) player.pause();
+      else if (visible) player.play();
+    });
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !stopped) player.play();
+      else player.pause();
+    }, { threshold: 0.25 }).observe(canvas);
+  }).catch(() => {});
+}
+
 // One topic is open at a time; opening one also moves the portrait to that topic's framing.
 function wireExplorer() {
   const photo = $("explorer-photo");
@@ -606,6 +648,7 @@ async function main() {
   wireNav();
   wireGallery();
   wireExplorer();
+  wireSprite();
   splitManifesto();
   const response = await fetch("data/profile.json");
   const data = await response.json();

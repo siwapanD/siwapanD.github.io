@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -119,7 +119,8 @@
         <div class="explorer" id="explorer">
           <div class="explorer-stage">
             <div class="explorer-glow"></div>
-            <div class="explorer-figure" id="explorer-figure"><div class="explorer-float"><img id="explorer-photo" src="assets/portrait-standing.png" alt="ภาพเจ้าของเว็บไซต์ในชุดสูทยืนใช้งาน MacBook ที่โต๊ะปรับระดับ ภาพสไตล์ 2.5D" width="1122" height="1402" loading="lazy" decoding="async" draggable="false"></div></div>
+            <div class="explorer-figure" id="explorer-figure"><div class="explorer-float"><canvas id="explorer-photo" class="explorer-sprite" role="img" aria-label="ภาพเจ้าของเว็บไซต์ในชุดสูทเดินเข้ามาที่โต๊ะปรับระดับแล้วพิมพ์งานบน MacBook"></canvas></div></div>
+            <button class="sprite-toggle" id="sprite-toggle" type="button" aria-pressed="false" hidden>หยุดภาพเคลื่อนไหว</button>
           </div>
           <div class="explorer-arrows">
             <button class="paddle" id="explorer-prev" type="button" aria-label="หัวข้อก่อนหน้า"><svg class="icon flip" aria-hidden="true"><use href="#i-chevron"/></svg></button>
@@ -497,6 +498,7 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=23"></script>
+  <script src="sprite-player.js?v=1"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>
