@@ -142,10 +142,10 @@ function wireExplorer() {
   };
   explorer.addEventListener("pointermove", (e) => {
     if (drag) {
-      aim(Math.max(-10, Math.min(10, (drag.y - e.clientY) * 0.08)), Math.max(-32, Math.min(32, (e.clientX - drag.x) * 0.22)));
+      aim(Math.max(-10, Math.min(10, (drag.y - e.clientY) * 0.08)), Math.max(-12, Math.min(12, (e.clientX - drag.x) * 0.22)));
     } else if (e.pointerType === "mouse") {
       const box = explorer.getBoundingClientRect();
-      aim(((e.clientY - box.top) / box.height - 0.5) * -8, ((e.clientX - box.left) / box.width - 0.5) * 34);
+      aim(((e.clientY - box.top) / box.height - 0.5) * -8, ((e.clientX - box.left) / box.width - 0.5) * 12);
     }
   }, { passive: true });
   explorer.addEventListener("pointerleave", () => !drag && aim(0, 0));

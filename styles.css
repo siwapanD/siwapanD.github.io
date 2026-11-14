@@ -539,3 +539,18 @@ footer { padding-block: 20px 36px; background: var(--bg-alt); border-top: 1px so
   h2 { font-size: 2rem; }
   h2 span { display: block; }
 }
+
+/* Full standing portrait: keep the person, shoes and both desk feet in frame. */
+.explorer { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 24px; min-height: 0; padding: 32px 32px 32px 64px; }
+.explorer-stage { position: relative; grid-column: 2; grid-row: 1; inset: auto; height: clamp(480px, 53vw, 680px); overflow: visible; perspective-origin: 50% 50%; }
+.explorer-figure { left: 50%; bottom: 5%; width: 90%; height: 90%; aspect-ratio: auto; transform-origin: 50% 50%; }
+.explorer-stage img { object-fit: contain; transform: none; }
+.explorer-stage::after { display: none; }
+.explorer-glow { inset: 12% 0; opacity: .55; }
+.explorer-list { grid-column: 1; grid-row: 1; width: 100%; }
+.explorer-text { padding: 24px; }
+@media (max-width: 860px) {
+  .explorer { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 16px 16px 24px; }
+  .explorer-stage { grid-column: 1; grid-row: 1; width: 100%; height: auto; aspect-ratio: 1122 / 1402; max-height: 640px; margin: 0; }
+  .explorer-list { grid-column: 1; grid-row: 2; margin-top: 0; }
+}
