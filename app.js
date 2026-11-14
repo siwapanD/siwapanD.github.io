@@ -97,6 +97,73 @@ function splitManifesto() {
   );
 }
 
+// One topic is open at a time; opening one also moves the portrait to that topic's framing.
+function wireExplorer() {
+  const photo = $("explorer-photo");
+  const items = [...document.querySelectorAll(".explorer-item")];
+  let current = -1;
+  const open = (index) => {
+    current = (index + items.length) % items.length;
+    items.forEach((item, i) => {
+      const on = i === current;
+      item.classList.toggle("open", on);
+      item.querySelector(".explorer-pill").setAttribute("aria-expanded", String(on));
+      item.querySelector(".explorer-text").hidden = !on;
+    });
+    photo.style.setProperty("--origin", items[current].dataset.origin);
+    photo.style.setProperty("--zoom", items[current].dataset.zoom);
+  };
+  items.forEach((item, i) => item.querySelector(".explorer-pill").addEventListener("click", () => open(i)));
+  $("explorer-prev").addEventListener("click", () => open(current - 1));
+  $("explorer-next").addEventListener("click", () => open(current + 1));
+  open(0);
+
+  // The portrait is a single photo, so "rotating" it is a 3D tilt: it leans toward the mouse, and a
+  // drag (the only input on touch screens) swings it further before it springs back.
+  if (!MOTION) return;
+  const explorer = $("explorer");
+  const figure = $("explorer-figure");
+  const tilt = { rx: 0, ry: 0 };
+  const target = { rx: 0, ry: 0 };
+  let drag = null;
+  let frameId = 0;
+  const frame = () => {
+    tilt.rx += (target.rx - tilt.rx) * 0.09;
+    tilt.ry += (target.ry - tilt.ry) * 0.09;
+    explorer.style.setProperty("--rx", tilt.rx.toFixed(2));
+    explorer.style.setProperty("--ry", tilt.ry.toFixed(2));
+    const settled = Math.abs(target.rx - tilt.rx) + Math.abs(target.ry - tilt.ry) < 0.02;
+    frameId = settled ? 0 : requestAnimationFrame(frame);
+  };
+  const aim = (rx, ry) => {
+    target.rx = rx;
+    target.ry = ry;
+    if (!frameId) frameId = requestAnimationFrame(frame);
+  };
+  explorer.addEventListener("pointermove", (e) => {
+    if (drag) {
+      aim(Math.max(-10, Math.min(10, (drag.y - e.clientY) * 0.08)), Math.max(-32, Math.min(32, (e.clientX - drag.x) * 0.22)));
+    } else if (e.pointerType === "mouse") {
+      const box = explorer.getBoundingClientRect();
+      aim(((e.clientY - box.top) / box.height - 0.5) * -8, ((e.clientX - box.left) / box.width - 0.5) * 34);
+    }
+  }, { passive: true });
+  explorer.addEventListener("pointerleave", () => !drag && aim(0, 0));
+  figure.addEventListener("pointerdown", (e) => {
+    drag = { x: e.clientX, y: e.clientY };
+    figure.classList.add("dragging");
+    figure.setPointerCapture(e.pointerId);
+  });
+  const release = () => {
+    if (!drag) return;
+    drag = null;
+    figure.classList.remove("dragging");
+    aim(0, 0);
+  };
+  figure.addEventListener("pointerup", release);
+  figure.addEventListener("pointercancel", release);
+}
+
 function wireGallery() {
   const gallery = $("gallery");
   const prev = $("gallery-prev");
@@ -145,7 +212,7 @@ function reveal() {
     });
   }, { rootMargin: "0px 0px -6% 0px" });
   const groups = [
-    ".hero-copy > *", ".display-stage", ".focus", ".manifesto-text", ".numbers h2", ".stats > div", ".section-head > *", ".bento > *", ".after-note", ".slide", ".paddles",
+    ".hero-copy > *", ".display-stage", ".focus", ".manifesto-text", ".explorer", ".numbers h2", ".stats > div", ".section-head > *", ".bento > *", ".after-note", ".slide", ".paddles",
     ".also", ".stack", ".forks",
   ];
   groups.forEach((selector) => {
@@ -538,6 +605,7 @@ async function main() {
   wireThemeToggle();
   wireNav();
   wireGallery();
+  wireExplorer();
   splitManifesto();
   const response = await fetch("data/profile.json");
   const data = await response.json();

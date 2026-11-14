@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -107,6 +107,52 @@
   <main>
     <section class="manifesto wrap" aria-label="แนะนำตัว">
       <p class="manifesto-text" id="manifesto">ช่วยเปลี่ยนงานที่ทำมือหรือกระจัดกระจาย ให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้งบน Linux, Docker และ Cloudflare เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์</p>
+    </section>
+
+    <section class="band about" id="about" aria-labelledby="h-about">
+      <div class="wrap">
+        <header class="section-head center">
+          <p class="eyebrow">เกี่ยวกับผม</p>
+          <h2 id="h-about">คนที่อยู่ <span>หลังระบบ</span></h2>
+          <p class="section-lede">กดแต่ละหัวข้อเพื่อดูว่าผมเป็นใคร ทำอะไร และรับงานแบบไหน ขยับเมาส์หรือลากที่รูปเพื่อหมุนดูได้</p>
+        </header>
+        <div class="explorer" id="explorer">
+          <div class="explorer-stage" aria-hidden="true">
+            <div class="explorer-glow"></div>
+            <div class="explorer-figure" id="explorer-figure"><div class="explorer-float"><img id="explorer-photo" src="assets/portrait.webp" alt="" width="1050" height="1398" decoding="async" draggable="false"></div></div>
+          </div>
+          <div class="explorer-arrows">
+            <button class="paddle" id="explorer-prev" type="button" aria-label="หัวข้อก่อนหน้า"><svg class="icon flip" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+            <button class="paddle" id="explorer-next" type="button" aria-label="หัวข้อถัดไป"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+          </div>
+          <ul class="explorer-list">
+            <li class="explorer-item" data-origin="50% 20%" data-zoom="1.75">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-0"><span class="plus" aria-hidden="true"></span>ตำแหน่ง</button>
+              <p class="explorer-text" id="explorer-text-0" hidden><strong>ตำแหน่ง</strong> เจ้าหน้าที่วิเคราะห์ระบบงานคอมพิวเตอร์ ฝ่ายแอปพลิเคชันโซลูชัน ศูนย์นวัตกรรมดิจิทัล มหาวิทยาลัยวลัยลักษณ์</p>
+            </li>
+            <li class="explorer-item" data-origin="50% 34%" data-zoom="1.3">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-1"><span class="plus" aria-hidden="true"></span>บทบาท</button>
+              <p class="explorer-text" id="explorer-text-1" hidden><strong>บทบาท</strong> Senior Backend &amp; Full-Stack Developer ที่ดูแล DevOps และ Infrastructure ไปด้วย</p>
+            </li>
+            <li class="explorer-item" data-origin="46% 78%" data-zoom="1.6">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-2"><span class="plus" aria-hidden="true"></span>งานที่เน้น</button>
+              <p class="explorer-text" id="explorer-text-2" hidden><strong>งานที่เน้น</strong> Linux, Docker, Cloudflare, DNS และ GIS ตั้งแต่เครื่องเซิร์ฟเวอร์ไปจนถึงระบบแผนที่</p>
+            </li>
+            <li class="explorer-item" data-origin="50% 50%" data-zoom="1">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-3"><span class="plus" aria-hidden="true"></span>วิธีทำงาน</button>
+              <p class="explorer-text" id="explorer-text-3" hidden><strong>วิธีทำงาน</strong> เปลี่ยนงานที่ทำมือหรือกระจัดกระจายให้เป็นระบบเว็บที่ใช้งานได้จริง ตั้งแต่ออกแบบฐานข้อมูล เขียน API ไปจนถึงติดตั้ง</p>
+            </li>
+            <li class="explorer-item" data-origin="44% 56%" data-zoom="1.5">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-4"><span class="plus" aria-hidden="true"></span>บัญชี GitHub</button>
+              <p class="explorer-text" id="explorer-text-4" hidden><strong>บัญชี GitHub</strong> ทำงานผ่าน 2 บัญชี คือ <a href="https://github.com/siwapanD">@siwapanD</a> และ <a href="https://github.com/KhunchayNe">@KhunchayNe</a> ตัวเลขในหน้านี้รวมจากทั้งสองบัญชี</p>
+            </li>
+            <li class="explorer-item" data-origin="50% 40%" data-zoom="1.12">
+              <button class="explorer-pill" type="button" aria-expanded="false" aria-controls="explorer-text-5"><span class="plus" aria-hidden="true"></span>การรับงาน</button>
+              <p class="explorer-text" id="explorer-text-5" hidden><strong>การรับงาน</strong> เปิดรับงานแบบ remote ทั้ง contract และรายโปรเจกต์ ผ่าน Fastwork ที่บัญชี @add หรือ <a href="#contact">ติดต่อโดยตรง</a></p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section class="numbers" id="numbers" aria-labelledby="h-numbers">
@@ -451,6 +497,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

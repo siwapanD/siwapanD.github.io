@@ -254,6 +254,35 @@ h1 { font-size: clamp(2.75rem, 9.2vw, 6.5rem); font-weight: 700; line-height: 1.
 .stats dt { color: #f5f5f7; font-size: 0.875rem; line-height: 1.4; }
 .stats dd { margin: 4px 0 0; font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 
+/* About: an explorer panel. The portrait is a lit subject on black in both themes. */
+.about { padding-top: 0; }
+.explorer { position: relative; display: grid; align-items: center; min-height: min(780px, 86vh); padding: 48px clamp(20px, 6vw, 96px); color: #f5f5f7; background: #000; border: 1px solid rgb(255 255 255 / 0.2); border-radius: 36px; overflow: hidden; isolation: isolate; }
+.explorer-stage { position: absolute; z-index: 0; inset: 0; perspective: 1300px; perspective-origin: 58% 45%; overflow: hidden; }
+.explorer-glow { position: absolute; inset: 6% 12% 0 30%; background: radial-gradient(ellipse at 50% 55%, rgb(60 90 255 / 0.5), rgb(150 80 255 / 0.2) 45%, transparent 70%); filter: blur(34px); transform: translate(calc(var(--ry, 0) * -1.6px), calc(var(--rx, 0) * 1.6px)); }
+/* The figure tilts in 3D toward the pointer (--rx and --ry, in degrees, come from app.js). */
+.explorer-figure { position: absolute; bottom: 0; left: 58%; height: 95%; aspect-ratio: 1050 / 1398; transform: translateX(-50%) rotateY(calc(var(--ry, 0) * 1deg)) rotateX(calc(var(--rx, 0) * 1deg)); transform-origin: 50% 70%; transform-style: preserve-3d; will-change: transform; touch-action: pan-y; cursor: grab; }
+.explorer-figure.dragging { cursor: grabbing; }
+.explorer-float { width: 100%; height: 100%; }
+.motion .explorer-float { animation: figure-float 7s ease-in-out infinite alternate; }
+.explorer-stage img { display: block; width: 100%; height: 100%; transform-origin: var(--origin, 50% 50%); transform: scale(var(--zoom, 1)); -webkit-user-drag: none; user-select: none; filter: drop-shadow(0 0 28px rgb(90 110 255 / 0.28)); }
+.motion .explorer-stage img { transition: transform 1s cubic-bezier(0.3, 0, 0.1, 1), transform-origin 1s cubic-bezier(0.3, 0, 0.1, 1); }
+.explorer-stage::after { content: ""; position: absolute; inset: auto 0 0; height: 20%; background: linear-gradient(transparent, #000); pointer-events: none; }
+@keyframes figure-float { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+.explorer-arrows { position: absolute; z-index: 1; left: clamp(12px, 2vw, 32px); top: 50%; display: grid; gap: 22px; transform: translateY(-50%); }
+.explorer .flip { transform: rotate(180deg); }
+.explorer .paddle { width: 40px; height: 40px; color: #f5f5f7; background: #2a2a2d; }
+.explorer-list { position: relative; z-index: 1; display: grid; justify-items: start; gap: 12px; width: min(460px, 100%); margin: 0; padding: 0; list-style: none; }
+.explorer-pill { display: inline-flex; align-items: center; gap: 14px; min-height: 56px; padding: 8px 28px 8px 14px; color: #f5f5f7; background: rgb(42 42 45 / 0.9); border: 0; border-radius: 980px; font: 600 1.0625rem/1.3 var(--sans); cursor: pointer; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); transition: background-color 0.2s var(--ease); }
+.explorer-pill:hover { background: rgb(58 58 62 / 0.95); }
+.plus { position: relative; flex: none; width: 28px; height: 28px; border: 1.5px solid currentColor; border-radius: 50%; }
+.plus::before, .plus::after { content: ""; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 1.5px; background: currentColor; transform: translate(-50%, -50%); }
+.plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+.explorer-text { margin: 0; padding: 28px 30px; color: #f5f5f7; background: rgb(42 42 45 / 0.9); border-radius: 28px; font-size: 1.0625rem; line-height: 1.55; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.explorer-text a { color: #2997ff; }
+.explorer-item.open .explorer-pill { display: none; }
+.motion .explorer-item.open .explorer-text { animation: text-in 0.5s var(--ease) both; }
+@keyframes text-in { from { opacity: 0; transform: scale(0.96); } }
+
 /* Sections */
 .band { padding-block: clamp(80px, 11vw, 160px); }
 .band-alt { background: var(--bg-alt); }
@@ -471,6 +500,12 @@ footer { padding-block: 20px 36px; background: var(--bg-alt); border-top: 1px so
   .stack-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 860px) {
+  .explorer { display: block; min-height: 0; padding: 0 16px 24px; border-radius: 28px; }
+  .explorer-stage { position: relative; height: min(460px, 60vh); margin-inline: -16px; perspective-origin: 50% 45%; }
+  .explorer-glow { inset: 6% 8% 0; }
+  .explorer-figure { left: 50%; }
+  .explorer-arrows { display: none; }
+  .explorer-list { width: 100%; margin-top: -8px; }
   .span-2 { grid-column: span 3; }
   .bento > .span-2:last-child:nth-child(odd) { grid-column: span 6; }
   .card { grid-column: span 3; }
