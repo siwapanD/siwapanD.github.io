@@ -16,7 +16,7 @@
 "use strict";
 
 window.SITE_ENV = {
-  SPRITE_VERSION: "v7",
+  SPRITE_VERSION: "v8",
 };
 
 window.SPRITES = {
@@ -106,6 +106,21 @@ window.SPRITES = {
     ],
     alt: "ภาพเจ้าของเว็บไซต์ในชุดสูทเดินเข้ามาหลังโต๊ะปรับระดับแล้วยืนพิมพ์งานบน MacBook",
     desc: "ยืนหลังโต๊ะ ขยาย 3 เท่า: เดินเข้าโต๊ะ (0–6, ข้ามเฟรม 7 ที่ชุดผิด) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15)",
+  },
+  v8: {
+    src: "assets/sprite-desk-v8.webp",
+    cols: 8,
+    rows: 2,
+    fps: 8,
+    still: 12,
+    // Frame 7 is skipped: that frame has a dark shirt with no pocket square.
+    segments: [
+      { name: "เดินเข้าโต๊ะ", from: 0, to: 6, loop: false },
+      { name: "เตรียมพิมพ์", from: 8, to: 9, loop: false },
+      { name: "พิมพ์งาน (วน)", from: 10, to: 15, loop: true },
+    ],
+    alt: "ภาพเจ้าของเว็บไซต์ในชุดสูทเดินเข้ามาหลังโต๊ะปรับระดับแล้วยืนพิมพ์งานบน MacBook",
+    desc: "HD: เฟรมละ 1200×1600 ย่อเป็น 840×1120 · เดินเข้าโต๊ะ (0–6, ข้ามเฟรม 7 ที่ชุดผิด) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15)",
   },
 };
 
