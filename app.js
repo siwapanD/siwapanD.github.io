@@ -97,28 +97,25 @@ function splitManifesto() {
   );
 }
 
-// The About figure is a sprite sheet (8 × 2 cells): walk to the desk once, get ready once, then
-// type in a loop. It starts when the section scrolls into view and pauses while off screen.
+// The About figure is a sprite sheet chosen in env.js (SPRITE_VERSION, or ?sprite= in the URL).
+// It starts when the section scrolls into view and pauses while off screen.
 function wireSprite() {
   const canvas = $("explorer-photo");
   const toggle = $("sprite-toggle");
+  const sheet = window.SPRITES[window.spriteVersion()];
+  canvas.setAttribute("aria-label", sheet.alt);
   const image = new Image();
   image.decoding = "async";
-  image.src = "assets/sprite-desk.webp";
+  image.src = sheet.src;
   image.decode().then(() => {
     const player = new SpritePlayer({
-      canvas, image, cols: 8, rows: 2, fps: 8,
-      segments: [
-        { from: 0, to: 7, loop: false },
-        { from: 8, to: 9, loop: false },
-        { from: 10, to: 15, loop: true },
-      ],
+      canvas, image, cols: sheet.cols, rows: sheet.rows, fps: sheet.fps, segments: sheet.segments,
     });
     new ResizeObserver(() => player.resize()).observe(canvas);
     player.resize();
-    // Without motion, show one typing frame and nothing else.
+    // Without motion, show one still frame and nothing else.
     if (!MOTION) {
-      player.show(12);
+      player.show(sheet.still);
       return;
     }
     let stopped = false;

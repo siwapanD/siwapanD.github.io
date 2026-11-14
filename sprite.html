@@ -47,8 +47,8 @@
 <body>
 <main>
   <header>
-    <h1>Sprite Player · ยืนพิมพ์งานที่โต๊ะ</h1>
-    <p>Sprite sheet 8 × 2 เฟรม เล่นบน Canvas: เดินเข้าโต๊ะ (0–7) → เตรียมพิมพ์ (8–9) → พิมพ์วนซ้ำ (10–15) · <a href="./">กลับหน้าหลัก</a></p>
+    <h1>Sprite Player</h1>
+    <p>Sprite sheet เล่นบน Canvas · เลือกเวอร์ชันบนเว็บได้ที่ env.js · <span id="sheet-desc"></span> · <a href="./">กลับหน้าหลัก</a></p>
   </header>
 
   <section class="player">
@@ -61,6 +61,9 @@
         <button id="pause" type="button">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
+      <label>ชีต
+        <select id="sheet-pick"></select>
+      </label>
       <label>ความเร็ว <output id="fps-out" class="mono">8 FPS</output>
         <input id="fps" type="range" min="1" max="24" step="1" value="8">
       </label>
@@ -102,110 +105,130 @@
   </section>
 </main>
 
+<script src="env.js?v=2"></script>
 <script src="sprite-player.js?v=1"></script>
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
-const SEGMENTS = [
-  { name: "เดินเข้าโต๊ะ", from: 0, to: 7, loop: false },
-  { name: "เตรียมพิมพ์", from: 8, to: 9, loop: false },
-  { name: "พิมพ์งาน (วน)", from: 10, to: 15, loop: true },
-];
+const SHEETS = window.SPRITES;
+const ENV_VERSION = window.SITE_ENV.SPRITE_VERSION;
+for (const key of Object.keys(SHEETS)) {
+  const option = new Option(`${key}${key === ENV_VERSION ? " · ใช้บนเว็บ" : ""}`, key);
+  $("sheet-pick").append(option);
+}
+$("sheet-pick").value = window.spriteVersion();
 
-const image = new Image();
-image.decoding = "async";
-image.src = "assets/sprite-desk.webp";
+const canvas = $("canvas");
+const sheet = $("sheet");
+const sheetCtx = sheet.getContext("2d");
+let player = null;
+let config = null;
+let image = null;
+let revealed = null;
 
-image.decode().then(() => {
-  const sheet = $("sheet");
-  const sheetCtx = sheet.getContext("2d");
+function readout(p) {
+  const src = p.sourceRect(p.frame);
+  $("r-frame").textContent = `${p.frame} / ${p.frameCount - 1}`;
+  $("r-seg").textContent = config.segments[p.segment].name;
+  $("r-state").textContent = p.playing ? "กำลังเล่น" : "หยุด";
+  $("r-src").textContent = `sx ${src.x}, sy ${src.y}`;
+  $("fps-out").textContent = `${p.fps} FPS`;
+  $("play").disabled = p.playing;
+  $("pause").disabled = !p.playing;
+  drawSheet(p.frame);
+}
+
+async function load(key) {
+  if (player) player.pause();
+  config = SHEETS[key];
+  $("sheet-desc").textContent = config.desc;
+  $("report-list").innerHTML = "<li>กำลังตรวจ…</li>";
+  image = new Image();
+  image.src = config.src;
+  try { await image.decode(); } catch {
+    $("report-list").innerHTML = `<li>โหลดภาพ ${config.src} ไม่สำเร็จ</li>`;
+    return;
+  }
+  revealed = null;
   sheet.width = image.naturalWidth;
   sheet.height = image.naturalHeight;
-
-  const player = new SpritePlayer({
-    canvas: $("canvas"), image, cols: 8, rows: 2, segments: SEGMENTS, fps: 8,
-    onFrame: (p) => {
-      const src = p.sourceRect(p.frame);
-      $("r-frame").textContent = `${p.frame} / ${p.frameCount - 1}`;
-      $("r-seg").textContent = SEGMENTS[p.segment].name;
-      $("r-state").textContent = p.playing ? "กำลังเล่น" : "หยุด";
-      $("r-src").textContent = `sx ${src.x}, sy ${src.y}`;
-      $("fps-out").textContent = `${p.fps} FPS`;
-      $("play").disabled = p.playing;
-      $("pause").disabled = !p.playing;
-      drawSheet(p.frame);
-    },
+  player = new SpritePlayer({
+    canvas, image, cols: config.cols, rows: config.rows, segments: config.segments,
+    fps: config.fps, onFrame: readout,
   });
-
+  $("fps").value = config.fps;
+  player.setDebug($("debug").checked);
   $("r-size").textContent = `${image.naturalWidth} × ${image.naturalHeight}`;
   $("r-cell").textContent = `${player.frameWidth} × ${player.frameHeight}`;
-
-  // Alpha in the sheet is drawn as-is; "reveal" multiplies it so near-invisible residue shows.
-  let revealed = null;
-  function revealCanvas() {
-    if (revealed) return revealed;
-    revealed = document.createElement("canvas");
-    revealed.width = image.naturalWidth;
-    revealed.height = image.naturalHeight;
-    const c = revealed.getContext("2d");
-    c.drawImage(image, 0, 0);
-    const data = c.getImageData(0, 0, revealed.width, revealed.height);
-    for (let i = 3; i < data.data.length; i += 4) {
-      if (data.data[i] > 0) data.data[i] = Math.min(255, data.data[i] * 40);
-    }
-    c.putImageData(data, 0, 0);
-    return revealed;
-  }
-
-  function drawSheet(current) {
-    sheetCtx.clearRect(0, 0, sheet.width, sheet.height);
-    sheetCtx.drawImage($("reveal").checked ? revealCanvas() : image, 0, 0);
-    const fw = player.frameWidth, fh = player.frameHeight;
-    sheetCtx.lineWidth = 1;
-    sheetCtx.strokeStyle = "rgb(255 255 255 / 0.35)";
-    for (let c = 1; c < player.cols; c++) { sheetCtx.beginPath(); sheetCtx.moveTo(c * fw, 0); sheetCtx.lineTo(c * fw, sheet.height); sheetCtx.stroke(); }
-    for (let r = 1; r < player.rows; r++) { sheetCtx.beginPath(); sheetCtx.moveTo(0, r * fh); sheetCtx.lineTo(sheet.width, r * fh); sheetCtx.stroke(); }
-    sheetCtx.font = "14px ui-monospace, monospace";
-    sheetCtx.fillStyle = "#fff";
-    for (let i = 0; i < player.frameCount; i++) {
-      const s = player.sourceRect(i);
-      sheetCtx.fillText(String(i), s.x + 6, s.y + 18);
-    }
-    const s = player.sourceRect(current);
-    sheetCtx.lineWidth = 3;
-    sheetCtx.strokeStyle = "#ff3b30";
-    sheetCtx.strokeRect(s.x + 1.5, s.y + 1.5, s.w - 3, s.h - 3);
-  }
-
-  sheet.addEventListener("click", (e) => {
-    const box = sheet.getBoundingClientRect();
-    const x = (e.clientX - box.left) / box.width * sheet.width;
-    const y = (e.clientY - box.top) / box.height * sheet.height;
-    player.pause();
-    player.show(Math.floor(y / player.frameHeight) * player.cols + Math.floor(x / player.frameWidth));
-  });
-
-  $("play").addEventListener("click", () => player.play());
-  $("pause").addEventListener("click", () => player.pause());
-  $("restart").addEventListener("click", () => { player.restart(); player.play(); });
-  $("fps").addEventListener("input", (e) => player.setFps(Number(e.target.value)));
-  $("bg").addEventListener("change", (e) => { $("stage").dataset.bg = e.target.value; });
-  $("debug").addEventListener("change", (e) => { $("debug-tools").hidden = !e.target.checked; player.setDebug(e.target.checked); });
-  $("prev").addEventListener("click", () => player.step(-1));
-  $("next").addEventListener("click", () => player.step(1));
-  $("reveal").addEventListener("change", () => drawSheet(player.frame));
-
-  new ResizeObserver(() => player.resize()).observe($("canvas"));
   player.resize();
   player.play();
-
   report(player);
-}).catch(() => {
-  $("report-list").innerHTML = "<li>โหลดภาพ assets/sprite-desk.webp ไม่สำเร็จ</li>";
+}
+
+// Alpha in the sheet is drawn as-is; "reveal" multiplies it so near-invisible residue shows.
+function revealCanvas() {
+  if (revealed) return revealed;
+  revealed = document.createElement("canvas");
+  revealed.width = image.naturalWidth;
+  revealed.height = image.naturalHeight;
+  const c = revealed.getContext("2d");
+  c.drawImage(image, 0, 0);
+  const data = c.getImageData(0, 0, revealed.width, revealed.height);
+  for (let i = 3; i < data.data.length; i += 4) {
+    if (data.data[i] > 0) data.data[i] = Math.min(255, data.data[i] * 40);
+  }
+  c.putImageData(data, 0, 0);
+  return revealed;
+}
+
+function drawSheet(current) {
+  sheetCtx.clearRect(0, 0, sheet.width, sheet.height);
+  sheetCtx.drawImage($("reveal").checked ? revealCanvas() : image, 0, 0);
+  const fw = player.frameWidth, fh = player.frameHeight;
+  sheetCtx.lineWidth = 1;
+  sheetCtx.strokeStyle = "rgb(255 255 255 / 0.35)";
+  for (let c = 1; c < player.cols; c++) { sheetCtx.beginPath(); sheetCtx.moveTo(c * fw, 0); sheetCtx.lineTo(c * fw, sheet.height); sheetCtx.stroke(); }
+  for (let r = 1; r < player.rows; r++) { sheetCtx.beginPath(); sheetCtx.moveTo(0, r * fh); sheetCtx.lineTo(sheet.width, r * fh); sheetCtx.stroke(); }
+  sheetCtx.font = `${Math.round(sheet.width / 100)}px ui-monospace, monospace`;
+  sheetCtx.fillStyle = "#fff";
+  for (let i = 0; i < player.frameCount; i++) {
+    const s = player.sourceRect(i);
+    sheetCtx.fillText(String(i), s.x + 6, s.y + sheet.width / 80);
+  }
+  const s = player.sourceRect(current);
+  sheetCtx.lineWidth = 3;
+  sheetCtx.strokeStyle = "#ff3b30";
+  sheetCtx.strokeRect(s.x + 1.5, s.y + 1.5, s.w - 3, s.h - 3);
+}
+
+sheet.addEventListener("click", (e) => {
+  if (!player) return;
+  const box = sheet.getBoundingClientRect();
+  const x = (e.clientX - box.left) / box.width * sheet.width;
+  const y = (e.clientY - box.top) / box.height * sheet.height;
+  player.pause();
+  player.show(Math.floor(y / player.frameHeight) * player.cols + Math.floor(x / player.frameWidth));
 });
+$("play").addEventListener("click", () => player && player.play());
+$("pause").addEventListener("click", () => player && player.pause());
+$("restart").addEventListener("click", () => { if (player) { player.restart(); player.play(); } });
+$("fps").addEventListener("input", (e) => player && player.setFps(Number(e.target.value)));
+$("bg").addEventListener("change", (e) => { $("stage").dataset.bg = e.target.value; });
+$("debug").addEventListener("change", (e) => { $("debug-tools").hidden = !e.target.checked; if (player) player.setDebug(e.target.checked); });
+$("prev").addEventListener("click", () => player && player.step(-1));
+$("next").addEventListener("click", () => player && player.step(1));
+$("reveal").addEventListener("change", () => player && drawSheet(player.frame));
+$("sheet-pick").addEventListener("change", (e) => {
+  load(e.target.value);
+  const url = new URL(location.href);
+  url.searchParams.set("sprite", e.target.value);
+  history.replaceState(null, "", url);
+});
+new ResizeObserver(() => player && player.resize()).observe(canvas);
+load($("sheet-pick").value);
 
 // Checks the real pixels, cell by cell, and lists what cropping cannot fix.
-function report(player) {
+function report(p) {
   const c = document.createElement("canvas");
   c.width = image.naturalWidth;
   c.height = image.naturalHeight;
@@ -213,7 +236,8 @@ function report(player) {
   ctx.drawImage(image, 0, 0);
   const { data } = ctx.getImageData(0, 0, c.width, c.height);
   const alphaAt = (x, y) => data[(y * c.width + x) * 4 + 3];
-  const items = [];
+  const bad = [];
+  const ok = [];
 
   let faint = 0, opaque = 0;
   for (let i = 3; i < data.length; i += 4) {
@@ -221,46 +245,35 @@ function report(player) {
     if (data[i] === 255) opaque++;
   }
   const total = c.width * c.height;
-  if (faint / total > 0.01) {
-    items.push(`พื้นหลังไม่โปร่งใสสนิท: ${(faint / total * 100).toFixed(0)}% ของพิกเซลมี alpha 1–15 (คราบจาง ๆ รอบตัวและโต๊ะ ติ๊ก “เผยพิกเซล” ด้านบนเพื่อดู) การ crop ลบไม่ได้ ต้องแก้ไฟล์ต้นฉบับ`);
-  }
-  if (opaque === 0) items.push("ไม่มีพิกเซลทึบ 100% เลย (alpha สูงสุดต่ำกว่า 255) ตัวคนและโต๊ะจะโปร่งแสงเล็กน้อยทุกเฟรม");
+  const faintPct = faint / total * 100;
+  if (faintPct > 1) bad.push(`พื้นหลังไม่โปร่งใสสนิท: ${faintPct.toFixed(0)}% ของพิกเซลมี alpha 1–15 (คราบจาง ๆ ติ๊ก “เผยพิกเซล” เพื่อดู) การ crop ลบไม่ได้ ต้องแก้ไฟล์ต้นฉบับ`);
+  else ok.push("พื้นหลังโปร่งใสสะอาด");
+  if (opaque / total < 0.001) bad.push("แทบไม่มีพิกเซลทึบ 100% ตัวคนและโต๊ะจะโปร่งแสงเล็กน้อย");
 
-  const fw = player.frameWidth, fh = player.frameHeight;
-  if (!Number.isInteger(fw) || !Number.isInteger(fh)) {
-    items.push(`ขนาดภาพ ${c.width}×${c.height} หาร 8×2 ไม่ลงตัว (เฟรมละ ${fw}×${fh}) ขอบเฟรมจึงอยู่กลางพิกเซล ควร export ให้กว้างหาร 8 ลงตัว`);
-  }
-  if (fh < 400) items.push(`ความละเอียดต่ำ: เฟรมละ ${Math.round(fw)}×${fh} px ถูกขยายเมื่อแสดงใหญ่ จะดูเบลอ ควรใช้ไฟล์ต้นฉบับขนาดเต็ม`);
+  const fw = p.frameWidth, fh = p.frameHeight;
+  if (!Number.isInteger(fw) || !Number.isInteger(fh)) bad.push(`ขนาดภาพ ${c.width}×${c.height} หาร 8×2 ไม่ลงตัว (เฟรมละ ${fw}×${fh}) ขอบเฟรมอยู่กลางพิกเซล ควร export ให้หารลงตัว`);
+  if (fh < 400) bad.push(`ความละเอียดต่ำ: เฟรมละ ${Math.round(fw)}×${Math.round(fh)} px จะเบลอเมื่อแสดงใหญ่ ควรใช้ไฟล์ต้นฉบับขนาดเต็ม`);
 
-  // Opaque pixels on a cell's right edge mean the drawing was cut off by the grid.
-  const clipped = [];
-  for (let i = 0; i < player.frameCount; i++) {
-    const s = player.sourceRect(i);
-    const x = Math.floor(s.x + s.w) - 1;
-    let hits = 0;
-    for (let y = s.y; y < s.y + s.h; y++) if (alphaAt(x, y) > 128) hits++;
-    if (hits > 4) clipped.push(i);
+  // Per cell: content box (alpha > 128) and whether it touches the cell edge.
+  const boxes = [], clipped = [];
+  for (let i = 0; i < p.frameCount; i++) {
+    const s = p.sourceRect(i);
+    const x0 = Math.ceil(s.x), x1 = Math.floor(s.x + s.w) - 1, y0 = Math.ceil(s.y), y1 = Math.floor(s.y + s.h) - 1;
+    let l = Infinity, r = -1, t = Infinity, b = -1;
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      if (alphaAt(x, y) > 128) { if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y; }
+    }
+    boxes.push({ l: l - x0, r: r - x0, t: t - y0, b: b - y0 });
+    if (l === x0 || r === x1 || t === y0 || b === y1) clipped.push(i);
   }
-  if (clipped.length) items.push(`เฟรม ${clipped.join(", ")}: เท้าหลังชนขอบขวาของช่อง ถูกตัดขาดตั้งแต่ในต้นฉบับ`);
+  if (clipped.length) bad.push(`เฟรม ${clipped.join(", ")}: ภาพชนขอบช่อง ถูกตัดตั้งแต่ในต้นฉบับ`);
+  else ok.push("ไม่มีเฟรมไหนชนขอบช่อง");
+  const spread = (k) => Math.max(...boxes.map((x) => x[k])) - Math.min(...boxes.map((x) => x[k]));
+  const drift = Math.max(spread("l"), spread("r"), spread("t"), spread("b"));
+  if (drift > 4) bad.push(`กรอบเนื้อภาพขยับระหว่างเฟรมสูงสุด ${drift} px (ตัวคนหรือโต๊ะเปลี่ยนตำแหน่ง/ขนาด) แบ่งช่องเท่ากันแก้ไม่ได้`);
+  else ok.push(`ตำแหน่งภาพนิ่งทุกเฟรม (คลาดไม่เกิน ${drift} px)`);
 
-  // Desk: left foot bottom; person: shoe bottom, measured in each cell.
-  const heights = [];
-  for (let i = 0; i < player.frameCount; i++) {
-    const s = player.sourceRect(i);
-    let top = -1, bottom = -1;
-    const x0 = Math.floor(s.x + s.w * 0.52), x1 = Math.floor(s.x + s.w) - 1;
-    for (let y = s.y; y < s.y + s.h && top < 0; y++) for (let x = x0; x < x1; x++) if (alphaAt(x, y) > 128) { top = y - s.y; break; }
-    for (let y = s.y + s.h - 1; y >= s.y && bottom < 0; y--) for (let x = Math.floor(s.x + s.w * 0.62); x < x1; x++) if (alphaAt(x, y) > 128) { bottom = y - s.y; break; }
-    heights.push(bottom - top);
-  }
-  const min = Math.min(...heights), max = Math.max(...heights);
-  if (max - min > min * 0.04) {
-    let jump = 1;
-    for (let i = 2; i < heights.length; i++) if (Math.abs(heights[i] - heights[i - 1]) > Math.abs(heights[jump] - heights[jump - 1])) jump = i;
-    items.push(`ตัวละครสูงไม่เท่ากัน: ${min}–${max} px (ต่างกัน ${((max - min) / min * 100).toFixed(0)}%) ช่วงเดินตัวเล็กกว่าช่วงพิมพ์ เปลี่ยนมากสุดที่เฟรม ${jump - 1}→${jump} (${heights[jump - 1]}→${heights[jump]} px) แบ่งช่องเท่ากันแก้ไม่ได้ ต้องแก้ภาพต้นฉบับ`);
-  }
-  if (!items.length) items.push("ไม่พบปัญหา");
-  $("report-list").innerHTML = items.map((t) => `<li>${t}</li>`).join("");
+  $("report-list").innerHTML = [...bad.map((t) => `<li>⚠ ${t}</li>`), ...ok.map((t) => `<li>✓ ${t}</li>`)].join("");
 }
 </script>
 </body>

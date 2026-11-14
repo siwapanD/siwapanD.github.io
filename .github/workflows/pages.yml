@@ -1,0 +1,54 @@
+name: Deploy site
+
+# Builds the static site and publishes it to GitHub Pages.
+# Requires Settings → Pages → Source: "GitHub Actions".
+#
+# Which sprite sheet the About section plays, first match wins:
+#   1. the "sprite_version" input when the workflow is run by hand
+#   2. the repository variable SPRITE_VERSION
+#      (Settings → Secrets and variables → Actions → Variables)
+#   3. SITE_ENV.SPRITE_VERSION in env.js
+# Changing the variable does not redeploy on its own: run this workflow again.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      sprite_version:
+        description: "Sprite version, a key of SPRITES in env.js (empty = use the repository variable)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply repository settings to env.js
+        env:
+          INPUT_VERSION: ${{ inputs.sprite_version }}
+          VAR_VERSION: ${{ vars.SPRITE_VERSION }}
+        run: python3 scripts/apply_env.py env.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
